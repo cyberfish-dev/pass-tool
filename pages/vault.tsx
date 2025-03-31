@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, Lock, Unlock, Trash2 } from "lucide-react";
+import { Copy, Lock, Unlock, Trash2, LucideVault } from "lucide-react";
 
 async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
   const enc = new TextEncoder();
@@ -71,7 +70,7 @@ async function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
   );
 }
 
-export default function VaultSection() {
+export default function VaultView() {
   const [showPassword, setShowPassword] = useState(false);
   const [vault, setVault] = useState({});
   const [master, setMaster] = useState("");
@@ -196,11 +195,15 @@ export default function VaultSection() {
     <Card className="rounded-2xl shadow-md">
       <CardContent className="space-y-4 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">🗄️ Password Vault</h2>
+          <h2 className="text-2xl font-bold"><LucideVault></LucideVault></h2>
           {isVaultPresent && (
             vaultUnlocked ? <Unlock className="text-green-500" /> : <Lock className="text-red-500" />
           )}
         </div>
+
+        <div className="col-span-2">
+            <hr className="border-t my-2" />
+          </div>
 
         {!vaultUnlocked ? (
           <>
