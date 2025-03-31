@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, Sun, Moon, Check, RotateCcw, KeyRound, ListRestart, ShieldCheck, ShieldAlert, Shield } from "lucide-react";
-import $1 from "lucide-react";
 
 function generatePassword(length, includeNumbers, includeSymbols, includeUppercase, customSymbols) {
   let charset = "abcdefghijklmnopqrstuvwxyz";
@@ -172,8 +171,10 @@ export default function AppMain() {
 
   const [customSymbols, setCustomSymbols] = useState(() => {
 
+    const customSymbols = '!\";#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
+
     const saved = localStorage.getItem("passwordSettings");
-    return saved ? JSON.parse(saved).customSymbols ?? $1 : $1;
+    return saved ? JSON.parse(saved).customSymbols ?? customSymbols : customSymbols;
   });
 
   const [includeUppercase, setIncludeUppercase] = useState(() => {
