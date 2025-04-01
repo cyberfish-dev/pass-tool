@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole } from "lucide-react";
+import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole, Download } from "lucide-react";
 
 async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
   const enc = new TextEncoder();
@@ -121,11 +121,14 @@ export default function VaultView() {
   };
 
   const exportVault = () => {
-    const blob = new Blob([JSON.stringify(vault, null, 2)], { type: "application/json" });
+
+    const data = localStorage.getItem("vault");
+
+    const blob = new Blob([data], { type: "application/x-vault" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "vault.json";
+    a.download = "pass-tool.vault";
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -203,9 +206,15 @@ export default function VaultView() {
       <CardContent className="space-y-4 p-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold"><LucideVault></LucideVault></h2>
+
+          <div className="flex items-center gap-2">
+
+          
           {isVaultPresent && (
-            vaultUnlocked ? <UnlockKeyhole className="w-5 h-5"/> : <LockKeyhole className="w-5 h-5"/>
+            vaultUnlocked ? <><Button title="Export Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={exportVault}><Download className="w-5 h-5"/></Button> <UnlockKeyhole className="w-5 h-5"/> </>: <LockKeyhole className="w-5 h-5"/>
           )}
+
+          </div>
         </div>
 
         <div className="col-span-2">
@@ -247,9 +256,11 @@ export default function VaultView() {
             </div>
             <div className="flex flex-wrap gap-2">
               <Button onClick={addPasswordRecord}>Add</Button>
-              <Button onClick={exportVault}>Download Vault</Button>
+              
+              {/* <Button onClick={exportVault}>Download Vault</Button>
               <Input type="file" onChange={importVault} className="flex-1" />
-              <Button variant="destructive" onClick={deleteVault}>Delete Vault</Button>
+              <Button variant="destructive" onClick={deleteVault}>Delete Vault</Button> */}
+
             </div>
             <Input placeholder="Search by source..." value={search} onChange={(e) => setSearch(e.target.value)} />
             <div className="grid gap-4">
