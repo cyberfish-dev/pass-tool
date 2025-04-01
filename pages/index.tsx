@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import GeneratorView from "./generator";
-import VaultView from "./vault";
-import Header from "./header";
+import GeneratorView from "../pageParts/generator";
+import VaultView from "../pageParts/vault";
+import Header from "../pageParts/header";
 
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
