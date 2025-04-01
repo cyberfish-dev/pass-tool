@@ -73,6 +73,8 @@
   --radius: 0.5rem;
 
   --emerald: rgb(16 185 129 / var(--tw-text-opacity, 1));
+
+  --primary-foreground: 0 0% 9%;
 }
 
 .dark {
@@ -103,12 +105,16 @@ body {
   color: hsl(var(--foreground));
 }
 
+input::placeholder {
+  color: hsl(var(--foreground), 0.8);
+}
+
 input {
   text-overflow: ellipsis;
 }
 
 input:focus {
- border-color: hsl(var(--foreground));
+ border-color: hsl(var(--foreground), 0.5);
 }
 
 .color-emerald {

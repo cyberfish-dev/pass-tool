@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, Lock, Unlock, Trash2, LucideVault } from "lucide-react";
+import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole } from "lucide-react";
 
 async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
   const enc = new TextEncoder();
@@ -90,8 +90,15 @@ export default function VaultView() {
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
 
+  const PASSWORD_REGEXP =
+  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,30}$/;
+
   const createVault = async () => {
     if (master !== confirmMaster) return setVaultError("Passwords do not match");
+
+    const isValid = PASSWORD_REGEXP.test(master);
+    if (!isValid) return setVaultError("Password should be more than 6, less than 30 chars, include a digit and one special character ! @ # $ % ^ & *");
+
     const encrypted = await encryptData(JSON.stringify({}), master);
     localStorage.setItem("vault", JSON.stringify(encrypted));
     setVault({});
@@ -197,7 +204,7 @@ export default function VaultView() {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold"><LucideVault></LucideVault></h2>
           {isVaultPresent && (
-            vaultUnlocked ? <Unlock className="text-green-500" /> : <Lock className="text-red-500" />
+            vaultUnlocked ? <UnlockKeyhole className="w-5 h-5"/> : <LockKeyhole className="w-5 h-5"/>
           )}
         </div>
 
@@ -207,11 +214,11 @@ export default function VaultView() {
 
         {!vaultUnlocked ? (
           <>
-            <Input type="password" placeholder="Master Password" value={master} onChange={(e) => setMaster(e.target.value)} />
+            <Input type="password" placeholder="Master Password" className={vaultError && 'border-red-500 border-dashed'} value={master} onChange={(e) => setMaster(e.target.value)} />
             {isCreatingVault && (
-              <Input type="password" placeholder="Confirm Password" value={confirmMaster} onChange={(e) => setConfirmMaster(e.target.value)} />
+              <Input type="password" className={vaultError && 'border-red-500 border-dashed'} placeholder="Confirm Password" value={confirmMaster} onChange={(e) => setConfirmMaster(e.target.value)} />
             )}
-            {vaultError && <p className="text-sm text-red-500">{vaultError}</p>}
+            {vaultError && <p className="text-xs text-red-500">{vaultError}</p>}
             <Button onClick={isCreatingVault ? createVault : unlockVault}>{isCreatingVault ? "Create Vault" : "Unlock Vault"}</Button>
           </>
         ) : (
