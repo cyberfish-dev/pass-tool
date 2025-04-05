@@ -224,12 +224,17 @@ export default function VaultView() {
 
         {!vaultUnlocked ? (
           <>
+
             <Input type="password" placeholder="Master Password" className={vaultError && 'border-red-500 border-dashed'} value={master} onChange={(e) => setMaster(e.target.value)} />
             {isCreatingVault && (
               <Input type="password" className={vaultError && 'border-red-500 border-dashed'} placeholder="Confirm Password" value={confirmMaster} onChange={(e) => setConfirmMaster(e.target.value)} />
             )}
             {vaultError && <p className="text-xs text-red-500">{vaultError}</p>}
-            <Button onClick={isCreatingVault ? createVault : unlockVault}>{isCreatingVault ? "Create Vault" : "Unlock Vault"}</Button>
+
+            <div className="flex flex-wrap gap-2 mt-4 justify-end">
+              <Button onClick={isCreatingVault ? createVault : unlockVault}>{isCreatingVault ? "Create Vault" : "Unlock Vault"}</Button>
+
+            </div>
           </>
         ) : (
           <>
@@ -245,6 +250,8 @@ export default function VaultView() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <Input placeholder="Source" value={source} onChange={(e) => setSource(e.target.value)} required />
+                  <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+
                   <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                   <div className="relative w-full">
                     <Input
@@ -263,27 +270,35 @@ export default function VaultView() {
                       {showPassword ? '🙈' : '👁️'}
                     </button>
                   </div>
-                  <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button onClick={addPasswordRecord}>Add</Button>
+
+                <div className="flex flex-wrap gap-2 mt-4 justify-end">
+                  <Button onClick={addPasswordRecord}>Add Password</Button>
 
                   {/* <Button onClick={exportVault}>Download Vault</Button>
               <Input type="file" onChange={importVault} className="flex-1" />
-              <Button variant="destructive" onClick={deleteVault}>Delete Vault</Button> */}
+               */}
 
                 </div>
 
               </TabsContent>
 
               <TabsContent value="settings">
-                Settings
+
+                <Input placeholder="Del" value={search} onChange={(e) => setSearch(e.target.value)} />
+
+                <div className="flex flex-wrap gap-2 mt-4 justify-end">
+                  <Button onClick={deleteVault}>Delete Vault</Button>
+                </div>
+
               </TabsContent>
             </Tabs>
 
 
-
-
+            <div className="col-span-2">
+          <hr className="border-t my-2" />
+        </div>
 
             <Input placeholder="Search by source..." value={search} onChange={(e) => setSearch(e.target.value)} />
             <div className="grid gap-4">

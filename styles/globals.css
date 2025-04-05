@@ -163,9 +163,20 @@ input {
   color: black;
 }
 
-.data-\[state\=active\]\:bg-background[data-state="active"] {
+button[data-state="active"] {
   background-color: var(--emerald)!important;
   color: hsl(var(--background))!important;
+}
+
+button[role="tab"] { 
+  border-width: 1px;;
+}
+
+button[data-state="inactive"] {
+  background-color: hsl(var(--card))!important;
+  border-color: hsl(var(--foreground), 0.1)!important;
+
+
 }
 
 .border-emerald {
