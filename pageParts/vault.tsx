@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole, Download } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
   const enc = new TextEncoder();
@@ -91,7 +92,7 @@ export default function VaultView() {
   const [search, setSearch] = useState("");
 
   const PASSWORD_REGEXP =
-  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,30}$/;
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,30}$/;
 
   const createVault = async () => {
     if (master !== confirmMaster) return setVaultError("Passwords do not match");
@@ -209,17 +210,17 @@ export default function VaultView() {
 
           <div className="flex items-center gap-2">
 
-          
-          {isVaultPresent && (
-            vaultUnlocked ? <><Button title="Export Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={exportVault}><Download className="w-5 h-5"/></Button> <UnlockKeyhole className="w-5 h-5"/> </>: <LockKeyhole className="w-5 h-5"/>
-          )}
+
+            {isVaultPresent && (
+              vaultUnlocked ? <><Button title="Export Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={exportVault}><Download className="w-5 h-5" /></Button> <UnlockKeyhole className="size-4" /> </> : <LockKeyhole className="size-4" />
+            )}
 
           </div>
         </div>
 
         <div className="col-span-2">
-            <hr className="border-t my-2" />
-          </div>
+          <hr className="border-t my-2" />
+        </div>
 
         {!vaultUnlocked ? (
           <>
@@ -232,36 +233,58 @@ export default function VaultView() {
           </>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-2">
-              <Input placeholder="Source" value={source} onChange={(e) => setSource(e.target.value)} required />
-              <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-              <div className="relative w-full">
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? '🙈' : '👁️'}
-                </button>
-              </div>
-              <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={addPasswordRecord}>Add</Button>
-              
-              {/* <Button onClick={exportVault}>Download Vault</Button>
+
+
+            <Tabs defaultValue="new" className="w-full">
+              <TabsList className="mb-4">
+                <TabsTrigger value="new">New Password</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="new">
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Input placeholder="Source" value={source} onChange={(e) => setSource(e.target.value)} required />
+                  <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                  <div className="relative w-full">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
+                  </div>
+                  <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={addPasswordRecord}>Add</Button>
+
+                  {/* <Button onClick={exportVault}>Download Vault</Button>
               <Input type="file" onChange={importVault} className="flex-1" />
               <Button variant="destructive" onClick={deleteVault}>Delete Vault</Button> */}
 
-            </div>
+                </div>
+
+              </TabsContent>
+
+              <TabsContent value="settings">
+                Settings
+              </TabsContent>
+            </Tabs>
+
+
+
+
+
             <Input placeholder="Search by source..." value={search} onChange={(e) => setSearch(e.target.value)} />
             <div className="grid gap-4">
               {filteredVault.map(([key, entry]: [string, any]) => (

@@ -163,6 +163,15 @@ input {
   color: black;
 }
 
+.data-\[state\=active\]\:bg-background[data-state="active"] {
+  background-color: var(--emerald)!important;
+  color: hsl(var(--background))!important;
+}
+
+.border-emerald {
+  border-color: var(--emerald);
+}
+
 
 @layer base {
   * {
