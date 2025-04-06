@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole, Download } from "lucide-react";
+import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole, Download, Eye, EyeClosed, RotateCcw, ListRestart, KeySquare, KeyRound, Trash, Check, Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
@@ -20,10 +20,18 @@ async function encryptData(data: string, password: string): Promise<{ iv: string
     encoded
   );
 
+  const combined = new Uint8Array(salt.length + cipherText.byteLength);
+  combined.set(salt);
+  combined.set(new Uint8Array(cipherText), salt.length);
+
   return {
-    iv: btoa(String.fromCharCode(...iv)),
-    data: btoa(String.fromCharCode(...salt, ...new Uint8Array(cipherText))),
+    iv: uint8ArrayToBase64(iv),
+    data: uint8ArrayToBase64(combined),
   };
+}
+
+function uint8ArrayToBase64(arr: Uint8Array) {
+  return btoa(String.fromCharCode(...arr));
 }
 
 async function decryptData(encrypted: { iv: string; data: string }, password: string): Promise<string> {
@@ -72,7 +80,7 @@ async function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
 }
 
 export default function VaultView() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const [vault, setVault] = useState({});
   const [master, setMaster] = useState("");
   const [confirmMaster, setConfirmMaster] = useState("");
@@ -84,10 +92,70 @@ export default function VaultView() {
   });
   const [isCreatingVault, setIsCreatingVault] = useState(!isVaultPresent);
   const [vaultUnlocked, setVaultUnlocked] = useState(false);
+
   const [vaultError, setVaultError] = useState("");
+
+  const [addError, setAddError] = useState('');
+
+  const [defaultUsername, setDefaultUsername] = useState(() => {
+
+    const saved = localStorage.getItem("defUsername");
+    return saved ?? '';
+  });
+
+  const [length, setLength] = useState(() => {
+
+    const saved = localStorage.getItem("passwordSettings");
+    return saved ? JSON.parse(saved).length ?? 22 : 22;
+  });
+
+  const [includeNumbers, setIncludeNumbers] = useState(() => {
+
+    const saved = localStorage.getItem("passwordSettings");
+    return saved ? JSON.parse(saved).includeNumbers ?? true : true;
+  });
+
+  const [includeSymbols, setIncludeSymbols] = useState(() => {
+
+    const saved = localStorage.getItem("passwordSettings");
+    return saved ? JSON.parse(saved).includeSymbols ?? true : true;
+  });
+
+  const [customSymbols, setCustomSymbols] = useState(() => {
+
+    const customSymbols = '!\";#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
+
+    const saved = localStorage.getItem("passwordSettings");
+    return saved ? JSON.parse(saved).customSymbols ?? customSymbols : customSymbols;
+  });
+
+  const [includeUppercase, setIncludeUppercase] = useState(() => {
+
+    const saved = localStorage.getItem("passwordSettings");
+    return saved ? JSON.parse(saved).includeUppercase ?? true : true;
+  });
+
+  const generatePassword = (length, includeNumbers, includeSymbols, includeUppercase, customSymbols) => {
+    let charset = "abcdefghijklmnopqrstuvwxyz";
+    if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (includeNumbers) charset += "0123456789";
+    if (includeSymbols) charset += customSymbols;
+
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
+    return password;
+  };
+
+
+  const [visibleMap, setVisibleMap] = useState({});
+
+  const [copiedIndex, setCopiedIndex] = useState(null);
   const [source, setSource] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(defaultUsername);
+  const [password, setPassword] = useState(generatePassword(length, includeNumbers, includeSymbols, includeUppercase, customSymbols));
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
 
@@ -106,6 +174,11 @@ export default function VaultView() {
     setVaultUnlocked(true);
     setIsVaultPresent(true);
     setVaultError("");
+
+    if (defaultUsername) {
+      localStorage.setItem('defUsername', defaultUsername);
+      setUsername(defaultUsername);
+    }
   };
 
   const unlockVault = async () => {
@@ -154,7 +227,19 @@ export default function VaultView() {
   };
 
   const addPasswordRecord = async () => {
-    if (!source || !username || !password) return;
+
+    setAddError('');
+
+    if (!source || !username || !password) {
+      setAddError('Please enter required fields');
+      return;
+    }
+
+    if (vault[source]) {
+      setAddError('Source already exists, please enter another one');
+      return;
+    }
+
     const newVault = {
       ...vault,
       [source]: { username, password, notes }
@@ -192,6 +277,25 @@ export default function VaultView() {
     if (navigator.clipboard) navigator.clipboard.writeText(text);
   };
 
+  const handleCopy = (pw, idx) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(pw).then(() => {
+        setCopiedIndex(idx);
+        setTimeout(() => setCopiedIndex(null), 1500);
+      });
+    }
+  };
+
+  const regeneratePassword = () => {
+    const pass = generatePassword(length, includeNumbers, includeSymbols, includeUppercase, customSymbols);
+    setPassword(pass);
+  };
+
+  const setDefaults = () => {
+    setUsername(defaultUsername);
+    regeneratePassword();
+  };
+
   useEffect(() => {
     const saveVault = async () => {
       if (vaultUnlocked && master && Object.keys(vault).length > 0) {
@@ -201,6 +305,11 @@ export default function VaultView() {
     };
     saveVault();
   }, [vault, vaultUnlocked, master]);
+
+  const setVisiblePass = (source: string) => {
+    visibleMap[source] = !visibleMap[source];
+    setVisibleMap({ ...visibleMap });
+  };
 
   return (
     <Card className="rounded-2xl shadow-md">
@@ -212,7 +321,15 @@ export default function VaultView() {
 
 
             {isVaultPresent && (
-              vaultUnlocked ? <><Button title="Export Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={exportVault}><Download className="w-5 h-5" /></Button> <UnlockKeyhole className="size-4" /> </> : <LockKeyhole className="size-4" />
+              vaultUnlocked && <>
+
+                <Button title="Set Defaults" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={setDefaults}><ListRestart className="w-5 h-5" /></Button>
+
+                <Button title="Export Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={exportVault}><Download className="w-5 h-5" /></Button>
+
+                <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { setMaster(''); setVaultUnlocked(false); }}> <LockKeyhole className="w-5 h-5" /> </Button>
+
+              </>
             )}
 
           </div>
@@ -225,12 +342,19 @@ export default function VaultView() {
         {!vaultUnlocked ? (
           <>
 
-            <Input type="password" placeholder="Master Password" className={vaultError && 'border-red-500 border-dashed'} value={master} onChange={(e) => setMaster(e.target.value)} />
-            {isCreatingVault && (
-              <Input type="password" className={vaultError && 'border-red-500 border-dashed'} placeholder="Confirm Password" value={confirmMaster} onChange={(e) => setConfirmMaster(e.target.value)} />
-            )}
-            {vaultError && <p className="text-xs text-red-500">{vaultError}</p>}
+            <div>
+              <Input type="password" placeholder="Master Password" className={vaultError && 'border-red-500 border-dashed'} value={master} onChange={(e) => setMaster(e.target.value)} />
+              {isCreatingVault && (
+                <div className="mt-2">
 
+                  <Input type="password" className={vaultError && 'border-red-500 border-dashed'} placeholder="Confirm Password" value={confirmMaster} onChange={(e) => setConfirmMaster(e.target.value)} />
+                  <Input placeholder="Default Username" className="mt-4" value={defaultUsername} onChange={(e) => setDefaultUsername(e.target.value)} />
+
+                </div>
+              )}
+              {vaultError && <p className="text-xs text-red-500 mt-2">{vaultError}</p>}
+
+            </div>
             <div className="flex flex-wrap gap-2 mt-4 justify-end">
               <Button onClick={isCreatingVault ? createVault : unlockVault}>{isCreatingVault ? "Create Vault" : "Unlock Vault"}</Button>
 
@@ -238,7 +362,6 @@ export default function VaultView() {
           </>
         ) : (
           <>
-
 
             <Tabs defaultValue="new" className="w-full">
               <TabsList className="mb-4">
@@ -248,11 +371,11 @@ export default function VaultView() {
 
               <TabsContent value="new">
 
-                <div className="grid grid-cols-2 gap-2">
-                  <Input placeholder="Source" value={source} onChange={(e) => setSource(e.target.value)} required />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Input placeholder="Source" className={addError && !source && 'border-red-500 border-dashed'} value={source} onChange={(e) => setSource(e.target.value)} required />
                   <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
 
-                  <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                  <Input placeholder="Username" className={addError && !username && 'border-red-500 border-dashed'} value={username} onChange={(e) => setUsername(e.target.value)} required />
                   <div className="relative w-full">
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -260,18 +383,48 @@ export default function VaultView() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="pr-10"
+                      className={`pr-20 ${addError && !password && 'border-red-500 border-dashed'}`}
                     />
+
                     <button
                       type="button"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500"
+                      className="absolute btn-ico right-14 top-1/2 -translate-y-1/2 text-xs"
+                      onClick={() => regeneratePassword()}
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      type="button"
+                      title="Copy Username"
+                      onClick={() => handleCopy(password, 'addpass')}
+                      className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
+                    >
+
+                      {copiedIndex === 'addpass' ? (
+
+                        <Check className="w-4 h-4 text-emerald-500" />
+
+                      ) : (
+
+                        <Copy className="w-4 h-4" />
+
+                      )}
+
+                    </button>
+
+                    <button
+                      type="button"
+                      className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? '🙈' : '👁️'}
+                      {showPassword ? <EyeClosed className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
 
                 </div>
+
+                {addError && <p className="text-xs text-red-500 mt-2">{addError}</p>}
 
                 <div className="flex flex-wrap gap-2 mt-4 justify-end">
                   <Button onClick={addPasswordRecord}>Add Password</Button>
@@ -297,56 +450,111 @@ export default function VaultView() {
 
 
             <div className="col-span-2">
-          <hr className="border-t my-2" />
-        </div>
+              <hr className="border-t my-2" />
+            </div>
 
-            <Input placeholder="Search by source..." value={search} onChange={(e) => setSearch(e.target.value)} />
+
+            <div className="relative w-full">
+
+              <Input placeholder="Search by source" value={search} onChange={(e) => setSearch(e.target.value)} />
+
+              <button
+                type="button"
+                className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
+                onClick={() => { }}
+              >
+                <Search className="w-4 h-4" />
+              </button>
+
+            </div>
+
+
             <div className="grid gap-4">
               {filteredVault.map(([key, entry]: [string, any]) => (
-                <div key={key} className="bg-gray-100 dark:bg-gray-900 rounded-xl p-4 shadow">
-                  <div className="mb-2 flex items-center justify-between text-sm font-semibold">
-                    <span>🔑 Source: {key}</span>
-                    <button
+                <div key={key} className="rounded-xl card-pass p-4">
+                  <div className="mb-4 flex items-center justify-between text-sm font-semibold">
+
+                    <span className="text-sm font-bold"><KeyRound className="size-4 inline mr-2" /> {key}</span>
+                    {/* <button
                       type="button"
                       onClick={() => deleteRecord(key)}
                       title="Delete Record"
-                      className="text-red-500 hover:text-red-700"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <Trash className="w-4 h-4" />
+                    </button> */}
+
+                    <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { deleteRecord(key) }}>
+                      <Trash className="w-5 h-5" /> </Button>
+
                   </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
-                    <div className="relative">
-                      <Input readOnly value={key} className="opacity-60" />
-                    </div>
-                    <div className="relative">
-                      <Input readOnly value={entry.notes || ""} className="opacity-60" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div className="relative">
                       <Input readOnly value={entry.username} className="pr-10" />
                       <button
                         type="button"
                         title="Copy Username"
-                        onClick={() => handleCopyText(entry.username)}
+                        onClick={() => handleCopy(entry.username, `user-${key}`)}
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                       >
-                        <Copy className="w-4 h-4" />
+
+                        {copiedIndex === `user-${key}` ? (
+
+                          <Check className="w-4 h-4 text-emerald-500" />
+
+                        ) : (
+
+                          <Copy className="w-4 h-4" />
+
+                        )}
+
                       </button>
                     </div>
                     <div className="relative">
-                      <Input readOnly value={entry.password} className="pr-10" />
+                      <Input type={visibleMap[key] ? 'text' : 'password'} readOnly value={entry.password} className="pr-10" />
+
+
                       <button
                         type="button"
+
                         title="Copy Password"
-                        onClick={() => handleCopyText(entry.password)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
+                        onClick={() => handleCopy(entry.password, `pass-${key}`)}
+                        className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                       >
-                        <Copy className="w-4 h-4" />
+
+                        {copiedIndex === `pass-${key}` ? (
+
+                          <Check className="w-4 h-4 text-emerald-500" />
+
+                        ) : (
+
+                          <Copy className="w-4 h-4" />
+
+                        )}
+
+                      </button>
+
+                      <button
+                        type="button"
+                        className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
+                        onClick={() => setVisiblePass(key)}
+                      >
+                        {visibleMap[key] ? <EyeClosed className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
                   </div>
+
+                  {entry.notes &&
+                    <div className="grid grid-cols-1 gap-2">
+                      {/* <div className="relative">
+                      <Input readOnly value={key} className="opacity-60" />
+                    </div> */}
+                      <div className="relative">
+                        <Input readOnly value={entry.notes || ""} className="opacity-60" placeholder="Notes" />
+                      </div>
+                    </div>
+                  }
+
                 </div>
               ))}
             </div>

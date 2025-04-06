@@ -94,7 +94,7 @@
   --card: 0, 0%, 19%;
 
   --border: 0,0%,100%,.05;
-  --primary: 0 0% 98%;
+  --primary: 0 0% 88%;
 
   --accent-foreground: 0 0% 13%;
 }
@@ -104,6 +104,12 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
+
+.card-pass {
+  border-color: hsl(var(--border));
+  border-width: 1px;
+  background-color: hsl(var(--background), 0.3);
+} 
 
 input::placeholder {
   color: hsl(var(--foreground), 0.8);
@@ -133,6 +139,11 @@ input {
   background-color: hsl(var(--input));
 }
 
+/* input[readonly] {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--foreground), 0.2);
+} */
+
 /* .border-input {
   border-color: hsla(var(--border));
 } */
@@ -157,7 +168,6 @@ input {
   color: var(--accent-info);
 }
 
-
 ::selection {
   background-color: rgb(16 185 129 / var(--tw-text-opacity, 1));
   color: black;
@@ -169,20 +179,17 @@ button[data-state="active"] {
 }
 
 button[role="tab"] { 
-  border-width: 1px;;
+  border-width: 1px;
 }
 
 button[data-state="inactive"] {
   background-color: hsl(var(--card))!important;
   border-color: hsl(var(--foreground), 0.1)!important;
-
-
 }
 
 .border-emerald {
   border-color: var(--emerald);
 }
-
 
 @layer base {
   * {

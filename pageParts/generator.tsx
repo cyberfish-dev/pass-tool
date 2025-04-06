@@ -208,6 +208,7 @@ export default function GeneratorView() {
                     <Copy className="w-4 h-4 hover:text-gray-900 dark:hover:text-gray-100" />
 
                   )}
+                  
                 </Button>
 
               </div>
