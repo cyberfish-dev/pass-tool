@@ -191,6 +191,10 @@ button[data-state="inactive"] {
   border-color: var(--emerald);
 }
 
+.btn-action {
+  color: var(--accent-danger);
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole, Download, Eye, EyeClosed, RotateCcw, ListRestart, KeySquare, KeyRound, Trash, Check, Search } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ConfirmDialog } from "@/components/ui/confirmDialog";
 
 async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
   const enc = new TextEncoder();
@@ -483,8 +484,34 @@ export default function VaultView() {
                       <Trash className="w-4 h-4" />
                     </button> */}
 
-                    <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { deleteRecord(key) }}>
-                      <Trash className="w-5 h-5" /> </Button>
+
+
+<div>
+                    <Button title="Copy Source" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => handleCopy(key, `source-${key}`)}>
+
+
+                      {copiedIndex === `source-${key}` ? (
+
+                        <Check className="w-4 h-4 text-emerald-500" />
+
+                      ) : (
+
+                        <Copy className="w-4 h-4" />
+
+                      )}
+
+                    </Button>
+
+                    <ConfirmDialog
+                      onConfirm={() => { deleteRecord(key); }}
+                      title="Delete Record"
+                      message={`Are you sure you want to delete '${key}' password record?`}
+                    >
+                      <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { }}>
+                        <Trash className="w-5 h-5" /> </Button>
+                    </ConfirmDialog>
+
+                    </div>
 
                   </div>
 
@@ -550,7 +577,27 @@ export default function VaultView() {
                       <Input readOnly value={key} className="opacity-60" />
                     </div> */}
                       <div className="relative">
-                        <Input readOnly value={entry.notes || ""} className="opacity-60" placeholder="Notes" />
+                        <Input readOnly value={entry.notes || ""} placeholder="Notes" className="pr-10" />
+
+                        <button
+                          type="button"
+
+                          title="Copy Notes"
+                          onClick={() => handleCopy(entry.notes, `notes-${key}`)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
+                        >
+
+                          {copiedIndex === `notes-${key}` ? (
+
+                            <Check className="w-4 h-4 text-emerald-500" />
+
+                          ) : (
+
+                            <Copy className="w-4 h-4" />
+
+                          )}
+
+                        </button>
                       </div>
                     </div>
                   }
