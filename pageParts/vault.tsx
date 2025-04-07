@@ -519,7 +519,7 @@ export default function VaultView() {
 
                 <Input type="password" placeholder="Enter master password for import" className="mt-8" value={importMaster} onChange={(e) => setImportMaster(e.target.value)} />
 
-                <Input type="file" onChange={importFile} className="mt-4" />
+                <Input type="file" onChange={importFile} className="mt-4 text-xs" />
 
                 {importError && <p className="text-xs text-red-500 mt-2">{importError}</p>}
 
