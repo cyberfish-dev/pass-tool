@@ -21,11 +21,15 @@ export default function Header() {
     useEffect(() => {
 
         const root = document.documentElement;
+        root.classList.remove("dark");
+        root.classList.remove("light");
+
         if (darkMode) {
             root.classList.add("dark");
         } else {
-            root.classList.remove("dark");
+            root.classList.add("light");
         }
+        
         localStorage.setItem("darkMode", darkMode.toString());
     }, [darkMode]);
 

@@ -40,7 +40,7 @@ export default function Footer() {
                             <hr className="border-t my-2" />
                         </div>
 
-                        <div>
+                        <div className="text-sm">
 
                             Last updated: [April 1, 2025]
                             <br />
@@ -109,7 +109,7 @@ export default function Footer() {
                             <hr className="border-t my-2" />
                         </div>
 
-                        <div>
+                        <div className="text-sm">
                         Last updated: April 1, 2025
                         <br/>
                         <br/>

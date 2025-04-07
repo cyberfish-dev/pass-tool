@@ -79,15 +79,6 @@
 
 .dark {
 
-
-  /* --card: hsl(220, 15%, 18%); */
-/* 
-  --background: #212121;
-  --foreground: #ececec;
-
-  --input: rgb(66 66 66/1);
-  --card: rgb(48 48 48); */
-
   --background: 0, 0%, 13%;
   --foreground: 0, 0%, 93%;
   --input: 0, 0%, 26%;
@@ -97,6 +88,20 @@
   --primary: 0 0% 88%;
 
   --accent-foreground: 0 0% 13%;
+}
+
+
+.light {
+
+  --background: 0, 0%, 100%;
+  --card: 0, 0%, 98%;
+  --foreground: 228, 8%, 24%;
+  --input: 0, 0%, 96%;
+  --border: 0,0%,0%,.12;
+  --primary: 0 0% 48%;
+
+  --accent-foreground: 0 0% 3%;
+  --primary-foreground: 0 0% 90%;
 }
 
 
@@ -174,16 +179,22 @@ input {
 }
 
 button[data-state="active"] {
-  background-color: var(--emerald)!important;
-  color: hsl(var(--background))!important;
+  border-color: var(--emerald)!important;
 }
 
 button[role="tab"] { 
   border-width: 1px;
+
+  border-top:0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-radius: 0px;
+
+  background-color: transparent!important;
+  box-shadow: none!important;
 }
 
 button[data-state="inactive"] {
-  background-color: hsl(var(--card))!important;
   border-color: hsl(var(--foreground), 0.1)!important;
 }
 
