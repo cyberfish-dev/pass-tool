@@ -1,4 +1,4 @@
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === "production";
 
 const devCSP = `
   default-src 'self';
@@ -24,8 +24,8 @@ const prodCSP = `
 
 const securityHeaders = [
   {
-    key: 'Content-Security-Policy',
-    value: (isProd ? prodCSP : devCSP).replace(/\s{2,}/g, ' ').trim(),
+    key: "Content-Security-Policy",
+    value: (isProd ? prodCSP : devCSP).replace(/\s{2,}/g, " ").trim(),
   },
 ];
 
@@ -34,7 +34,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         headers: securityHeaders,
       },
     ];

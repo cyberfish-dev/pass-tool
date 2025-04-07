@@ -2,11 +2,40 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, LockKeyhole, Trash2, LucideVault, UnlockKeyhole, Download, Eye, EyeClosed, RotateCcw, ListRestart, KeySquare, KeyRound, Trash, Check, Search } from "lucide-react";
+import {
+  Copy,
+  LockKeyhole,
+  Trash2,
+  LucideVault,
+  UnlockKeyhole,
+  Download,
+  Eye,
+  EyeClosed,
+  RotateCcw,
+  ListRestart,
+  KeySquare,
+  KeyRound,
+  Trash,
+  Check,
+  Search,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConfirmDialog } from "@/components/ui/confirmDialog";
 
-async function encryptData(data: string, password: string): Promise<{ iv: string; data: string }> {
+type VaultEntry = {
+  username: string;
+  password: string;
+  notes?: string;
+};
+
+type Vault = {
+  [key: string]: VaultEntry;
+};
+
+async function encryptData(
+  data: string,
+  password: string,
+): Promise<{ iv: string; data: string }> {
   const enc = new TextEncoder();
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -18,7 +47,7 @@ async function encryptData(data: string, password: string): Promise<{ iv: string
   const cipherText = await crypto.subtle.encrypt(
     { name: "AES-GCM", iv },
     key,
-    encoded
+    encoded,
   );
 
   const combined = new Uint8Array(salt.length + cipherText.byteLength);
@@ -35,10 +64,15 @@ function uint8ArrayToBase64(arr: Uint8Array) {
   return btoa(String.fromCharCode(...arr));
 }
 
-async function decryptData(encrypted: { iv: string; data: string }, password: string): Promise<string> {
+async function decryptData(
+  encrypted: { iv: string; data: string },
+  password: string,
+): Promise<string> {
   const dec = new TextDecoder();
-  const iv = Uint8Array.from(atob(encrypted.iv), c => c.charCodeAt(0));
-  const combined = Uint8Array.from(atob(encrypted.data), c => c.charCodeAt(0));
+  const iv = Uint8Array.from(atob(encrypted.iv), (c) => c.charCodeAt(0));
+  const combined = Uint8Array.from(atob(encrypted.data), (c) =>
+    c.charCodeAt(0),
+  );
   const salt = combined.slice(0, 16);
   const data = combined.slice(16);
 
@@ -48,7 +82,7 @@ async function decryptData(encrypted: { iv: string; data: string }, password: st
   const plainBuffer = await crypto.subtle.decrypt(
     { name: "AES-GCM", iv },
     key,
-    data
+    data,
   );
 
   return dec.decode(plainBuffer);
@@ -61,7 +95,7 @@ async function getKeyMaterial(password: string) {
     enc.encode(password),
     { name: "PBKDF2" },
     false,
-    ["deriveKey"]
+    ["deriveKey"],
   );
 }
 
@@ -76,17 +110,17 @@ async function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
     keyMaterial,
     { name: "AES-GCM", length: 256 },
     false,
-    ["encrypt", "decrypt"]
+    ["encrypt", "decrypt"],
   );
 }
 
 export default function VaultView() {
   const [showPassword, setShowPassword] = useState(true);
-  const [vault, setVault] = useState({});
+  const [vault, setVault] = useState<Vault>({});
   const [master, setMaster] = useState("");
   const [confirmMaster, setConfirmMaster] = useState("");
   const [isVaultPresent, setIsVaultPresent] = useState(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       return !!localStorage.getItem("vault");
     }
     return false;
@@ -96,47 +130,49 @@ export default function VaultView() {
 
   const [vaultError, setVaultError] = useState("");
 
-  const [addError, setAddError] = useState('');
+  const [addError, setAddError] = useState("");
 
   const [defaultUsername, setDefaultUsername] = useState(() => {
-
     const saved = localStorage.getItem("defUsername");
-    return saved ?? '';
+    return saved ?? "";
   });
 
   const [length, setLength] = useState(() => {
-
     const saved = localStorage.getItem("passwordSettings");
-    return saved ? JSON.parse(saved).length ?? 22 : 22;
+    return saved ? (JSON.parse(saved).length ?? 22) : 22;
   });
 
   const [includeNumbers, setIncludeNumbers] = useState(() => {
-
     const saved = localStorage.getItem("passwordSettings");
-    return saved ? JSON.parse(saved).includeNumbers ?? true : true;
+    return saved ? (JSON.parse(saved).includeNumbers ?? true) : true;
   });
 
   const [includeSymbols, setIncludeSymbols] = useState(() => {
-
     const saved = localStorage.getItem("passwordSettings");
-    return saved ? JSON.parse(saved).includeSymbols ?? true : true;
+    return saved ? (JSON.parse(saved).includeSymbols ?? true) : true;
   });
 
   const [customSymbols, setCustomSymbols] = useState(() => {
-
-    const customSymbols = '!\";#$%&\'()*+,-./:;<=>?@[]^_`{|}~';
+    const customSymbols = "!\";#$%&'()*+,-./:;<=>?@[]^_`{|}~";
 
     const saved = localStorage.getItem("passwordSettings");
-    return saved ? JSON.parse(saved).customSymbols ?? customSymbols : customSymbols;
+    return saved
+      ? (JSON.parse(saved).customSymbols ?? customSymbols)
+      : customSymbols;
   });
 
   const [includeUppercase, setIncludeUppercase] = useState(() => {
-
     const saved = localStorage.getItem("passwordSettings");
-    return saved ? JSON.parse(saved).includeUppercase ?? true : true;
+    return saved ? (JSON.parse(saved).includeUppercase ?? true) : true;
   });
 
-  const generatePassword = (length, includeNumbers, includeSymbols, includeUppercase, customSymbols) => {
+  const generatePassword = (
+    length,
+    includeNumbers,
+    includeSymbols,
+    includeUppercase,
+    customSymbols,
+  ) => {
     let charset = "abcdefghijklmnopqrstuvwxyz";
     if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if (includeNumbers) charset += "0123456789";
@@ -150,13 +186,20 @@ export default function VaultView() {
     return password;
   };
 
-
   const [visibleMap, setVisibleMap] = useState({});
 
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [source, setSource] = useState("");
   const [username, setUsername] = useState(defaultUsername);
-  const [password, setPassword] = useState(generatePassword(length, includeNumbers, includeSymbols, includeUppercase, customSymbols));
+  const [password, setPassword] = useState(
+    generatePassword(
+      length,
+      includeNumbers,
+      includeSymbols,
+      includeUppercase,
+      customSymbols,
+    ),
+  );
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
 
@@ -169,10 +212,14 @@ export default function VaultView() {
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,30}$/;
 
   const createVault = async () => {
-    if (master !== confirmMaster) return setVaultError("Passwords do not match");
+    if (master !== confirmMaster)
+      return setVaultError("Passwords do not match");
 
     const isValid = PASSWORD_REGEXP.test(master);
-    if (!isValid) return setVaultError("Password should be more than 6, less than 30 chars, include a digit and one special character ! @ # $ % ^ & *");
+    if (!isValid)
+      return setVaultError(
+        "Password should be more than 6, less than 30 chars, include a digit and one special character ! @ # $ % ^ & *",
+      );
 
     const encrypted = await encryptData(JSON.stringify({}), master);
     localStorage.setItem("vault", JSON.stringify(encrypted));
@@ -182,7 +229,7 @@ export default function VaultView() {
     setVaultError("");
 
     if (defaultUsername) {
-      localStorage.setItem('defUsername', defaultUsername);
+      localStorage.setItem("defUsername", defaultUsername);
       setUsername(defaultUsername);
     }
   };
@@ -201,7 +248,6 @@ export default function VaultView() {
   };
 
   const exportVault = () => {
-
     const data = localStorage.getItem("vault");
 
     const blob = new Blob([data], { type: "application/x-vault" });
@@ -213,9 +259,7 @@ export default function VaultView() {
     URL.revokeObjectURL(url);
   };
 
-
   const importFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -223,7 +267,7 @@ export default function VaultView() {
   };
 
   const importVault = () => {
-    setImportError('');
+    setImportError("");
 
     if (!importFileBlob) {
       setImportError("Select vault file to import");
@@ -242,11 +286,9 @@ export default function VaultView() {
         let newVault = { ...vault };
 
         Object.entries(json).forEach(([key, value]) => {
-
           let realKey = key;
 
           if (vault[key]) {
-
             let num = 1;
             realKey = `${key}-${num}`;
 
@@ -254,12 +296,14 @@ export default function VaultView() {
               num++;
               realKey = `${key}-${num}`;
             }
-
           }
 
           const jsonRec = value as any;
-          newVault[realKey] = { username: jsonRec.username, password: jsonRec.password, notes: jsonRec.notes };
-
+          newVault[realKey] = {
+            username: jsonRec.username,
+            password: jsonRec.password,
+            notes: jsonRec.notes,
+          };
         });
 
         setVault(newVault);
@@ -272,8 +316,7 @@ export default function VaultView() {
         setPassword("");
         setNotes("");
         setImportFileBlob(null);
-        setImportMaster('');
-
+        setImportMaster("");
       } catch (err) {
         setImportError("Failed to import vault");
       }
@@ -283,22 +326,21 @@ export default function VaultView() {
   };
 
   const addPasswordRecord = async () => {
-
-    setAddError('');
+    setAddError("");
 
     if (!source || !username || !password) {
-      setAddError('Please enter required fields');
+      setAddError("Please enter required fields");
       return;
     }
 
     if (vault[source]) {
-      setAddError('Source already exists, please enter another one');
+      setAddError("Source already exists, please enter another one");
       return;
     }
 
     const newVault = {
       ...vault,
-      [source]: { username, password, notes }
+      [source]: { username, password, notes },
     };
     setVault(newVault);
     const encrypted = await encryptData(JSON.stringify(newVault), master);
@@ -317,23 +359,21 @@ export default function VaultView() {
   };
 
   const deleteVault = () => {
-
     if (delConfirm === master) {
-
       localStorage.removeItem("vault");
       setVault({});
       setVaultUnlocked(false);
       setIsVaultPresent(false);
       setMaster("");
       setConfirmMaster("");
-      setDelConfirm('');
-      setSearch('');
+      setDelConfirm("");
+      setSearch("");
       setIsCreatingVault(true);
     }
   };
 
   const filteredVault = Object.entries(vault).filter(([key]) =>
-    key.toLowerCase().includes(search.toLowerCase())
+    key.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleCopyText = (text: string) => {
@@ -350,7 +390,13 @@ export default function VaultView() {
   };
 
   const regeneratePassword = () => {
-    const pass = generatePassword(length, includeNumbers, includeSymbols, includeUppercase, customSymbols);
+    const pass = generatePassword(
+      length,
+      includeNumbers,
+      includeSymbols,
+      includeUppercase,
+      customSymbols,
+    );
     setPassword(pass);
   };
 
@@ -375,39 +421,59 @@ export default function VaultView() {
   };
 
   const setDefaultUsernameLocal = (defaultUsername: string) => {
+    defaultUsername = defaultUsername ?? "";
 
-    defaultUsername = defaultUsername ?? '';
-
-
-    localStorage.setItem('defUsername', defaultUsername);
+    localStorage.setItem("defUsername", defaultUsername);
     setUsername(defaultUsername);
     setDefaultUsername(defaultUsername);
-
-
   };
-
 
   return (
     <Card className="rounded-2xl shadow-md">
       <CardContent className="space-y-4 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold"><LucideVault></LucideVault></h2>
+          <h2 className="text-2xl font-bold">
+            <LucideVault></LucideVault>
+          </h2>
 
           <div className="flex items-center gap-2">
+            {isVaultPresent && vaultUnlocked && (
+              <>
+                <Button
+                  title="Set Defaults"
+                  variant="ghost"
+                  size="icon"
+                  className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
+                  onClick={setDefaults}
+                >
+                  <ListRestart className="w-5 h-5" />
+                </Button>
 
+                <Button
+                  title="Export Vault"
+                  variant="ghost"
+                  size="icon"
+                  className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
+                  onClick={exportVault}
+                >
+                  <Download className="w-5 h-5" />
+                </Button>
 
-            {isVaultPresent && (
-              vaultUnlocked && <>
-
-                <Button title="Set Defaults" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={setDefaults}><ListRestart className="w-5 h-5" /></Button>
-
-                <Button title="Export Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={exportVault}><Download className="w-5 h-5" /></Button>
-
-                <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { setMaster(''); setVaultUnlocked(false); }}> <LockKeyhole className="w-5 h-5" /> </Button>
-
+                <Button
+                  title="Lock Vault"
+                  variant="ghost"
+                  size="icon"
+                  className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
+                  onClick={() => {
+                    setMaster("");
+                    setVaultUnlocked(false);
+                  }}
+                >
+                  {" "}
+                  <LockKeyhole className="w-5 h-5" />{" "}
+                </Button>
               </>
             )}
-
           </div>
         </div>
 
@@ -417,28 +483,43 @@ export default function VaultView() {
 
         {!vaultUnlocked ? (
           <>
-
             <div>
-              <Input type="password" placeholder="Master Password" className={vaultError && 'border-red-500 border-dashed'} value={master} onChange={(e) => setMaster(e.target.value)} />
+              <Input
+                type="password"
+                placeholder="Master Password"
+                className={vaultError && "border-red-500 border-dashed"}
+                value={master}
+                onChange={(e) => setMaster(e.target.value)}
+              />
               {isCreatingVault && (
                 <div className="mt-2">
-
-                  <Input type="password" className={vaultError && 'border-red-500 border-dashed'} placeholder="Confirm Password" value={confirmMaster} onChange={(e) => setConfirmMaster(e.target.value)} />
-                  <Input placeholder="Default Username" className="mt-4" value={defaultUsername} onChange={(e) => setDefaultUsername(e.target.value)} />
-
+                  <Input
+                    type="password"
+                    className={vaultError && "border-red-500 border-dashed"}
+                    placeholder="Confirm Password"
+                    value={confirmMaster}
+                    onChange={(e) => setConfirmMaster(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Default Username"
+                    className="mt-4"
+                    value={defaultUsername}
+                    onChange={(e) => setDefaultUsername(e.target.value)}
+                  />
                 </div>
               )}
-              {vaultError && <p className="text-xs text-red-500 mt-2">{vaultError}</p>}
-
+              {vaultError && (
+                <p className="text-xs text-red-500 mt-2">{vaultError}</p>
+              )}
             </div>
             <div className="flex flex-wrap gap-2 mt-4 justify-end">
-              <Button onClick={isCreatingVault ? createVault : unlockVault}>{isCreatingVault ? "Create Vault" : "Unlock Vault"}</Button>
-
+              <Button onClick={isCreatingVault ? createVault : unlockVault}>
+                {isCreatingVault ? "Create Vault" : "Unlock Vault"}
+              </Button>
             </div>
           </>
         ) : (
           <>
-
             <Tabs defaultValue="new" className="w-full">
               <TabsList className="mb-4">
                 <TabsTrigger value="new">New Password</TabsTrigger>
@@ -446,20 +527,39 @@ export default function VaultView() {
               </TabsList>
 
               <TabsContent value="new">
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input placeholder="Source" className={addError && !source && 'border-red-500 border-dashed'} value={source} onChange={(e) => setSource(e.target.value)} required />
-                  <Input placeholder="Notes (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                  <Input
+                    placeholder="Source"
+                    className={
+                      addError && !source && "border-red-500 border-dashed"
+                    }
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
+                    required
+                  />
+                  <Input
+                    placeholder="Notes (optional)"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                  />
 
-                  <Input placeholder="Username" className={addError && !username && 'border-red-500 border-dashed'} value={username} onChange={(e) => setUsername(e.target.value)} required />
+                  <Input
+                    placeholder="Username"
+                    className={
+                      addError && !username && "border-red-500 border-dashed"
+                    }
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
                   <div className="relative w-full">
                     <Input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className={`pr-20 ${addError && !password && 'border-red-500 border-dashed'}`}
+                      className={`pr-20 ${addError && !password && "border-red-500 border-dashed"}`}
                     />
 
                     <button
@@ -473,20 +573,14 @@ export default function VaultView() {
                     <button
                       type="button"
                       title="Copy Username"
-                      onClick={() => handleCopy(password, 'addpass')}
+                      onClick={() => handleCopy(password, "addpass")}
                       className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                     >
-
-                      {copiedIndex === 'addpass' ? (
-
+                      {copiedIndex === "addpass" ? (
                         <Check className="w-4 h-4 text-emerald-500" />
-
                       ) : (
-
                         <Copy className="w-4 h-4" />
-
                       )}
-
                     </button>
 
                     <button
@@ -494,13 +588,18 @@ export default function VaultView() {
                       className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeClosed className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? (
+                        <EyeClosed className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
-
                 </div>
 
-                {addError && <p className="text-xs text-red-500 mt-2">{addError}</p>}
+                {addError && (
+                  <p className="text-xs text-red-500 mt-2">{addError}</p>
+                )}
 
                 <div className="flex flex-wrap gap-2 mt-4 justify-end">
                   <Button onClick={addPasswordRecord}>Add Password</Button>
@@ -508,60 +607,81 @@ export default function VaultView() {
                   {/* <Button onClick={exportVault}>Download Vault</Button>
               <Input type="file" onChange={importVault} className="flex-1" />
                */}
-
                 </div>
-
               </TabsContent>
 
               <TabsContent value="settings">
+                <Input
+                  placeholder="Default Username"
+                  value={defaultUsername}
+                  onChange={(e) => setDefaultUsernameLocal(e.target.value)}
+                />
 
-                <Input placeholder="Default Username" value={defaultUsername} onChange={(e) => setDefaultUsernameLocal(e.target.value)} />
+                <Input
+                  type="password"
+                  placeholder="Enter master password for import"
+                  className="mt-8"
+                  value={importMaster}
+                  onChange={(e) => setImportMaster(e.target.value)}
+                />
 
-                <Input type="password" placeholder="Enter master password for import" className="mt-8" value={importMaster} onChange={(e) => setImportMaster(e.target.value)} />
+                <Input
+                  type="file"
+                  onChange={importFile}
+                  className="mt-4 text-xs"
+                />
 
-                <Input type="file" onChange={importFile} className="mt-4 text-xs" />
+                {importError && (
+                  <p className="text-xs text-red-500 mt-2">{importError}</p>
+                )}
 
-                {importError && <p className="text-xs text-red-500 mt-2">{importError}</p>}
+                <Button className="mt-4" onClick={importVault}>
+                  Import Vault
+                </Button>
 
-                <Button className="mt-4" onClick={importVault}>Import Vault</Button>
-
-
-                <Input type="password" placeholder="Enter master password to delete vault" className="mt-8" value={delConfirm} onChange={(e) => setDelConfirm(e.target.value)} />
+                <Input
+                  type="password"
+                  placeholder="Enter master password to delete vault"
+                  className="mt-8"
+                  value={delConfirm}
+                  onChange={(e) => setDelConfirm(e.target.value)}
+                />
 
                 <div className="flex flex-wrap gap-2 mt-4 justify-end">
-                  <Button className="btn-danger" onClick={deleteVault}>Delete Vault</Button>
+                  <Button className="btn-danger" onClick={deleteVault}>
+                    Delete Vault
+                  </Button>
                 </div>
-
               </TabsContent>
             </Tabs>
-
 
             <div className="col-span-2">
               <hr className="border-t my-2" />
             </div>
 
-
             <div className="relative w-full">
-
-              <Input placeholder="Search by source" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input
+                placeholder="Search by source"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
               <button
                 type="button"
                 className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
-                onClick={() => { }}
+                onClick={() => {}}
               >
                 <Search className="w-4 h-4" />
               </button>
-
             </div>
-
 
             <div className="grid gap-4">
               {filteredVault.map(([key, entry]: [string, any]) => (
                 <div key={key} className="rounded-xl card-pass p-4">
                   <div className="mb-4 flex items-center justify-between text-sm font-semibold">
-
-                    <span className="text-sm font-bold"><KeyRound className="size-4 inline mr-2" /> {key}</span>
+                    <span className="text-sm font-bold">
+                      <KeyRound className="size-4 inline mr-2" /> {key}
+                    </span>
                     {/* <button
                       type="button"
                       onClick={() => deleteRecord(key)}
@@ -570,81 +690,84 @@ export default function VaultView() {
                       <Trash className="w-4 h-4" />
                     </button> */}
 
-
-
                     <div>
-                      <Button title="Copy Source" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => handleCopy(key, `source-${key}`)}>
-
-
+                      <Button
+                        title="Copy Source"
+                        variant="ghost"
+                        size="icon"
+                        className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
+                        onClick={() => handleCopy(key, `source-${key}`)}
+                      >
                         {copiedIndex === `source-${key}` ? (
-
                           <Check className="w-4 h-4 text-emerald-500" />
-
                         ) : (
-
                           <Copy className="w-4 h-4" />
-
                         )}
-
                       </Button>
 
                       <ConfirmDialog
-                        onConfirm={() => { deleteRecord(key); }}
+                        onConfirm={() => {
+                          deleteRecord(key);
+                        }}
                         title="Delete Record"
                         message={`Are you sure you want to delete '${key}' password record?`}
                       >
-                        <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { }}>
-                          <Trash className="w-5 h-5" /> </Button>
+                        <Button
+                          title="Lock Vault"
+                          variant="ghost"
+                          size="icon"
+                          className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
+                          onClick={() => {}}
+                        >
+                          <Trash className="w-5 h-5" />{" "}
+                        </Button>
                       </ConfirmDialog>
-
                     </div>
-
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                     <div className="relative">
-                      <Input readOnly value={entry.username} className="pr-10" />
+                      <Input
+                        readOnly
+                        value={entry.username}
+                        className="pr-10"
+                      />
                       <button
                         type="button"
                         title="Copy Username"
-                        onClick={() => handleCopy(entry.username, `user-${key}`)}
+                        onClick={() =>
+                          handleCopy(entry.username, `user-${key}`)
+                        }
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                       >
-
                         {copiedIndex === `user-${key}` ? (
-
                           <Check className="w-4 h-4 text-emerald-500" />
-
                         ) : (
-
                           <Copy className="w-4 h-4" />
-
                         )}
-
                       </button>
                     </div>
                     <div className="relative">
-                      <Input type={visibleMap[key] ? 'text' : 'password'} readOnly value={entry.password} className="pr-10" />
-
+                      <Input
+                        type={visibleMap[key] ? "text" : "password"}
+                        readOnly
+                        value={entry.password}
+                        className="pr-10"
+                      />
 
                       <button
                         type="button"
-
                         title="Copy Password"
-                        onClick={() => handleCopy(entry.password, `pass-${key}`)}
+                        onClick={() =>
+                          handleCopy(entry.password, `pass-${key}`)
+                        }
                         className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                       >
-
                         {copiedIndex === `pass-${key}` ? (
-
                           <Check className="w-4 h-4 text-emerald-500" />
-
                         ) : (
-
                           <Copy className="w-4 h-4" />
-
                         )}
-
                       </button>
 
                       <button
@@ -652,42 +775,45 @@ export default function VaultView() {
                         className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
                         onClick={() => setVisiblePass(key)}
                       >
-                        {visibleMap[key] ? <EyeClosed className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {visibleMap[key] ? (
+                          <EyeClosed className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
                       </button>
                     </div>
                   </div>
 
-                  {entry.notes &&
+                  {entry.notes && (
                     <div className="grid grid-cols-1 gap-2">
                       {/* <div className="relative">
                       <Input readOnly value={key} className="opacity-60" />
                     </div> */}
                       <div className="relative">
-                        <Input readOnly value={entry.notes || ""} placeholder="Notes" className="pr-10" />
+                        <Input
+                          readOnly
+                          value={entry.notes || ""}
+                          placeholder="Notes"
+                          className="pr-10"
+                        />
 
                         <button
                           type="button"
-
                           title="Copy Notes"
-                          onClick={() => handleCopy(entry.notes, `notes-${key}`)}
+                          onClick={() =>
+                            handleCopy(entry.notes, `notes-${key}`)
+                          }
                           className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                         >
-
                           {copiedIndex === `notes-${key}` ? (
-
                             <Check className="w-4 h-4 text-emerald-500" />
-
                           ) : (
-
                             <Copy className="w-4 h-4" />
-
                           )}
-
                         </button>
                       </div>
                     </div>
-                  }
-
+                  )}
                 </div>
               ))}
             </div>

@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
@@ -28,10 +33,9 @@ export function ConfirmDialog({
         <span onClick={() => setOpen(true)}>{children}</span>
       </DialogTrigger>
       <DialogContent className="max-w-sm space-y-4">
-
-      <DialogTitle>{title}</DialogTitle>
-      <DialogDescription>{message}</DialogDescription>
-{/*       
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{message}</DialogDescription>
+        {/*       
         <p className="text-sm text-muted-foreground" id="confirm-dialog-description">{message}</p> */}
         <div className="flex justify-end gap-2">
           <Button onClick={() => setOpen(false)}>{cancelText}</Button>
