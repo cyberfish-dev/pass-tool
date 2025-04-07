@@ -4,6 +4,7 @@ import VaultView from "../pageParts/vault";
 import Header from "../pageParts/header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Footer from "@/pageParts/footer";
+import Head from "next/head";
 
 export default function MainPage() {
   const [defaultValue, setDefaultValue] = useState(() => {
@@ -16,6 +17,11 @@ export default function MainPage() {
   };
 
   return (
+    <>
+    <Head>
+    <title>PassTool - Password Generator | Password Vault</title>
+  </Head>
+  
     <main className="min-h-screen p-4 md:p-8 space-y-6">
       <div className="max-w-xl mx-auto space-y-6">
         <Header />
@@ -42,5 +48,6 @@ export default function MainPage() {
         <Footer />
       </div>
     </main>
+    </>
   );
 }
