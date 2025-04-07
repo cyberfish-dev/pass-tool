@@ -191,7 +191,7 @@ button[data-state="inactive"] {
   border-color: var(--emerald);
 }
 
-.btn-action {
+.btn-danger {
   color: var(--accent-danger);
 }
 

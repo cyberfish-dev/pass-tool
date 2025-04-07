@@ -36,7 +36,7 @@ export function ConfirmDialog({
         <div className="flex justify-end gap-2">
           <Button onClick={() => setOpen(false)}>{cancelText}</Button>
           <Button
-            className="btn-action"
+            className="btn-danger"
             onClick={() => {
               onConfirm();
               setOpen(false);

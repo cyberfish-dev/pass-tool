@@ -160,6 +160,11 @@ export default function VaultView() {
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
 
+  const [delConfirm, setDelConfirm] = useState("");
+  const [importMaster, setImportMaster] = useState("");
+  const [importError, setImportError] = useState("");
+  const [importFileBlob, setImportFileBlob] = useState(null);
+
   const PASSWORD_REGEXP =
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,30}$/;
 
@@ -208,23 +213,73 @@ export default function VaultView() {
     URL.revokeObjectURL(url);
   };
 
-  const importVault = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const importFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+
     const file = event.target.files?.[0];
     if (!file) return;
+
+    setImportFileBlob(file);
+  };
+
+  const importVault = () => {
+    setImportError('');
+
+    if (!importFileBlob) {
+      setImportError("Select vault file to import");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
         const content = e.target?.result as string;
         const parsed = JSON.parse(content);
-        const decrypted = await decryptData(parsed, master);
-        setVault(JSON.parse(decrypted));
-        setVaultUnlocked(true);
-        setVaultError("");
+        const decrypted = await decryptData(parsed, importMaster);
+
+        const json = JSON.parse(decrypted);
+
+        let newVault = { ...vault };
+
+        Object.entries(json).forEach(([key, value]) => {
+
+          let realKey = key;
+
+          if (vault[key]) {
+
+            let num = 1;
+            realKey = `${key}-${num}`;
+
+            while (vault[realKey]) {
+              num++;
+              realKey = `${key}-${num}`;
+            }
+
+          }
+
+          const jsonRec = value as any;
+          newVault[realKey] = { username: jsonRec.username, password: jsonRec.password, notes: jsonRec.notes };
+
+        });
+
+        setVault(newVault);
+
+        const encrypted = await encryptData(JSON.stringify(newVault), master);
+        localStorage.setItem("vault", JSON.stringify(encrypted));
+
+        setSource("");
+        setUsername("");
+        setPassword("");
+        setNotes("");
+        setImportFileBlob(null);
+        setImportMaster('');
+
       } catch (err) {
-        setVaultError("Failed to import vault");
+        setImportError("Failed to import vault");
       }
     };
-    reader.readAsText(file);
+
+    reader.readAsText(importFileBlob);
   };
 
   const addPasswordRecord = async () => {
@@ -262,12 +317,19 @@ export default function VaultView() {
   };
 
   const deleteVault = () => {
-    localStorage.removeItem("vault");
-    setVault({});
-    setVaultUnlocked(false);
-    setIsVaultPresent(false);
-    setMaster("");
-    setConfirmMaster("");
+
+    if (delConfirm === master) {
+
+      localStorage.removeItem("vault");
+      setVault({});
+      setVaultUnlocked(false);
+      setIsVaultPresent(false);
+      setMaster("");
+      setConfirmMaster("");
+      setDelConfirm('');
+      setSearch('');
+      setIsCreatingVault(true);
+    }
   };
 
   const filteredVault = Object.entries(vault).filter(([key]) =>
@@ -311,6 +373,19 @@ export default function VaultView() {
     visibleMap[source] = !visibleMap[source];
     setVisibleMap({ ...visibleMap });
   };
+
+  const setDefaultUsernameLocal = (defaultUsername: string) => {
+
+    defaultUsername = defaultUsername ?? '';
+
+
+    localStorage.setItem('defUsername', defaultUsername);
+    setUsername(defaultUsername);
+    setDefaultUsername(defaultUsername);
+
+
+  };
+
 
   return (
     <Card className="rounded-2xl shadow-md">
@@ -440,10 +515,21 @@ export default function VaultView() {
 
               <TabsContent value="settings">
 
-                <Input placeholder="Del" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Input placeholder="Default Username" value={defaultUsername} onChange={(e) => setDefaultUsernameLocal(e.target.value)} />
+
+                <Input type="password" placeholder="Enter master password for import" className="mt-8" value={importMaster} onChange={(e) => setImportMaster(e.target.value)} />
+
+                <Input type="file" onChange={importFile} className="mt-4" />
+
+                {importError && <p className="text-xs text-red-500 mt-2">{importError}</p>}
+
+                <Button className="mt-4" onClick={importVault}>Import Vault</Button>
+
+
+                <Input type="password" placeholder="Enter master password to delete vault" className="mt-8" value={delConfirm} onChange={(e) => setDelConfirm(e.target.value)} />
 
                 <div className="flex flex-wrap gap-2 mt-4 justify-end">
-                  <Button onClick={deleteVault}>Delete Vault</Button>
+                  <Button className="btn-danger" onClick={deleteVault}>Delete Vault</Button>
                 </div>
 
               </TabsContent>
@@ -486,30 +572,30 @@ export default function VaultView() {
 
 
 
-<div>
-                    <Button title="Copy Source" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => handleCopy(key, `source-${key}`)}>
+                    <div>
+                      <Button title="Copy Source" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => handleCopy(key, `source-${key}`)}>
 
 
-                      {copiedIndex === `source-${key}` ? (
+                        {copiedIndex === `source-${key}` ? (
 
-                        <Check className="w-4 h-4 text-emerald-500" />
+                          <Check className="w-4 h-4 text-emerald-500" />
 
-                      ) : (
+                        ) : (
 
-                        <Copy className="w-4 h-4" />
+                          <Copy className="w-4 h-4" />
 
-                      )}
+                        )}
 
-                    </Button>
+                      </Button>
 
-                    <ConfirmDialog
-                      onConfirm={() => { deleteRecord(key); }}
-                      title="Delete Record"
-                      message={`Are you sure you want to delete '${key}' password record?`}
-                    >
-                      <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { }}>
-                        <Trash className="w-5 h-5" /> </Button>
-                    </ConfirmDialog>
+                      <ConfirmDialog
+                        onConfirm={() => { deleteRecord(key); }}
+                        title="Delete Record"
+                        message={`Are you sure you want to delete '${key}' password record?`}
+                      >
+                        <Button title="Lock Vault" variant="ghost" size="icon" className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700" onClick={() => { }}>
+                          <Trash className="w-5 h-5" /> </Button>
+                      </ConfirmDialog>
 
                     </div>
 
