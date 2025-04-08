@@ -7,8 +7,11 @@ const devCSP = `
   img-src 'self' data:;
   connect-src 'self';
   font-src 'self';
+  manifest-src 'self';
+  worker-src 'self';
   object-src 'none';
   frame-src 'none';
+  base-uri 'self';
 `;
 
 const prodCSP = `
@@ -16,8 +19,11 @@ const prodCSP = `
   script-src 'self';
   style-src 'self' 'unsafe-inline';
   img-src 'self' data:;
-  connect-src 'none';
+  connect-src 'self';
   font-src 'self';
+  manifest-src 'self';
+  worker-src 'self';
+  base-uri 'self';
   object-src 'none';
   frame-src 'none';
 `;
@@ -30,6 +36,15 @@ const securityHeaders = [
 ];
 
 /** @type {import('next').NextConfig} */
+
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development", // only enable in prod
+  buildExcludes: [/dynamic-css-manifest\.json$/],
+});
+
 const nextConfig = {
   async headers() {
     return [
@@ -42,4 +57,4 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);
