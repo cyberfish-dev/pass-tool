@@ -196,7 +196,7 @@ export default function Footer() {
       )}
 
       <div className="flex justify-between items-center text-xs">
-        © {currentDate.getFullYear()} PassTool v1.0.0
+        © {currentDate.getFullYear()} PassTool v1.0.1
         <div className="flex gap-2">
           <span
             className="cursor-pointer hover:underline"
