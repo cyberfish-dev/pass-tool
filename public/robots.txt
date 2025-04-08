@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pass-tool.com
+
+# Sitemaps
+Sitemap: https://pass-tool.com/sitemap.xml

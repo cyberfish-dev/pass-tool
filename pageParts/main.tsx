@@ -19,7 +19,26 @@ export default function MainPage() {
   return (
     <>
       <Head>
-        <title>PassTool - Password Generator | Password Vault</title>
+        <title>PassTool - Secure Password Manager & Generator</title>
+        
+        <meta name="description" content="Generate strong passwords and store them securely — all offline. No tracking. No accounts." />
+        <meta name="keywords" content="password manager, password generator, offline vault, AES encryption" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://pass-tool.com/" />
+
+        {/* OpenGraph / Facebook */}
+        <meta property="og:title" content="Secure Password Manager & Generator" />
+        <meta property="og:description" content="Generate strong passwords and store them securely — all offline." />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:url" content="https://pass-tool.com/" />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Secure Password Manager & Generator" />
+        <meta name="twitter:description" content="No tracking, no accounts — just local encryption." />
+        <meta name="twitter:image" content="/og-image.png" />
+
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0f172a" />
         <link rel="apple-touch-icon" href="/web-app-manifest-192x192.png" />
