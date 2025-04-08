@@ -5,6 +5,7 @@ import Header from "../pageParts/header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Footer from "@/pageParts/footer";
 import Head from "next/head";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function MainPage() {
   const [defaultValue, setDefaultValue] = useState(() => {
@@ -71,6 +72,8 @@ export default function MainPage() {
 
           <Footer />
         </div>
+        
+        <Analytics />
       </main>
     </>
   );
