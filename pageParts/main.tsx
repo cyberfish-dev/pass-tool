@@ -40,7 +40,7 @@ export default function MainPage() {
         <meta name="twitter:description" content="No tracking, no accounts — just local encryption." />
         <meta name="twitter:image" content="/og-image.png" />
 
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.json?v=1.0.1" />
         <meta name="theme-color" content="#0f172a" />
         <link rel="apple-touch-icon" href="/web-app-manifest-192x192.png" />
         <meta name="apple-mobile-web-app-title" content="PassTool" />
