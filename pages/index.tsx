@@ -40,7 +40,7 @@ export default function App() {
       <meta name="twitter:image" content="/og-image.png" />
 
       <link rel="manifest" href="/manifest.json?v=1.0.1" />
-      <meta name="theme-color" content="#0f172a" />
+      <meta name="theme-color" content="#212121" />
       <link rel="apple-touch-icon" href="/web-app-manifest-192x192.png" />
       <meta name="apple-mobile-web-app-title" content="PassTool" />
       <link rel="icon" href="/favicon.ico" sizes="any" />
