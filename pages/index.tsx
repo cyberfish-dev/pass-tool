@@ -19,7 +19,7 @@ export default function App() {
 
   return (<>
     <Head>
-      <title>PassTool - Secure Password Manager & Generator</title>
+      <title>PassTool - Secure Offline Password Manager & Generator</title>
 
       <meta name="description" content="Generate strong passwords and store them securely — all offline. No tracking. No accounts." />
       <meta name="keywords" content="password manager, password generator, offline vault, AES encryption" />
@@ -27,7 +27,7 @@ export default function App() {
       <link rel="canonical" href="https://pass-tool.com/" />
 
       {/* OpenGraph / Facebook */}
-      <meta property="og:title" content="Secure Password Manager & Generator" />
+      <meta property="og:title" content="Secure Offline Password Manager & Generator" />
       <meta property="og:description" content="Generate strong passwords and store them securely — all offline." />
       <meta property="og:image" content="/og-image.png" />
       <meta property="og:url" content="https://pass-tool.com/" />
@@ -35,7 +35,7 @@ export default function App() {
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="Secure Password Manager & Generator" />
+      <meta name="twitter:title" content="Secure Offline Password Manager & Generator" />
       <meta name="twitter:description" content="No tracking, no accounts — just local encryption." />
       <meta name="twitter:image" content="/og-image.png" />
 

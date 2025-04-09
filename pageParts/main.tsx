@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import GeneratorView from "../pageParts/generator";
 import VaultView from "../pageParts/vault";
-import Header from "../pageParts/header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Footer from "@/pageParts/footer";
 import { Analytics } from "@vercel/analytics/react";
+import { Button } from "@/components/ui/button";
+import { Moon, Sun } from "lucide-react";
 
 export default function MainPage() {
   const [defaultValue, setDefaultValue] = useState(() => {
@@ -16,19 +17,50 @@ export default function MainPage() {
     localStorage.setItem("defValue", newTab);
   };
 
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = localStorage.getItem("darkMode");
+    return stored !== null ? stored === "true" : true;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("dark");
+    root.classList.remove("light");
+
+    if (darkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.add("light");
+    }
+
+    localStorage.setItem("darkMode", darkMode.toString());
+  }, [darkMode]);
+
   return (
     <>
-      <Header />
 
       <Tabs
         defaultValue={defaultValue}
         onValueChange={handleTabChange}
         className="w-full"
       >
-        <TabsList className="mb-2">
-          <TabsTrigger value="generator">Password Generator</TabsTrigger>
-          <TabsTrigger value="vault">Password Vault</TabsTrigger>
-        </TabsList>
+
+        <div className="flex justify-between items-center">
+
+          <TabsList className="mb-2">
+            <TabsTrigger value="generator">Password Generator</TabsTrigger>
+            <TabsTrigger value="vault">Password Vault</TabsTrigger>
+          </TabsList>
+
+          <Button
+            onClick={() => setDarkMode(!darkMode)}
+            variant="ghost"
+            size="icon"
+            className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
+          >
+            {darkMode ? <Sun /> : <Moon />}
+          </Button>
+        </div>
 
         <TabsContent value="generator">
           <GeneratorView></GeneratorView>
