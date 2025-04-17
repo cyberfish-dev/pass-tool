@@ -16,7 +16,12 @@ import {
   Check,
   Search,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/tabs";
 import { ConfirmDialog } from "@/src/components/confirmDialog";
 import { decryptData, encryptData } from "@/src/lib/encryption";
 import { generatePassword } from "@/src/lib/password";
@@ -25,7 +30,6 @@ import { Vault } from "../generator/types";
 import { handleCopy } from "@/src/lib/clipboard";
 
 export default function VaultView() {
-
   const [showPassword, setShowPassword] = useState(true);
   const [vault, setVault] = useState<Vault>({});
   const [master, setMaster] = useState("");
@@ -53,7 +57,8 @@ export default function VaultView() {
     includeNumbers,
     includeSymbols,
     includeUppercase,
-    customSymbols } = usePasswordSettings();
+    customSymbols,
+  } = usePasswordSettings();
 
   const [visibleMap, setVisibleMap] = useState({});
 
@@ -430,7 +435,9 @@ export default function VaultView() {
                     <button
                       type="button"
                       title="Copy Username"
-                      onClick={() => handleCopy(password, "addpass", setCopiedIndex)}
+                      onClick={() =>
+                        handleCopy(password, "addpass", setCopiedIndex)
+                      }
                       className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                     >
                       {copiedIndex === "addpass" ? (
@@ -460,7 +467,6 @@ export default function VaultView() {
 
                 <div className="flex flex-wrap gap-2 mt-4 justify-end">
                   <Button onClick={addPasswordRecord}>Add Password</Button>
-
                 </div>
               </TabsContent>
 
@@ -523,7 +529,7 @@ export default function VaultView() {
               <button
                 type="button"
                 className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
-                onClick={() => { }}
+                onClick={() => {}}
               >
                 <Search className="w-4 h-4" />
               </button>
@@ -537,14 +543,15 @@ export default function VaultView() {
                       <KeyRound className="size-4 inline mr-2" /> {key}
                     </span>
 
-
                     <div>
                       <Button
                         title="Copy Source"
                         variant="ghost"
                         size="icon"
                         className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
-                        onClick={() => handleCopy(key, `source-${key}`, setCopiedIndex)}
+                        onClick={() =>
+                          handleCopy(key, `source-${key}`, setCopiedIndex)
+                        }
                       >
                         {copiedIndex === `source-${key}` ? (
                           <Check className="w-4 h-4 text-emerald-500" />
@@ -565,7 +572,7 @@ export default function VaultView() {
                           variant="ghost"
                           size="icon"
                           className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
-                          onClick={() => { }}
+                          onClick={() => {}}
                         >
                           <Trash className="w-5 h-5" />{" "}
                         </Button>
@@ -584,7 +591,11 @@ export default function VaultView() {
                         type="button"
                         title="Copy Username"
                         onClick={() =>
-                          handleCopy(entry.username, `user-${key}`, setCopiedIndex)
+                          handleCopy(
+                            entry.username,
+                            `user-${key}`,
+                            setCopiedIndex,
+                          )
                         }
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                       >
@@ -607,7 +618,11 @@ export default function VaultView() {
                         type="button"
                         title="Copy Password"
                         onClick={() =>
-                          handleCopy(entry.password, `pass-${key}`, setCopiedIndex)
+                          handleCopy(
+                            entry.password,
+                            `pass-${key}`,
+                            setCopiedIndex,
+                          )
                         }
                         className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                       >
@@ -634,7 +649,6 @@ export default function VaultView() {
 
                   {entry.notes && (
                     <div className="grid grid-cols-1 gap-2">
-
                       <div className="relative">
                         <Input
                           readOnly
@@ -647,7 +661,11 @@ export default function VaultView() {
                           type="button"
                           title="Copy Notes"
                           onClick={() =>
-                            handleCopy(entry.notes, `notes-${key}`, setCopiedIndex)
+                            handleCopy(
+                              entry.notes,
+                              `notes-${key}`,
+                              setCopiedIndex,
+                            )
                           }
                           className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                         >

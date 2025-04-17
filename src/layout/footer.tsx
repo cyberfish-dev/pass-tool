@@ -13,7 +13,6 @@ export default function Footer() {
 
   return (
     <>
-
       {currentPage === "about" && (
         <AboutSection close={() => _setCurrentPage("")} />
       )}
@@ -29,8 +28,7 @@ export default function Footer() {
       <div className="flex justify-between items-center text-xs">
         © {currentDate.getFullYear()} PassTool v1.0.4
         <div className="flex gap-2">
-
-        <span
+          <span
             className="cursor-pointer hover:underline"
             onClick={() => _setCurrentPage("about")}
           >

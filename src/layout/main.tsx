@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import GeneratorView from "../features/generator/generator";
 import VaultView from "../features/vault/vault";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/tabs";
 import Footer from "@/src/layout/footer";
 import { Button } from "@/src/components/button";
 import { Moon, Sun } from "lucide-react";
@@ -37,15 +42,12 @@ export default function MainPage() {
 
   return (
     <>
-
       <Tabs
         defaultValue={defaultValue}
         onValueChange={handleTabChange}
         className="w-full"
       >
-
         <div className="flex justify-between items-center">
-
           <TabsList className="mb-2">
             <TabsTrigger value="generator">Password Generator</TabsTrigger>
             <TabsTrigger value="vault">Password Vault</TabsTrigger>

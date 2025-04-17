@@ -32,9 +32,9 @@ export default function GeneratorView() {
     customSymbols,
     setCustomSymbols,
     passwordCount,
-    setPasswordCount
+    setPasswordCount,
   } = usePasswordSettings();
-  
+
   const [generatedPasswords, setGeneratedPasswords] = useState([]);
 
   useEffect(() => {

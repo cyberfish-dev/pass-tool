@@ -1,5 +1,4 @@
 module.exports = {
-    siteUrl: 'https://pass-tool.com',
-    generateRobotsTxt: true,
-  };
-  
+  siteUrl: "https://pass-tool.com",
+  generateRobotsTxt: true,
+};
