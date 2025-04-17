@@ -1,0 +1,3 @@
+type SectionProps = {
+    close: () => void;
+};

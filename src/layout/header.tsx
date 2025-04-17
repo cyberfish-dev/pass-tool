@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/components/button";
 import { Moon, Sun } from "lucide-react";
-
-if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch((err) => {
-      console.error("Service Worker registration failed:", err);
-    });
-  });
-}
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(() => {

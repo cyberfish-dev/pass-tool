@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import GeneratorView from "../pageParts/generator";
-import VaultView from "../pageParts/vault";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Footer from "@/pageParts/footer";
-import { Analytics } from "@vercel/analytics/react";
-import { Button } from "@/components/ui/button";
+import GeneratorView from "../features/generator/generator";
+import VaultView from "../features/vault/vault";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/tabs";
+import Footer from "@/src/layout/footer";
+import { Button } from "@/src/components/button";
 import { Moon, Sun } from "lucide-react";
 
 export default function MainPage() {
@@ -72,8 +71,6 @@ export default function MainPage() {
       </Tabs>
 
       <Footer />
-
-      <Analytics />
     </>
   );
 }

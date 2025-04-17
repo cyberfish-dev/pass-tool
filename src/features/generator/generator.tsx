@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/src/components/button";
+import { Input } from "@/src/components/input";
+import { Switch } from "@/src/components/switch";
+import { Card, CardContent } from "@/src/components/card";
 import {
   Copy,
   Check,
@@ -13,118 +13,28 @@ import {
   ShieldAlert,
   Shield,
 } from "lucide-react";
+import { generatePassword, passwordStrength } from "@/src/lib/password";
+import { usePasswordSettings } from "../common/usePasswordSettings";
+import { handleCopy } from "@/src/lib/clipboard";
 
 export default function GeneratorView() {
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  const passwordStrength = (pw) => {
-    const length = pw.length;
-    const hasUpper = /[A-Z]/.test(pw);
-    const hasLower = /[a-z]/.test(pw);
-    const hasNumber = /[0-9]/.test(pw);
-    const hasSymbol = /[^A-Za-z0-9]/.test(pw);
-
-    let score = 0;
-    if (length >= 8) score += 1;
-    if (length >= 12) score += 1;
-    if (hasUpper) score += 1;
-    if (hasLower) score += 1;
-    if (hasNumber) score += 1;
-    if (hasSymbol) score += 1;
-
-    if (score >= 5) return "Very Strong";
-    if (score === 4) return "Strong";
-    if (score === 3) return "Moderate";
-    if (score === 2) return "Weak";
-    return "Very Weak";
-  };
-
-  const generatePassword = (
+  const {
     length,
+    setLength,
     includeNumbers,
+    setIncludeNumbers,
     includeSymbols,
+    setIncludeSymbols,
     includeUppercase,
+    setIncludeUppercase,
     customSymbols,
-  ) => {
-    let charset = "abcdefghijklmnopqrstuvwxyz";
-    if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (includeNumbers) charset += "0123456789";
-    if (includeSymbols) charset += customSymbols;
-
-    let password = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length);
-      password += charset[randomIndex];
-    }
-    return password;
-  };
-
-  const handleCopy = (pw, idx) => {
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard
-        .writeText(pw)
-        .then(() => {
-          setCopiedIndex(idx);
-          setTimeout(() => setCopiedIndex(null), 1500);
-        })
-        .catch(() => fallbackCopy(pw, idx));
-    } else {
-      fallbackCopy(pw, idx);
-    }
-  };
-
-  const fallbackCopy = (text, idx) => {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    try {
-      document.execCommand("copy");
-      setCopiedIndex(idx);
-      setTimeout(() => setCopiedIndex(null), 1500);
-    } catch (err) {
-      console.error("Fallback copy failed", err);
-    }
-    document.body.removeChild(textarea);
-  };
-
-  const [length, setLength] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).length ?? 22) : 22;
-  });
-
-  const [includeNumbers, setIncludeNumbers] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).includeNumbers ?? true) : true;
-  });
-
-  const [includeSymbols, setIncludeSymbols] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).includeSymbols ?? true) : true;
-  });
-
-  const [customSymbols, setCustomSymbols] = useState(() => {
-    const customSymbols = "!\";#$%&'()*+,-./:;<=>?@[]^_`{|}~";
-
-    const saved = localStorage.getItem("passwordSettings");
-    return saved
-      ? (JSON.parse(saved).customSymbols ?? customSymbols)
-      : customSymbols;
-  });
-
-  const [includeUppercase, setIncludeUppercase] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).includeUppercase ?? true) : true;
-  });
-
-  const [passwordCount, setPasswordCount] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).passwordCount ?? 3) : 3;
-  });
-
+    setCustomSymbols,
+    passwordCount,
+    setPasswordCount
+  } = usePasswordSettings();
+  
   const [generatedPasswords, setGeneratedPasswords] = useState([]);
 
   useEffect(() => {
@@ -251,7 +161,7 @@ export default function GeneratorView() {
                   title="Copy to Clipboard"
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleCopy(pw, idx)}
+                  onClick={() => handleCopy(pw, idx, setCopiedIndex)}
                   className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
                 >
                   {copiedIndex === idx ? (

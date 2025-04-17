@@ -4,8 +4,8 @@ import {
   DialogTrigger,
   DialogContent,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/src/components/dialog";
+import { Button } from "@/src/components/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface ConfirmDialogProps {

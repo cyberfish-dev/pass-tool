@@ -1,120 +1,31 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/src/components/button";
+import { Input } from "@/src/components/input";
+import { Card, CardContent } from "@/src/components/card";
 import {
   Copy,
   LockKeyhole,
-  Trash2,
   LucideVault,
-  UnlockKeyhole,
   Download,
   Eye,
   EyeClosed,
   RotateCcw,
   ListRestart,
-  KeySquare,
   KeyRound,
   Trash,
   Check,
   Search,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ConfirmDialog } from "@/components/ui/confirmDialog";
-
-type VaultEntry = {
-  username: string;
-  password: string;
-  notes?: string;
-};
-
-type Vault = {
-  [key: string]: VaultEntry;
-};
-
-async function encryptData(
-  data: string,
-  password: string,
-): Promise<{ iv: string; data: string }> {
-  const enc = new TextEncoder();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-
-  const keyMaterial = await getKeyMaterial(password);
-  const key = await deriveKey(keyMaterial, salt);
-
-  const encoded = enc.encode(data);
-  const cipherText = await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv },
-    key,
-    encoded,
-  );
-
-  const combined = new Uint8Array(salt.length + cipherText.byteLength);
-  combined.set(salt);
-  combined.set(new Uint8Array(cipherText), salt.length);
-
-  return {
-    iv: uint8ArrayToBase64(iv),
-    data: uint8ArrayToBase64(combined),
-  };
-}
-
-function uint8ArrayToBase64(arr: Uint8Array) {
-  return btoa(String.fromCharCode(...arr));
-}
-
-async function decryptData(
-  encrypted: { iv: string; data: string },
-  password: string,
-): Promise<string> {
-  const dec = new TextDecoder();
-  const iv = Uint8Array.from(atob(encrypted.iv), (c) => c.charCodeAt(0));
-  const combined = Uint8Array.from(atob(encrypted.data), (c) =>
-    c.charCodeAt(0),
-  );
-  const salt = combined.slice(0, 16);
-  const data = combined.slice(16);
-
-  const keyMaterial = await getKeyMaterial(password);
-  const key = await deriveKey(keyMaterial, salt);
-
-  const plainBuffer = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv },
-    key,
-    data,
-  );
-
-  return dec.decode(plainBuffer);
-}
-
-async function getKeyMaterial(password: string) {
-  const enc = new TextEncoder();
-  return crypto.subtle.importKey(
-    "raw",
-    enc.encode(password),
-    { name: "PBKDF2" },
-    false,
-    ["deriveKey"],
-  );
-}
-
-async function deriveKey(keyMaterial: CryptoKey, salt: Uint8Array) {
-  return crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt,
-      iterations: 100000,
-      hash: "SHA-256",
-    },
-    keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt", "decrypt"],
-  );
-}
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/tabs";
+import { ConfirmDialog } from "@/src/components/confirmDialog";
+import { decryptData, encryptData } from "@/src/lib/encryption";
+import { generatePassword } from "@/src/lib/password";
+import { usePasswordSettings } from "../common/usePasswordSettings";
+import { Vault } from "../generator/types";
+import { handleCopy } from "@/src/lib/clipboard";
 
 export default function VaultView() {
+
   const [showPassword, setShowPassword] = useState(true);
   const [vault, setVault] = useState<Vault>({});
   const [master, setMaster] = useState("");
@@ -125,11 +36,11 @@ export default function VaultView() {
     }
     return false;
   });
+
   const [isCreatingVault, setIsCreatingVault] = useState(!isVaultPresent);
   const [vaultUnlocked, setVaultUnlocked] = useState(false);
 
   const [vaultError, setVaultError] = useState("");
-
   const [addError, setAddError] = useState("");
 
   const [defaultUsername, setDefaultUsername] = useState(() => {
@@ -137,54 +48,12 @@ export default function VaultView() {
     return saved ?? "";
   });
 
-  const [length, setLength] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).length ?? 22) : 22;
-  });
-
-  const [includeNumbers, setIncludeNumbers] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).includeNumbers ?? true) : true;
-  });
-
-  const [includeSymbols, setIncludeSymbols] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).includeSymbols ?? true) : true;
-  });
-
-  const [customSymbols, setCustomSymbols] = useState(() => {
-    const customSymbols = "!\";#$%&'()*+,-./:;<=>?@[]^_`{|}~";
-
-    const saved = localStorage.getItem("passwordSettings");
-    return saved
-      ? (JSON.parse(saved).customSymbols ?? customSymbols)
-      : customSymbols;
-  });
-
-  const [includeUppercase, setIncludeUppercase] = useState(() => {
-    const saved = localStorage.getItem("passwordSettings");
-    return saved ? (JSON.parse(saved).includeUppercase ?? true) : true;
-  });
-
-  const generatePassword = (
+  const {
     length,
     includeNumbers,
     includeSymbols,
     includeUppercase,
-    customSymbols,
-  ) => {
-    let charset = "abcdefghijklmnopqrstuvwxyz";
-    if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (includeNumbers) charset += "0123456789";
-    if (includeSymbols) charset += customSymbols;
-
-    let password = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length);
-      password += charset[randomIndex];
-    }
-    return password;
-  };
+    customSymbols } = usePasswordSettings();
 
   const [visibleMap, setVisibleMap] = useState({});
 
@@ -200,6 +69,7 @@ export default function VaultView() {
       customSymbols,
     ),
   );
+
   const [notes, setNotes] = useState("");
   const [search, setSearch] = useState("");
 
@@ -375,19 +245,6 @@ export default function VaultView() {
   const filteredVault = Object.entries(vault).filter(([key]) =>
     key.toLowerCase().includes(search.toLowerCase()),
   );
-
-  const handleCopyText = (text: string) => {
-    if (navigator.clipboard) navigator.clipboard.writeText(text);
-  };
-
-  const handleCopy = (pw, idx) => {
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(pw).then(() => {
-        setCopiedIndex(idx);
-        setTimeout(() => setCopiedIndex(null), 1500);
-      });
-    }
-  };
 
   const regeneratePassword = () => {
     const pass = generatePassword(
@@ -573,7 +430,7 @@ export default function VaultView() {
                     <button
                       type="button"
                       title="Copy Username"
-                      onClick={() => handleCopy(password, "addpass")}
+                      onClick={() => handleCopy(password, "addpass", setCopiedIndex)}
                       className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                     >
                       {copiedIndex === "addpass" ? (
@@ -604,9 +461,6 @@ export default function VaultView() {
                 <div className="flex flex-wrap gap-2 mt-4 justify-end">
                   <Button onClick={addPasswordRecord}>Add Password</Button>
 
-                  {/* <Button onClick={exportVault}>Download Vault</Button>
-              <Input type="file" onChange={importVault} className="flex-1" />
-               */}
                 </div>
               </TabsContent>
 
@@ -669,7 +523,7 @@ export default function VaultView() {
               <button
                 type="button"
                 className="absolute btn-ico right-2 top-1/2 -translate-y-1/2 text-xs"
-                onClick={() => {}}
+                onClick={() => { }}
               >
                 <Search className="w-4 h-4" />
               </button>
@@ -682,13 +536,7 @@ export default function VaultView() {
                     <span className="text-sm font-bold">
                       <KeyRound className="size-4 inline mr-2" /> {key}
                     </span>
-                    {/* <button
-                      type="button"
-                      onClick={() => deleteRecord(key)}
-                      title="Delete Record"
-                    >
-                      <Trash className="w-4 h-4" />
-                    </button> */}
+
 
                     <div>
                       <Button
@@ -696,7 +544,7 @@ export default function VaultView() {
                         variant="ghost"
                         size="icon"
                         className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
-                        onClick={() => handleCopy(key, `source-${key}`)}
+                        onClick={() => handleCopy(key, `source-${key}`, setCopiedIndex)}
                       >
                         {copiedIndex === `source-${key}` ? (
                           <Check className="w-4 h-4 text-emerald-500" />
@@ -717,7 +565,7 @@ export default function VaultView() {
                           variant="ghost"
                           size="icon"
                           className="btn-ico hover:bg-gray-300 dark:hover:bg-gray-700"
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <Trash className="w-5 h-5" />{" "}
                         </Button>
@@ -736,7 +584,7 @@ export default function VaultView() {
                         type="button"
                         title="Copy Username"
                         onClick={() =>
-                          handleCopy(entry.username, `user-${key}`)
+                          handleCopy(entry.username, `user-${key}`, setCopiedIndex)
                         }
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                       >
@@ -759,7 +607,7 @@ export default function VaultView() {
                         type="button"
                         title="Copy Password"
                         onClick={() =>
-                          handleCopy(entry.password, `pass-${key}`)
+                          handleCopy(entry.password, `pass-${key}`, setCopiedIndex)
                         }
                         className="absolute right-8 top-1/2 -translate-y-1/2 text-xs"
                       >
@@ -786,9 +634,7 @@ export default function VaultView() {
 
                   {entry.notes && (
                     <div className="grid grid-cols-1 gap-2">
-                      {/* <div className="relative">
-                      <Input readOnly value={key} className="opacity-60" />
-                    </div> */}
+
                       <div className="relative">
                         <Input
                           readOnly
@@ -801,7 +647,7 @@ export default function VaultView() {
                           type="button"
                           title="Copy Notes"
                           onClick={() =>
-                            handleCopy(entry.notes, `notes-${key}`)
+                            handleCopy(entry.notes, `notes-${key}`, setCopiedIndex)
                           }
                           className="absolute right-2 top-1/2 -translate-y-1/2 text-xs"
                         >

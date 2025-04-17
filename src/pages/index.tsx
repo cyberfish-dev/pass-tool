@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MainPage from "@/pageParts/main";
+import MainPage from "@/src/layout/main";
 import Head from "next/head";
 
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
