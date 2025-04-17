@@ -5,7 +5,16 @@ import { AboutSection } from "./sections/about";
 
 export default function Footer() {
   const [currentDate, _setCurrentDate] = useState(new Date());
-  const [currentPage, _setCurrentPage] = useState("about");
+
+  const [currentPage, _setCurrentPage] = useState(() => {
+    const stored = localStorage.getItem("sectionPage");
+    return stored ?? "about";
+  });
+
+  const setCurrentPage = (page: string) => {
+    _setCurrentPage(page);
+    localStorage.setItem("sectionPage", page);
+  };
 
   useEffect(() => {
     _setCurrentDate(new Date());
@@ -14,15 +23,15 @@ export default function Footer() {
   return (
     <>
       {currentPage === "about" && (
-        <AboutSection close={() => _setCurrentPage("")} />
+        <AboutSection close={() => setCurrentPage("")} />
       )}
 
       {currentPage === "terms" && (
-        <TermsSection close={() => _setCurrentPage("")} />
+        <TermsSection close={() => setCurrentPage("")} />
       )}
 
       {currentPage === "privacy" && (
-        <PrivacySection close={() => _setCurrentPage("")} />
+        <PrivacySection close={() => setCurrentPage("")} />
       )}
 
       <div className="flex justify-between items-center text-xs">
@@ -30,19 +39,19 @@ export default function Footer() {
         <div className="flex gap-2">
           <span
             className="cursor-pointer hover:underline"
-            onClick={() => _setCurrentPage("about")}
+            onClick={() => setCurrentPage("about")}
           >
             About
           </span>
           <span
             className="cursor-pointer hover:underline"
-            onClick={() => _setCurrentPage("terms")}
+            onClick={() => setCurrentPage("terms")}
           >
             Terms
           </span>
           <span
             className="cursor-pointer hover:underline"
-            onClick={() => _setCurrentPage("privacy")}
+            onClick={() => setCurrentPage("privacy")}
           >
             Privacy
           </span>
