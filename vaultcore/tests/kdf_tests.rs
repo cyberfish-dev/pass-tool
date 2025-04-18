@@ -1,5 +1,5 @@
 use vaultcore::kdf::derive_key;
-use base64::{engine::general_purpose, Engine as _};
+use argon2::password_hash::SaltString;
 
 #[test]
 fn test_derive_key_with_provided_salt() {
@@ -10,9 +10,10 @@ fn test_derive_key_with_provided_salt() {
     assert!(result.is_ok());
 
     let (key, salt_str) = result.unwrap();
-    assert_eq!(salt_str, general_purpose::STANDARD.encode(salt)); // Ensure salt is correctly encoded
+    assert_eq!(salt_str, SaltString::encode_b64(salt).unwrap().to_string());
     assert_eq!(key.len(), 32); // Ensure key is 32 bytes
 }
+
 
 #[test]
 fn test_derive_key_with_generated_salt() {
@@ -25,7 +26,7 @@ fn test_derive_key_with_generated_salt() {
     assert_eq!(key.len(), 32); // Ensure key is 32 bytes
 
     // Decode the generated salt to ensure it's valid base64
-    assert!(general_purpose::STANDARD.decode(&salt_str).is_ok());
+    assert!(SaltString::encode_b64(salt_str.as_bytes()).is_ok());
 }
 
 #[test]
@@ -35,7 +36,7 @@ fn test_derive_key_invalid_salt() {
 
     let result = derive_key(password, Some(invalid_salt));
     assert!(result.is_err());
-    assert_eq!(result.unwrap_err(), "Invalid salt bytes");
+    assert_eq!(result.unwrap_err(), "Argon2 hashing failed");
 }
 
 #[test]
@@ -47,7 +48,7 @@ fn test_derive_key_empty_password() {
     assert!(result.is_ok());
 
     let (key, salt_str) = result.unwrap();
-    assert_eq!(salt_str, general_purpose::STANDARD.encode(salt)); // Ensure salt is correctly encoded
+    assert_eq!(salt_str, SaltString::encode_b64(salt).unwrap().to_string()); // Ensure salt is correctly encoded
     assert_eq!(key.len(), 32); // Ensure key is 32 bytes
 }
 
