@@ -1,0 +1,18 @@
+[package]
+name = "vaultcore"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rand = "0.8"
+base64 = "0.21"
+chacha20poly1305 = "0.10"
+argon2 = { version = "0.5", features = ["std"] }
+rand_core = "0.6"
+uuid = { version = "1", features = ["v4"] }
+zeroize = "1.5"

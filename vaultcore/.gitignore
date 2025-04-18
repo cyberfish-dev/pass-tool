@@ -1,0 +1,36 @@
+# Rust / Cargo
+/target/
+**/*.rs.bk
+**/*.rs.old
+Cargo.lock
+
+# Binaries and artifacts
+*.exe
+*.out
+*.dll
+*.so
+*.dylib
+
+# macOS
+.DS_Store
+
+# WASM / WebAssembly build outputs
+pkg/
+*.wasm
+
+# VSCode
+.vscode/
+
+# IntelliJ / RustRover
+.idea/
+
+# Logs
+*.log
+
+# Test / scratch files
+*.tmp
+*.bak
+*.swp
+
+# By default ignore node_modules from web folder
+**/node_modules/
