@@ -1,4 +1,4 @@
-use vaultcore::crypto::{encrypt_entry, decrypt_entry, generate_key};
+use vaultcore::crypto::{encrypt_entry, decrypt_entry, generate_key, generate_salt};
 
 #[test]
 fn test_encrypt_decrypt_success() {
@@ -87,4 +87,36 @@ fn test_decrypt_with_corrupted_ciphertext() {
 
     // Verify that decryption fails
     assert!(result.is_err());
+}
+
+#[test]
+fn test_generate_salt_length() {
+    // Generate a salt
+    let salt = generate_salt();
+
+    // Ensure the salt is 16 bytes long
+    assert_eq!(salt.len(), 16, "Salt length should be 16 bytes");
+}
+
+#[test]
+fn test_generate_salt_uniqueness() {
+    // Generate multiple salts
+    let salt1 = generate_salt();
+    let salt2 = generate_salt();
+
+    // Ensure the salts are unique
+    assert_ne!(salt1, salt2, "Generated salts should be unique");
+}
+
+#[test]
+fn test_generate_salt_randomness() {
+    // Generate a large number of salts and check for uniqueness
+    let mut salts = std::collections::HashSet::new();
+    for _ in 0..1000 {
+        let salt = generate_salt();
+        salts.insert(salt);
+    }
+
+    // Ensure all salts are unique
+    assert_eq!(salts.len(), 1000, "All generated salts should be unique");
 }

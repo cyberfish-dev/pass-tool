@@ -14,6 +14,13 @@ pub fn generate_key() -> [u8; 32] {
     key
 }
 
+/// Generates a secure 128-bit (16-byte) salt for cryptographic purposes.
+pub fn generate_salt() -> [u8; 16] {
+    let mut salt = [0u8; 16];
+    OsRng.fill_bytes(&mut salt); // Use OS-level RNG for secure salt generation
+    salt
+}
+
 /// Encrypts the given plaintext using the provided key.
 /// Returns the base64-encoded nonce and ciphertext.
 pub fn encrypt_entry(
