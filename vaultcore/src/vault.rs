@@ -25,6 +25,21 @@ pub struct Vault {
     pub entries: Vec<EncryptedEntry>,
 }
 
+impl Vault {
+    pub fn new() -> Self {
+        Vault {
+            metadata: VaultMetadata {
+                vault_id: String::new(),
+                created_at: 0,
+                kdf_salt: String::new(),
+                kdf_algo: String::new(),
+                cipher_algo: String::new(),
+            },
+            entries: Vec::new(),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct VaultPlainEntry {
     pub id: String,
