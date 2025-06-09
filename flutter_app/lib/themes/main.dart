@@ -18,7 +18,7 @@ final darkTeme = ThemeData.dark().copyWith(
   colorScheme: ColorScheme.dark(
     primary: accent,
     surface: darkCard,
-    onSurface: textPrimary.withAlpha(240),
+    onSurface: textPrimary,
     secondary: accent,
    ),
    iconTheme: const IconThemeData(
@@ -27,7 +27,7 @@ final darkTeme = ThemeData.dark().copyWith(
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
-    hintStyle: const TextStyle(color: textSecondary),
+    hintStyle: const TextStyle(color: whiteDull),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide.none,

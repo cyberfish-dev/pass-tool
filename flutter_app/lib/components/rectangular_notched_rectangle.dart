@@ -25,7 +25,7 @@ class RectangularNotchedRectangle extends NotchedShape {
     final nl    = cx - halfW;
     final nr    = cx + halfW;
     final nh    = host.top + notchHeight;
-    final r     = notchRadius;//.clamp(0.0, notchHeight / 2);
+    final r     = notchRadius;
 
     // Carve out an inner rounded notch
     final notch = Path()
