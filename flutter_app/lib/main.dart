@@ -42,14 +42,14 @@ class _MainLayoutState extends State<MainLayout> {
 
   static final List<BottomNavigationBarItem> _navItems =
       <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(PhosphorIcons.vault(PhosphorIconsStyle.thin)), label: 'Vault'),
+        BottomNavigationBarItem(icon: Icon(PhosphorIcons.vault(PhosphorIconsStyle.fill)), label: 'Vault'),
         BottomNavigationBarItem(
-          icon: Icon(PhosphorIcons.wrench(PhosphorIconsStyle.thin)),
+          icon: Icon(PhosphorIcons.wrench(PhosphorIconsStyle.fill)),
           label: 'Generator',
         ),
-        BottomNavigationBarItem(icon: Icon(PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.thin)), label: 'Send'),
+        BottomNavigationBarItem(icon: Icon(PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill)), label: 'Send'),
         BottomNavigationBarItem(
-          icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.thin)),
+          icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.fill)),
           label: 'Settings',
         ),
       ];
