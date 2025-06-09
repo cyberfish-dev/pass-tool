@@ -123,7 +123,15 @@ class _MainLayoutState extends State<MainLayout> {
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: _showAddMenu,
-              child: Icon(PhosphorIcons.plus()),
+              shape: CircleBorder(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                  Icon(PhosphorIcons.plusCircle(PhosphorIconsStyle.fill), size: 30,),
+                
+                ],
+              ),
             )
           : null,
     );

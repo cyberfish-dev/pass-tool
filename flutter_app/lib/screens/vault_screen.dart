@@ -28,7 +28,7 @@ class _VaultScreenState extends State<VaultScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cardColor = theme.colorScheme.surfaceVariant;
+    final cardColor = theme.cardTheme.color;
     final textColor = theme.colorScheme.onSurfaceVariant;
     final iconColor = theme.iconTheme.color ?? Colors.white;
 
@@ -43,18 +43,26 @@ class _VaultScreenState extends State<VaultScreen> {
           // Search field
           TextField(
             decoration: InputDecoration(
+              isDense: true,
               hintText: 'Search',
+              hintStyle: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: iconColor),
               prefixIcon: Icon(
                 PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
+                color: iconColor,
+                size: 20,
               ),
-              filled: true,
-              fillColor: theme.colorScheme.surfaceVariant,
+              filled: true,              
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
             ),
             onChanged: (v) => setState(() => _searchText = v),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: textColor,
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -138,12 +146,13 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context).textTheme.labelLarge?.copyWith(
-      fontWeight: FontWeight.bold,
+    final style = Theme.of(context).textTheme.labelSmall?.copyWith(
+      fontWeight: FontWeight.normal,
       letterSpacing: 1.2,
+      color: Theme.of(context).iconTheme.color ?? Colors.white,
     );
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 4, left: 12),
       child: Text('$title (${count.toString()})', style: style),
     );
   }
@@ -211,7 +220,7 @@ class _ItemRow extends StatelessWidget {
             children: [
               Expanded(
                 child: Divider(
-                  color: iconColor.withAlpha(20),
+                  color: iconColor.withAlpha(5),
                   thickness: 1,
                   height: 1,
                   indent: 45,

@@ -16,7 +16,7 @@ final darkTeme = ThemeData.dark().copyWith(
   colorScheme: ColorScheme.dark(
     primary: accent,
     surface: darkCard,
-    onSurface: textPrimary,
+    onSurface: textPrimary.withAlpha(240),
     secondary: accent,
    ),
    iconTheme: const IconThemeData(
@@ -34,11 +34,11 @@ final darkTeme = ThemeData.dark().copyWith(
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: darkBg,
     selectedItemColor: accent,
-    unselectedItemColor: textSecondary,
+    unselectedItemColor: whiteDull,
     elevation: 0,
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
-    backgroundColor: accent,
-    foregroundColor: darkBg,
+    backgroundColor: darkCard,
+    foregroundColor: accent,
   ),
 );
