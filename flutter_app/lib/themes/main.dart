@@ -18,18 +18,14 @@ final darkTeme = ThemeData.dark().copyWith(
     surface: darkCard,
     onSurface: textPrimary,
     secondary: accent,
+   ),
+   iconTheme: const IconThemeData(
+    color: whiteDull,
   ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: darkCard,
-    foregroundColor: textPrimary,
-    elevation: 0,
-  ),
-  iconTheme: const IconThemeData(color: textSecondary),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
     hintStyle: const TextStyle(color: textSecondary),
-    prefixIconColor: textSecondary,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide.none,
@@ -43,6 +39,6 @@ final darkTeme = ThemeData.dark().copyWith(
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: accent,
-    foregroundColor: textPrimary,
+    foregroundColor: darkBg,
   ),
 );

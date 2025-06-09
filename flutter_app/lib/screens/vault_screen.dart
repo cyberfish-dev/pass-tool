@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class VaultScreen extends StatefulWidget {
   const VaultScreen({Key? key}) : super(key: key);
@@ -11,11 +12,15 @@ class _VaultScreenState extends State<VaultScreen> {
   String _searchText = '';
 
   final List<_Category> _categories = [
-    _Category('Logins', Icons.language_outlined, 80),
-    _Category('Cards', Icons.credit_card_outlined, 0),
-    _Category('Identity', Icons.account_box_outlined, 0),
-    _Category('Secure Notes', Icons.sticky_note_2_outlined, 0),
-    _Category('SSH Keys', Icons.key_outlined, 0),
+    _Category('Logins', PhosphorIcons.globe(PhosphorIconsStyle.thin), 80),
+    _Category('Cards', PhosphorIcons.creditCard(PhosphorIconsStyle.thin), 0),
+    _Category(
+      'Identity',
+      PhosphorIcons.identificationCard(PhosphorIconsStyle.thin),
+      0,
+    ),
+    _Category('Secure Notes', PhosphorIcons.note(PhosphorIconsStyle.thin), 0),
+    _Category('SSH Keys', PhosphorIcons.key(PhosphorIconsStyle.thin), 0),
   ];
 
   final List<String> _folders = ['Test'];
@@ -25,6 +30,7 @@ class _VaultScreenState extends State<VaultScreen> {
     final theme = Theme.of(context);
     final cardColor = theme.colorScheme.surfaceVariant;
     final textColor = theme.colorScheme.onSurfaceVariant;
+    final iconColor = theme.iconTheme.color ?? Colors.white;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -32,14 +38,15 @@ class _VaultScreenState extends State<VaultScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          
           const SizedBox(height: 12),
 
           // Search field
           TextField(
             decoration: InputDecoration(
               hintText: 'Search',
-              prefixIcon: const Icon(Icons.search),
+              prefixIcon: Icon(
+                PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
+              ),
               filled: true,
               fillColor: theme.colorScheme.surfaceVariant,
               border: OutlineInputBorder(
@@ -66,14 +73,17 @@ class _VaultScreenState extends State<VaultScreen> {
                   clipBehavior: Clip.antiAlias,
                   child: Column(
                     children: _categories.map((cat) {
+                      var isLast = _categories.last == cat;
                       return _ItemRow(
                         icon: cat.icon,
                         title: cat.title,
                         count: cat.count,
                         textColor: textColor,
+                        iconColor: iconColor,
                         onTap: () {
                           // TODO: Navigate to category screen
                         },
+                        isLast: isLast,
                       );
                     }).toList(),
                   ),
@@ -92,14 +102,19 @@ class _VaultScreenState extends State<VaultScreen> {
                     clipBehavior: Clip.antiAlias,
                     child: Column(
                       children: _folders.map((folder) {
+                        var isLast = _folders.last == folder;
                         return _ItemRow(
-                          icon: Icons.folder_open,
+                          icon: PhosphorIcons.folderOpen(
+                            PhosphorIconsStyle.thin,
+                          ),
                           title: folder,
                           count: 0,
                           textColor: textColor,
+                          iconColor: iconColor,
                           onTap: () {
                             // TODO: Navigate to folder contents
                           },
+                          isLast: isLast,
                         );
                       }).toList(),
                     ),
@@ -140,43 +155,71 @@ class _ItemRow extends StatelessWidget {
   final String title;
   final int count;
   final Color textColor;
+  final Color iconColor;
   final VoidCallback onTap;
+  final bool isLast;
 
   const _ItemRow({
     required this.icon,
     required this.title,
     required this.count,
     required this.textColor,
+    required this.iconColor,
     required this.onTap,
+    required this.isLast,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-        child: Row(
-          children: [
-            Icon(icon, size: 24, color: textColor),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: textColor),
-              ),
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 14.0,
             ),
-            Text(
-              count.toString(),
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: textColor),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(icon, size: 20, color: iconColor),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: textColor),
+                      ),
+                    ),
+                    Text(
+                      count.toString(),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: iconColor),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        if (!isLast)
+          Row(
+            children: [
+              Expanded(
+                child: Divider(
+                  color: iconColor.withAlpha(20),
+                  thickness: 1,
+                  height: 1,
+                  indent: 45,
+                ),
+              ),
+            ],
+          ),
+      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/themes/main.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'screens/vault_screen.dart';
 
 void main() {
@@ -39,16 +40,16 @@ class _MainLayoutState extends State<MainLayout> {
     Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
   ];
 
-  static const List<BottomNavigationBarItem> _navItems =
+  static final List<BottomNavigationBarItem> _navItems =
       <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.lock_outline), label: 'Vault'),
+        BottomNavigationBarItem(icon: Icon(PhosphorIcons.vault(PhosphorIconsStyle.thin)), label: 'Vault'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.build_outlined),
+          icon: Icon(PhosphorIcons.wrench(PhosphorIconsStyle.thin)),
           label: 'Generator',
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.send_outlined), label: 'Send'),
+        BottomNavigationBarItem(icon: Icon(PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.thin)), label: 'Send'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings_outlined),
+          icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.thin)),
           label: 'Settings',
         ),
       ];
@@ -65,7 +66,7 @@ class _MainLayoutState extends State<MainLayout> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.login),
+              leading: Icon(PhosphorIcons.globe()),
               title: Text('Add Login'),
               onTap: () {
                 Navigator.pop(ctx);
@@ -122,7 +123,7 @@ class _MainLayoutState extends State<MainLayout> {
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: _showAddMenu,
-              child: const Icon(Icons.add),
+              child: Icon(PhosphorIcons.plus()),
             )
           : null,
     );
