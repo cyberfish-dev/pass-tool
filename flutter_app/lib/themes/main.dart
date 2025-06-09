@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/themes/colors.dart';
 import 'package:flutter_app/themes/texts.dart';
 
-final baseeTheme = ThemeData.light().copyWith(
+final baseTheme = ThemeData.light().copyWith(
   colorScheme: ColorScheme.light(
     primary: accent,
     surface: Colors.white,

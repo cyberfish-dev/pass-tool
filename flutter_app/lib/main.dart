@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/rectangular_notched_rectangle.dart';
+import 'package:flutter_app/menu/menu_items.dart';
 import 'package:flutter_app/themes/main.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'screens/vault_screen.dart';
 
 void main() {
   runApp(const PassToolApp());
@@ -16,8 +16,8 @@ class PassToolApp extends StatelessWidget {
     return MaterialApp(
       title: 'PassTool',
       themeMode:
-          ThemeMode.dark, // always dark; swap to .system if you want auto
-      theme: baseeTheme,
+          ThemeMode.dark,
+      theme: baseTheme,
       darkTheme: darkTeme,
       home: const MainLayout(),
     );
@@ -34,103 +34,31 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _currentIndex = 0;
 
-  static const List<Widget> _pages = <Widget>[
-    VaultScreen(),
-    Center(child: Text('Generator', style: TextStyle(fontSize: 24))),
-    Center(child: Text('Send', style: TextStyle(fontSize: 24))),
-    Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
-  ];
-
-  static final List<BottomNavigationBarItem> _navItems =
-      <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(PhosphorIcons.vault(PhosphorIconsStyle.fill)),
-          label: 'Vault',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(PhosphorIcons.wrench(PhosphorIconsStyle.fill)),
-          label: 'Generator',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill)),
-          label: 'Send',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.fill)),
-          label: 'Settings',
-        ),
-      ];
-
   void _onItemTapped(int index) {
     setState(() => _currentIndex = index);
-  }
-
-  void _showAddMenu() {
-    showModalBottomSheet(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(PhosphorIcons.globe()),
-              title: Text('Add Login'),
-              onTap: () {
-                Navigator.pop(ctx);
-                // TODO: Navigate to AddLoginScreen()
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.credit_card),
-              title: Text('Add Card'),
-              onTap: () {
-                Navigator.pop(ctx);
-                // TODO: Navigate to AddCardScreen()
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.note_add_outlined),
-              title: Text('Add Secure Note'),
-              onTap: () {
-                Navigator.pop(ctx);
-                // TODO: Navigate to AddNoteScreen()
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.folder_open),
-              title: Text('Add Folder'),
-              onTap: () {
-                Navigator.pop(ctx);
-                // TODO: Navigate to AddFolderScreen()
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: pages[_currentIndex],
       bottomNavigationBar: SizedBox(
         height: 120,
         child: BottomAppBar(
           padding: EdgeInsets.only(bottom: 0, top: 20),
           shape: RectangularNotchedRectangle(
-            notchWidth: 65, // how wide the rectangle cut-out is
+            notchWidth: 65,
             notchHeight: 33,
             notchRadius: 16,
           ),
-          elevation: 4, // whatever you like
-          notchMargin: 0, // spacing between FAB and notch
+          elevation: 4,
+          notchMargin: 0,
           child: Builder(
             builder: (context) {
               return BottomNavigationBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                items: _navItems,
+                items: navItems,
                 currentIndex: _currentIndex,
                 onTap: _onItemTapped,
                 type: BottomNavigationBarType.fixed,
@@ -145,13 +73,13 @@ class _MainLayoutState extends State<MainLayout> {
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _currentIndex == 0
+      floatingActionButton: menuActions.containsKey(_currentIndex)
           ? FloatingActionButton(
-              onPressed: _showAddMenu,
+              onPressed: () => menuActions[_currentIndex]!(context),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   16,
-                ), // <-- your custom radius
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
