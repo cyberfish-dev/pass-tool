@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/rectangular_notched_rectangle.dart';
 import 'package:flutter_app/themes/main.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'screens/vault_screen.dart';
@@ -114,29 +115,44 @@ class _MainLayoutState extends State<MainLayout> {
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: SizedBox(
-        height: 100,
+        height: 120,
         child: BottomAppBar(
-          shape: CircularNotchedRectangle(),
+          padding: EdgeInsets.only(bottom: 0, top: 20),
+          shape: RectangularNotchedRectangle(
+            notchWidth: 65, // how wide the rectangle cut-out is
+            notchHeight: 33,
+            notchRadius: 16,
+          ),
           elevation: 4, // whatever you like
-          notchMargin: 6.0, // spacing between FAB and notch
-          child: BottomNavigationBar(
-            backgroundColor: Colors.transparent,
-            items: _navItems,
-            currentIndex: _currentIndex,
-            onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-            selectedFontSize: 13,
-            unselectedFontSize: 13,
-            selectedLabelStyle: TextStyle(height: 1.8), // try 1.0, 1.2, etc.
-            unselectedLabelStyle: TextStyle(height: 1.8),
+          notchMargin: 0, // spacing between FAB and notch
+          child: Builder(
+            builder: (context) {
+              return BottomNavigationBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                items: _navItems,
+                currentIndex: _currentIndex,
+                onTap: _onItemTapped,
+                type: BottomNavigationBarType.fixed,
+                selectedFontSize: 13,
+                unselectedFontSize: 13,
+                selectedLabelStyle: TextStyle(height: 1.8),
+                unselectedLabelStyle: TextStyle(height: 1.8),
+              );
+            },
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: _showAddMenu,
-              shape: CircleBorder(),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  16,
+                ), // <-- your custom radius
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

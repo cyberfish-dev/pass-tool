@@ -12,11 +12,13 @@ final baseeTheme = ThemeData.light().copyWith(
 
 final darkTeme = ThemeData.dark().copyWith(
   textTheme: textTheme,
+  splashFactory: NoSplash.splashFactory,
+  splashColor: Colors.transparent,
   scaffoldBackgroundColor: darkBg,
   colorScheme: ColorScheme.dark(
     primary: accent,
     surface: darkCard,
-    onSurface: textPrimary.withAlpha(220),
+    onSurface: textPrimary.withAlpha(240),
     secondary: accent,
    ),
    iconTheme: const IconThemeData(
