@@ -42,12 +42,18 @@ class _MainLayoutState extends State<MainLayout> {
 
   static final List<BottomNavigationBarItem> _navItems =
       <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(PhosphorIcons.vault(PhosphorIconsStyle.fill)), label: 'Vault'),
+        BottomNavigationBarItem(
+          icon: Icon(PhosphorIcons.vault(PhosphorIconsStyle.fill)),
+          label: 'Vault',
+        ),
         BottomNavigationBarItem(
           icon: Icon(PhosphorIcons.wrench(PhosphorIconsStyle.fill)),
           label: 'Generator',
         ),
-        BottomNavigationBarItem(icon: Icon(PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill)), label: 'Send'),
+        BottomNavigationBarItem(
+          icon: Icon(PhosphorIcons.paperPlaneTilt(PhosphorIconsStyle.fill)),
+          label: 'Send',
+        ),
         BottomNavigationBarItem(
           icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.fill)),
           label: 'Settings',
@@ -109,17 +115,24 @@ class _MainLayoutState extends State<MainLayout> {
       body: _pages[_currentIndex],
       bottomNavigationBar: SizedBox(
         height: 100,
-        child: BottomNavigationBar(
-          items: _navItems,
-          currentIndex: _currentIndex,
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 12,    // same font size for both
-          unselectedFontSize: 12,  // prevents zooming on select
+        child: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          elevation: 4, // whatever you like
+          notchMargin: 6.0, // spacing between FAB and notch
+          child: BottomNavigationBar(
+            backgroundColor: Colors.transparent,
+            items: _navItems,
+            currentIndex: _currentIndex,
+            onTap: _onItemTapped,
+            type: BottomNavigationBarType.fixed,
+            selectedFontSize: 13,
+            unselectedFontSize: 13,
+            selectedLabelStyle: TextStyle(height: 1.8), // try 1.0, 1.2, etc.
+            unselectedLabelStyle: TextStyle(height: 1.8),
+          ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(
               onPressed: _showAddMenu,
@@ -127,9 +140,10 @@ class _MainLayoutState extends State<MainLayout> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  
-                  Icon(PhosphorIcons.plusCircle(PhosphorIconsStyle.fill), size: 30,),
-                
+                  Icon(
+                    PhosphorIcons.plusCircle(PhosphorIconsStyle.fill),
+                    size: 25,
+                  ),
                 ],
               ),
             )
