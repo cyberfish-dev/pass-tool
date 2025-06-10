@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/list_items.dart';
+import 'package:flutter_app/components/section_header.dart';
+import 'package:flutter_app/menu/category_items.dart';
+import 'package:flutter_app/models/list_item_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class VaultScreen extends StatefulWidget {
-  const VaultScreen({Key? key}) : super(key: key);
+  const VaultScreen({super.key});
 
   @override
   State<VaultScreen> createState() => _VaultScreenState();
@@ -10,28 +14,12 @@ class VaultScreen extends StatefulWidget {
 
 class _VaultScreenState extends State<VaultScreen> {
   String _searchText = '';
-
-  final List<_Category> _categories = [
-    _Category('Logins', PhosphorIcons.globe(PhosphorIconsStyle.thin), 80),
-    _Category('Cards', PhosphorIcons.creditCard(PhosphorIconsStyle.thin), 0),
-    _Category(
-      'Identity',
-      PhosphorIcons.identificationCard(PhosphorIconsStyle.thin),
-      0,
-    ),
-    _Category('Secure Notes', PhosphorIcons.note(PhosphorIconsStyle.thin), 0),
-    _Category('SSH Keys', PhosphorIcons.key(PhosphorIconsStyle.thin), 0),
+  final List<ListItemModel> _folders = [
+    ListItemModel('Test', PhosphorIcons.folderOpen(PhosphorIconsStyle.thin), 1),
   ];
-
-  final List<String> _folders = ['Test'];
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cardColor = theme.cardTheme.color;
-    final textColor = theme.colorScheme.onSurfaceVariant;
-    final iconColor = theme.iconTheme.color ?? Colors.white;
-
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -43,26 +31,14 @@ class _VaultScreenState extends State<VaultScreen> {
           // Search field
           TextField(
             decoration: InputDecoration(
-              isDense: true,
+              filled: true,
               hintText: 'Search',
-              hintStyle: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: iconColor),
               prefixIcon: Icon(
                 PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
-                color: iconColor,
                 size: 20,
-              ),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
               ),
             ),
             onChanged: (v) => setState(() => _searchText = v),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: textColor),
           ),
 
           const SizedBox(height: 24),
@@ -71,64 +47,13 @@ class _VaultScreenState extends State<VaultScreen> {
           Expanded(
             child: ListView(
               children: [
-                // TYPES section
-                _SectionHeader(title: 'TYPES', count: _categories.length),
-                Card(
-                  color: cardColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    children: _categories.map((cat) {
-                      var isLast = _categories.last == cat;
-                      return _ItemRow(
-                        icon: cat.icon,
-                        title: cat.title,
-                        count: cat.count,
-                        textColor: textColor,
-                        iconColor: iconColor,
-                        onTap: () {
-                          // TODO: Navigate to category screen
-                        },
-                        isLast: isLast,
-                      );
-                    }).toList(),
-                  ),
-                ),
+                SectionHeader(title: 'TYPES', count: categories.length),
+                ListItems(items: categories),
 
                 const SizedBox(height: 24),
 
-                // FOLDERS section
-                _SectionHeader(title: 'FOLDERS', count: _folders.length),
-                if (_folders.isNotEmpty)
-                  Card(
-                    color: cardColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      children: _folders.map((folder) {
-                        var isLast = _folders.last == folder;
-                        return _ItemRow(
-                          icon: PhosphorIcons.folderOpen(
-                            PhosphorIconsStyle.thin,
-                          ),
-                          title: folder,
-                          count: 0,
-                          textColor: textColor,
-                          iconColor: iconColor,
-                          onTap: () {
-                            // TODO: Navigate to folder contents
-                          },
-                          isLast: isLast,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-
-                // If you later want an "Uncategorized" section, insert here.
+                SectionHeader(title: 'FOLDERS', count: _folders.length),
+                if (_folders.isNotEmpty) ListItems(items: _folders),
               ],
             ),
           ),
@@ -136,106 +61,4 @@ class _VaultScreenState extends State<VaultScreen> {
       ),
     );
   }
-}
-
-/// Section header widget, e.g. "TYPES (5)"
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final int count;
-  const _SectionHeader({required this.title, required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    final style = Theme.of(context).textTheme.labelSmall?.copyWith(
-      fontWeight: FontWeight.normal,
-      letterSpacing: 1.2,
-      color: Theme.of(context).iconTheme.color ?? Colors.white,
-    );
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4, left: 12),
-      child: Text('$title (${count.toString()})', style: style),
-    );
-  }
-}
-
-/// A single row item with icon, title, and trailing count.
-class _ItemRow extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final int count;
-  final Color textColor;
-  final Color iconColor;
-  final VoidCallback onTap;
-  final bool isLast;
-
-  const _ItemRow({
-    required this.icon,
-    required this.title,
-    required this.count,
-    required this.textColor,
-    required this.iconColor,
-    required this.onTap,
-    required this.isLast,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 14.0,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, size: 20, color: iconColor),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(color: textColor),
-                      ),
-                    ),
-                    Text(
-                      count.toString(),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: iconColor),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (!isLast)
-          Row(
-            children: [
-              Expanded(
-                child: Divider(
-                  color: iconColor.withAlpha(5),
-                  thickness: 1,
-                  height: 1,
-                  indent: 45,
-                ),
-              ),
-            ],
-          ),
-      ],
-    );
-  }
-}
-
-class _Category {
-  final String title;
-  final IconData icon;
-  final int count;
-  const _Category(this.title, this.icon, this.count);
 }

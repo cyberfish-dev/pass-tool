@@ -12,8 +12,8 @@ final textTheme = Typography.whiteMountainView.copyWith(
   ),
   bodyLarge: TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 16,
-    fontWeight: FontWeight.w400, // Regular weight
+    fontSize: 14,
+    fontWeight: FontWeight.w300, // Regular weight
     color: textPrimary,
   ),
   bodyMedium: TextStyle(
@@ -22,11 +22,23 @@ final textTheme = Typography.whiteMountainView.copyWith(
     fontWeight: FontWeight.w300, // Light weight
     color: textPrimary,
   ),
+  labelMedium: TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w300, // Light weight
+    color: textSecondary,
+  ),
   labelLarge: TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: FontWeight.w400,
     letterSpacing: 1.2,
-    color: textPrimary,
+    color: textSecondary,
   ),
+  labelSmall: TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w300, // Light weight
+    color: textSecondary,
+  ),  
 );

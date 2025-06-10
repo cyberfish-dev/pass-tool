@@ -32,11 +32,13 @@ final darkTeme = ThemeData.dark().copyWith(
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
-    hintStyle: const TextStyle(color: textSecondary),
+    hintStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
+    prefixIconColor: textSecondary,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide.none,
     ),
+    isDense: true,
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: darkCard,
@@ -48,5 +50,11 @@ final darkTeme = ThemeData.dark().copyWith(
     backgroundColor: darkCard,
     foregroundColor: accent,
     elevation: 25,
+  ),
+  dividerColor: dividerColor,
+  dividerTheme: DividerThemeData(color: dividerColor, thickness: 1),
+  cardTheme: CardThemeData(
+    color: darkCard,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   ),
 );
