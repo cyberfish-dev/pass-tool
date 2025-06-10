@@ -32,6 +32,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
+  final GlobalKey _fabKey = GlobalKey();
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
@@ -76,7 +77,8 @@ class _MainLayoutState extends State<MainLayout> {
           FloatingActionButtonLocation.centerDocked,
       floatingActionButton: menuActions.containsKey(_currentIndex)
           ? FloatingActionButton(
-              onPressed: () => menuActions[_currentIndex]!(context),
+              key: _fabKey,
+              onPressed: () => menuActions[_currentIndex]!(context, _fabKey),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   16,

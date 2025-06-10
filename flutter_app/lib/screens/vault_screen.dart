@@ -13,7 +13,9 @@ class VaultScreen extends StatefulWidget {
 }
 
 class _VaultScreenState extends State<VaultScreen> {
+  
   String _searchText = '';
+
   final List<ListItemModel> _folders = [
     ListItemModel('Test', PhosphorIcons.folderOpen(PhosphorIconsStyle.thin), 1),
   ];

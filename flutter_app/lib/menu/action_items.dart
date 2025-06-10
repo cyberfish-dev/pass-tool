@@ -3,28 +3,33 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 final List<ListItemModel> actions = [
   ListItemModel(
-    'Add Login',
+    'Login',
     PhosphorIcons.globe(PhosphorIconsStyle.thin),
     null,
   ),
   ListItemModel(
-    'Add Card',
+    'Card',
     PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
     null,
   ),
   ListItemModel(
-    'Add Identity',
+    'Identity',
     PhosphorIcons.identificationCard(PhosphorIconsStyle.thin),
     null,
   ),
   ListItemModel(
-    'Add Secure Note',
+    'Secure Note',
     PhosphorIcons.note(PhosphorIconsStyle.thin),
     null,
   ),
   ListItemModel(
-    'Add SSH Key',
+    'SSH Key',
     PhosphorIcons.key(PhosphorIconsStyle.thin),
+    null,
+  ),
+    ListItemModel(
+    'Folder',
+    PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
     null,
   ),
 ];

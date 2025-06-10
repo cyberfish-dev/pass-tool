@@ -11,6 +11,7 @@ class ListItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.zero,
       child: Column(
         children: items.map((cat) {
           var isLast = items.last == cat;

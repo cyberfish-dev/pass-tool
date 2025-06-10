@@ -29,10 +29,10 @@ final List<BottomNavigationBarItem> navItems = <BottomNavigationBarItem>[
   ),
 ];
 
-typedef ContextAction = void Function(BuildContext context);
+typedef ContextAction = void Function(BuildContext context, GlobalKey itemKey);
 
 final Map<int, ContextAction> menuActions = {
-  0: (context) {
-    showAddMenu(context);
+  0: (context, itemKey) {
+    showAddMenu(context, itemKey);
   }
 };
