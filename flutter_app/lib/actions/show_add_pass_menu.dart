@@ -8,7 +8,7 @@ void showAddMenu(BuildContext context, GlobalKey itemKey) {
 
 void _openPopupAboveFab(BuildContext context, GlobalKey itemKey) {
   // 1) Grab the Overlay’s RenderBox
-  final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+  final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
   // 2) Grab the FAB’s RenderBox
   final fabBox = itemKey.currentContext!.findRenderObject() as RenderBox;
@@ -40,8 +40,8 @@ void _openPopupAboveFab(BuildContext context, GlobalKey itemKey) {
       borderRadius: BorderRadius.circular(12.0),
       
     ),
-    elevation: 65,
-    shadowColor: Theme.of(context).colorScheme.secondary.withAlpha(130),
+    elevation: 5,
+    shadowColor: Theme.of(context).colorScheme.surface,
     items: [
       PopupMenuItem(
         padding: EdgeInsets.zero,

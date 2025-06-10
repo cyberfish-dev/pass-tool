@@ -49,7 +49,7 @@ final darkTeme = ThemeData.dark().copyWith(
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: darkCard,
     foregroundColor: accent,
-    elevation: 25,
+    elevation: 5,
   ),
   dividerColor: dividerColor,
   dividerTheme: DividerThemeData(color: dividerColor, thickness: 1),
