@@ -4,7 +4,7 @@ class ListItemModel {
   
   final String title;
   final IconData icon;
-  final int count;
+  final int? count;
 
   const ListItemModel(this.title, this.icon, this.count);
 }

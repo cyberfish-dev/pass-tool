@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class ItemRow extends StatelessWidget {
   final IconData icon;
   final String title;
-  final int count;
+  final int? count;
   final VoidCallback onTap;
   final bool isLast;
 
   const ItemRow({
-    super.key, 
+    super.key,
     required this.icon,
     required this.title,
     required this.count,
@@ -31,22 +31,19 @@ class ItemRow extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(icon, size: 20,),
+                    Icon(icon, size: 20),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         title,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
-                    Text(
-                      count.toString(),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.labelMedium,
-                    ),
+                    if (count != null)
+                      Text(
+                        count.toString(),
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
                   ],
                 ),
               ],
@@ -54,16 +51,7 @@ class ItemRow extends StatelessWidget {
           ),
         ),
         if (!isLast)
-          Row(
-            children: [
-              Expanded(
-                child: Divider(
-                  height: 1,
-                  indent: 45,
-                ),
-              ),
-            ],
-          ),
+          Row(children: [Expanded(child: Divider(height: 1, indent: 45))]),
       ],
     );
   }
