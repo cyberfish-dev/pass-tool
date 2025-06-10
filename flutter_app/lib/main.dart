@@ -41,6 +41,7 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(toolbarHeight: 0,),
       body: pages[_currentIndex],
       bottomNavigationBar: SizedBox(
         height: 120,

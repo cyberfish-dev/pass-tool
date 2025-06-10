@@ -53,16 +53,16 @@ class _VaultScreenState extends State<VaultScreen> {
                 color: iconColor,
                 size: 20,
               ),
-              filled: true,              
+              filled: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
             ),
             onChanged: (v) => setState(() => _searchText = v),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: textColor,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: textColor),
           ),
 
           const SizedBox(height: 24),

@@ -12,6 +12,13 @@ final baseTheme = ThemeData.light().copyWith(
 
 final darkTeme = ThemeData.dark().copyWith(
   textTheme: textTheme,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.transparent,
+    surfaceTintColor: Colors.transparent,
+    shadowColor: Colors.transparent,
+    foregroundColor: Colors.transparent,
+    elevation: 0,
+  ),
   splashFactory: NoSplash.splashFactory,
   splashColor: Colors.transparent,
   scaffoldBackgroundColor: darkBg,
@@ -20,14 +27,12 @@ final darkTeme = ThemeData.dark().copyWith(
     surface: darkCard,
     onSurface: textPrimary,
     secondary: accent,
-   ),
-   iconTheme: const IconThemeData(
-    color: whiteDull,
   ),
+  iconTheme: const IconThemeData(color: textSecondary),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
-    hintStyle: const TextStyle(color: whiteDull),
+    hintStyle: const TextStyle(color: textSecondary),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide.none,
@@ -36,11 +41,12 @@ final darkTeme = ThemeData.dark().copyWith(
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: darkCard,
     selectedItemColor: accent,
-    unselectedItemColor: whiteDull,
+    unselectedItemColor: textSecondary,
     elevation: 0,
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: darkCard,
     foregroundColor: accent,
+    elevation: 25,
   ),
 );
