@@ -20,7 +20,7 @@ class ListItems extends StatelessWidget {
             title: cat.title,
             count: cat.count,
             onTap: () {
-              // TODO: Navigate to category screen
+               cat.onTap(context);
             },
             isLast: isLast,
           );

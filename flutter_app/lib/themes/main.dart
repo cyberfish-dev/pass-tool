@@ -57,4 +57,15 @@ final darkTeme = ThemeData.dark().copyWith(
     color: darkCard,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   ),
+  bottomSheetTheme: BottomSheetThemeData(
+    backgroundColor: darkBg, // Or any color you want
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+    ),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      textStyle: textTheme.bodyMedium,
+    ),
+  ),
 );
