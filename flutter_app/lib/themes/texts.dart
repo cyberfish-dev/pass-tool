@@ -22,6 +22,12 @@ final textTheme = Typography.whiteMountainView.copyWith(
     fontWeight: FontWeight.w300, // Light weight
     color: textPrimary,
   ),
+  bodySmall: TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w200, // Light weight
+    color: textPrimary,
+  ),
   labelMedium: TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,

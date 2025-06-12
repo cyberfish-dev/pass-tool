@@ -8,4 +8,4 @@ const textSecondary = Color(0xffaaaaaa);
 final dividerColor = Color(0xffaaaaaa).withAlpha(5);
 final textPrimary = Color(0xFFFFFFFF).withAlpha(240);
 
-const errorColor = Color(0xfff2668b);
+const errorColor = Color(0xffFFBF00);

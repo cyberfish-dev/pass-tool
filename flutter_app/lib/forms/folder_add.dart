@@ -62,6 +62,7 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
                 ),
               ),
               validator: _validateName,
+              onChanged: (_) => { validate() },
             ),
           ],
         ),
