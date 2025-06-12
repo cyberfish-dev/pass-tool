@@ -44,6 +44,18 @@ class _VaultScreenState extends State<VaultScreen> {
                 size: 20,
               ),
               isDense: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
             ),
             onChanged: (v) => setState(() => _searchText = v),
           ),

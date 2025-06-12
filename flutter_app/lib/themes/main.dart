@@ -35,10 +35,27 @@ final darkTeme = ThemeData.dark().copyWith(
     hintStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
     labelStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
     prefixIconColor: textSecondary,
+    errorStyle: textTheme.bodySmall?.copyWith(color: errorColor),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide.none,
+      borderSide: BorderSide(color: textSecondary, width: 1),
     ),    
+    enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: textSecondary, width: 1),
+    ),
+    focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: accent, width: 1),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: errorColor, width: 1),
+    ),
+    errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: errorColor, width: 1),
+    ),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: darkCard,

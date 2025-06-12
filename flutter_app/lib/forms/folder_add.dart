@@ -60,10 +60,6 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
                   PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
                   size: 20,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(width: 1),
-                ),
               ),
               validator: _validateName,
             ),
