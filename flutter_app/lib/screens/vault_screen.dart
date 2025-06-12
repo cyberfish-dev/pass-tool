@@ -43,6 +43,7 @@ class _VaultScreenState extends State<VaultScreen> {
                 PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
                 size: 20,
               ),
+              isDense: true,
             ),
             onChanged: (v) => setState(() => _searchText = v),
           ),

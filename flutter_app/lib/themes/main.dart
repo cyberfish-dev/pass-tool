@@ -33,12 +33,12 @@ final darkTeme = ThemeData.dark().copyWith(
     filled: true,
     fillColor: darkCard,
     hintStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
+    labelStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
     prefixIconColor: textSecondary,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide.none,
-    ),
-    isDense: true,
+    ),    
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: darkCard,

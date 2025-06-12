@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/actions/show_bottom_sheet.dart';
+import 'package:flutter_app/actions/folder_add_action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -38,13 +38,14 @@ final List<ListItemModel> actions = [
     'Folder',
     PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
     null,
-    (ctx) {
+    (ctx) {      
+      
       Navigator.of(ctx).pop();
-      showCustomBottomSheet(
-        ctx,
-        'Create Folder',
-        Text('Folder creation is not implemented yet.'),
+
+      final action = FolderAddAction(
       );
+
+      action.showCustomBottomSheet(ctx);
     },
   ),
 ];
