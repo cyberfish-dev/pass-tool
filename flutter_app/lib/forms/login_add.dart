@@ -87,22 +87,21 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
           SizedBox(height: 16),
 
           // Folder dropdown
-          DropdownButtonFormField<String>(
-            value: _selectedFolder,
+          TextFormField(
+            initialValue: _selectedFolder,
+            readOnly: true,
             decoration: InputDecoration(
               labelText: 'Folder',
               prefixIcon: Icon(
                 PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
                 size: 20,
               ),
+              suffixIcon: Icon(
+                PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
-            onChanged: (v) {
-              setState(() => _selectedFolder = v!);
-              if (_submitCalled) _formKey.currentState!.validate();
-            },
-            items: _folders.map((f) {
-              return DropdownMenuItem(value: f, child: Text(f));
-            }).toList(),
           ),
 
           SizedBox(height: 24),

@@ -32,8 +32,8 @@ final darkTeme = ThemeData.dark().copyWith(
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
-    hintStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
-    labelStyle: textTheme.bodyMedium?.copyWith(color: textSecondary),
+    hintStyle: textTheme.bodyMedium?.copyWith(color: textSecondary.withAlpha(180)),
+    labelStyle: textTheme.bodyMedium?.copyWith(color: textSecondary.withAlpha(180)),
     prefixIconColor: textSecondary,
     errorStyle: textTheme.bodySmall?.copyWith(color: errorColor),
     border: OutlineInputBorder(
@@ -50,11 +50,11 @@ final darkTeme = ThemeData.dark().copyWith(
     ),
     focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: errorColor, width: 1),
+      borderSide: BorderSide(color: errorColor.withAlpha(200), width: 1),
     ),
     errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: errorColor, width: 1),
+      borderSide: BorderSide(color: errorColor.withAlpha(200), width: 1),
     ),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
