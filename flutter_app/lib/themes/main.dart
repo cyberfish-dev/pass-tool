@@ -50,11 +50,11 @@ final darkTeme = ThemeData.dark().copyWith(
     ),
     focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: errorColor.withAlpha(150), width: 1),
+      borderSide: BorderSide(color: errorColor, width: 1),
     ),
     errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: errorColor.withAlpha(150), width: 1),
+      borderSide: BorderSide(color: errorColor, width: 1),
     ),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(

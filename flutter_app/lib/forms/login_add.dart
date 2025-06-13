@@ -72,7 +72,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             controller: _itemNameCtrl,
             decoration: InputDecoration(
               labelText: 'Item name',
-              suffixIcon: Icon(PhosphorIcons.star(), size: 20),
+              prefixIcon: Icon(PhosphorIcons.record(PhosphorIconsStyle.thin), size: 20),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
@@ -85,7 +85,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
           InputDecorator(
             decoration: InputDecoration(
               labelText: 'Folder',
-              prefixIcon: Icon(PhosphorIcons.folderOpen(), size: 20),
+              prefixIcon: Icon(PhosphorIcons.folderOpen(PhosphorIconsStyle.thin), size: 20),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -115,8 +115,9 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             controller: _usernameCtrl,
             decoration: InputDecoration(
               hintText: 'Username',
+              prefixIcon: Icon(PhosphorIcons.user(PhosphorIconsStyle.thin), size: 20),
               suffixIcon: IconButton(
-                icon: Icon(PhosphorIcons.arrowsClockwise(), size: 20),
+                icon: Icon(PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin), size: 20),
                 onPressed: () {
                   // generate or suggest username
                 },
@@ -135,14 +136,15 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             obscureText: _obscurePassword,
             decoration: InputDecoration(
               hintText: 'Password',
+              prefixIcon: Icon(PhosphorIcons.password(PhosphorIconsStyle.thin), size: 20),
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
                     icon: Icon(
                       _obscurePassword
-                          ? PhosphorIcons.eye()
-                          : PhosphorIcons.eyeSlash(),
+                          ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
+                          : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
                       size: 20,
                     ),
                     onPressed: () {
@@ -150,7 +152,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
                     },
                   ),
                   IconButton(
-                    icon: Icon(PhosphorIcons.arrowsClockwise(), size: 20),
+                    icon: Icon(PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin), size: 20),
                     onPressed: () {
                       // generate password
                     },
@@ -187,8 +189,8 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureAuthKey
-                      ? PhosphorIcons.eye()
-                      : PhosphorIcons.eyeSlash(),
+                      ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
+                      : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
                   size: 20,
                 ),
                 onPressed: () {
@@ -203,7 +205,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             onPressed: () {
               // launch setup flow
             },
-            icon: Icon(PhosphorIcons.camera(), size: 20),
+            icon: Icon(PhosphorIcons.camera(PhosphorIconsStyle.thin), size: 20),
             label: Text('Set up authenticator key'),
           ),
         
@@ -216,8 +218,9 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             controller: _websiteCtrl,
             decoration: InputDecoration(
               hintText: 'Website (URI)',
+              prefixIcon: Icon(PhosphorIcons.globe(PhosphorIconsStyle.thin), size: 20),
               suffixIcon: IconButton(
-                icon: Icon(PhosphorIcons.gear(), size: 20),
+                icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.thin), size: 20),
                 onPressed: () {
                   // open domain settings
                 },
