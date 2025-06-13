@@ -6,6 +6,7 @@ const accent = Color(0xFF10B981);
 
 const textSecondary = Color(0xffaaaaaa);
 final dividerColor = Color(0xffaaaaaa).withAlpha(5);
+final inputBorderColor = Color(0xffaaaaaa).withAlpha(50);
 final textPrimary = Color(0xFFFFFFFF).withAlpha(240);
 
 const errorColor = Color(0xffFFBF00);

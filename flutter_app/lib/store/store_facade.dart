@@ -1,4 +1,4 @@
-import 'package:flutter_app/store/localStore.dart';
+import 'package:flutter_app/store/local_store.dart';
 import 'package:flutter_app/store/store_base.dart';
 
 class StoreFacade implements StoreBase {

@@ -38,23 +38,23 @@ final darkTeme = ThemeData.dark().copyWith(
     errorStyle: textTheme.bodySmall?.copyWith(color: errorColor),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: textSecondary, width: 1),
+      borderSide: BorderSide(color: inputBorderColor, width: 1),
     ),    
     enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: textSecondary, width: 1),
+      borderSide: BorderSide(color: inputBorderColor, width: 1),
     ),
     focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: accent, width: 1),
+      borderSide: BorderSide(color: accent.withAlpha(150), width: 1),
     ),
     focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: errorColor, width: 1),
+      borderSide: BorderSide(color: errorColor.withAlpha(150), width: 1),
     ),
     errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: errorColor, width: 1),
+      borderSide: BorderSide(color: errorColor.withAlpha(150), width: 1),
     ),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(

@@ -48,30 +48,27 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Folder Name',
-                prefixIcon: Icon(
-                  PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
-                  size: 20,
-                ),
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextFormField(
+            controller: _controller,
+            decoration: InputDecoration(
+              labelText: 'Folder Name',
+              prefixIcon: Icon(
+                PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
+                size: 20,
               ),
-              validator: _validateName,
-              onChanged: (_) => {
-                if (_submitCalled) {validate()},
-              },
             ),
-          ],
-        ),
+            validator: _validateName,
+            onChanged: (_) => {
+              if (_submitCalled) {validate()},
+            },
+          ),
+        ],
       ),
     );
   }

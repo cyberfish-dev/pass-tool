@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/folder_add_action.dart';
+import 'package:flutter_app/actions/login_add_action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 final List<ListItemModel> actions = [
-  ListItemModel(
-    'Login',
-    PhosphorIcons.globe(PhosphorIconsStyle.thin),
-    null,
-    (ctx) => {},
-  ),
+  ListItemModel('Login', PhosphorIcons.globe(PhosphorIconsStyle.thin), null, (
+    ctx,
+  ) {
+    Navigator.of(ctx).pop();
+    final action = LoginAddAction();
+    action.showCustomBottomSheet(ctx);
+  }),
   ListItemModel(
     'Card',
     PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
@@ -38,13 +40,9 @@ final List<ListItemModel> actions = [
     'Folder',
     PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
     null,
-    (ctx) {      
-      
+    (ctx) {
       Navigator.of(ctx).pop();
-
-      final action = FolderAddAction(
-      );
-
+      final action = FolderAddAction();
       action.showCustomBottomSheet(ctx);
     },
   ),

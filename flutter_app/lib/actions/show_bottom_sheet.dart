@@ -65,12 +65,16 @@ abstract class BottomSheetAction<
                   ),
                 ),
 
-                // Body content
-                Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [buildBody(context)],
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      24,
+                      24,
+                      // add bottom inset so content scrolls above the keyboard
+                      24 + MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: SingleChildScrollView(child: buildBody(context)),
                   ),
                 ),
               ],
