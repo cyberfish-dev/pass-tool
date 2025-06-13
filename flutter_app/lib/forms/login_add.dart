@@ -64,60 +64,67 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // ITEM DETAILS
-          SectionHeader(title: 'ITEM DETAILS', count: 0),
+          SectionHeader(title: 'ITEM DETAILS'),
           SizedBox(height: 8),
-        
+
           // Item Name
           TextFormField(
             controller: _itemNameCtrl,
+            autofocus: true,
             decoration: InputDecoration(
               labelText: 'Item name',
-              prefixIcon: Icon(PhosphorIcons.record(PhosphorIconsStyle.thin), size: 20),
+              prefixIcon: Icon(
+                PhosphorIcons.record(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
+
           SizedBox(height: 16),
-        
+
           // Folder dropdown
-          InputDecorator(
+          DropdownButtonFormField<String>(
+            value: _selectedFolder,
             decoration: InputDecoration(
               labelText: 'Folder',
-              prefixIcon: Icon(PhosphorIcons.folderOpen(PhosphorIconsStyle.thin), size: 20),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedFolder,
-                isExpanded: true,
-                items: _folders
-                    .map((f) => DropdownMenuItem(value: f, child: Text(f)))
-                    .toList(),
-                onChanged: (v) {
-                  setState(() {
-                    _selectedFolder = v!;
-                    if (_submitCalled) _formKey.currentState!.validate();
-                  });
-                },
+              prefixIcon: Icon(
+                PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
+                size: 20,
               ),
             ),
+            onChanged: (v) {
+              setState(() => _selectedFolder = v!);
+              if (_submitCalled) _formKey.currentState!.validate();
+            },
+            items: _folders.map((f) {
+              return DropdownMenuItem(value: f, child: Text(f));
+            }).toList(),
           ),
-        
+
           SizedBox(height: 24),
-        
+
           // LOGIN CREDENTIALS
-          SectionHeader(title: 'LOGIN CREDENTIALS', count: 0),
+          SectionHeader(title: 'LOGIN CREDENTIALS'),
           SizedBox(height: 8),
-        
+
           // Username
           TextFormField(
             controller: _usernameCtrl,
             decoration: InputDecoration(
-              hintText: 'Username',
-              prefixIcon: Icon(PhosphorIcons.user(PhosphorIconsStyle.thin), size: 20),
+              labelText: 'Username',
+              prefixIcon: Icon(
+                PhosphorIcons.user(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
               suffixIcon: IconButton(
-                icon: Icon(PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin), size: 20),
+                icon: Icon(
+                  PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin),
+                  size: 20,
+                ),
                 onPressed: () {
                   // generate or suggest username
                 },
@@ -129,14 +136,17 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             },
           ),
           SizedBox(height: 12),
-        
+
           // Password
           TextFormField(
             controller: _passwordCtrl,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
-              hintText: 'Password',
-              prefixIcon: Icon(PhosphorIcons.password(PhosphorIconsStyle.thin), size: 20),
+              labelText: 'Password',
+              prefixIcon: Icon(
+                PhosphorIcons.password(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -152,7 +162,10 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
                     },
                   ),
                   IconButton(
-                    icon: Icon(PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin), size: 20),
+                    icon: Icon(
+                      PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin),
+                      size: 20,
+                    ),
                     onPressed: () {
                       // generate password
                     },
@@ -165,27 +178,22 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
-          SizedBox(height: 8),
-        
-          // Breach check link
-          TextButton(
-            onPressed: () {
-              // check for breaches
-            },
-            child: Text('Check password for data breaches'),
-          ),
-        
+
           SizedBox(height: 24),
-        
+
           // AUTHENTICATOR KEY
-          SectionHeader(title: 'AUTHENTICATOR KEY', count: 0),
+          SectionHeader(title: 'AUTHENTICATOR KEY'),
           SizedBox(height: 8),
-        
+
           TextFormField(
             controller: _authKeyCtrl,
             obscureText: _obscureAuthKey,
             decoration: InputDecoration(
-              hintText: 'Authenticator key',
+              labelText: 'Authenticator key',
+              prefixIcon: Icon(
+                PhosphorIcons.lockSimple(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureAuthKey
@@ -205,22 +213,32 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             onPressed: () {
               // launch setup flow
             },
-            icon: Icon(PhosphorIcons.camera(PhosphorIconsStyle.thin), size: 20),
+            icon: Icon(
+              PhosphorIcons.camera(PhosphorIconsStyle.duotone),
+              size: 20,
+            ),
             label: Text('Set up authenticator key'),
           ),
-        
+
           SizedBox(height: 24),
-        
+
+          
+          SectionHeader(title: 'AUTOFILL OPTIONS'),
           SizedBox(height: 8),
-          SectionHeader(title: 'AUTOFILL OPTIONS', count: 0),
-        
+
           TextFormField(
             controller: _websiteCtrl,
             decoration: InputDecoration(
-              hintText: 'Website (URI)',
-              prefixIcon: Icon(PhosphorIcons.globe(PhosphorIconsStyle.thin), size: 20),
+              labelText: 'Website (URI)',
+              prefixIcon: Icon(
+                PhosphorIcons.globe(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
               suffixIcon: IconButton(
-                icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.thin), size: 20),
+                icon: Icon(
+                  PhosphorIcons.gear(PhosphorIconsStyle.thin),
+                  size: 20,
+                ),
                 onPressed: () {
                   // open domain settings
                 },
@@ -231,7 +249,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
-        
+
           SizedBox(height: 24),
         ],
       ),
@@ -240,13 +258,12 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
 
   @override
   String getFormData() {
-    // TODO: implement getFormData
-    throw UnimplementedError();
+    return '';
   }
 
   @override
   bool validate() {
-    // TODO: implement validate
-    throw UnimplementedError();
+    _submitCalled = true;
+    return _formKey.currentState?.validate() ?? false;
   }
 }

@@ -56,6 +56,7 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
         children: [
           TextFormField(
             controller: _controller,
+            autofocus: true,
             decoration: InputDecoration(
               labelText: 'Folder Name',
               prefixIcon: Icon(
