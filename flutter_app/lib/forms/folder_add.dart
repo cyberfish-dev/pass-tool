@@ -12,9 +12,13 @@ class AddFolderForm extends StatefulWidget {
 class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
   final _formKey = GlobalKey<FormState>();
   final _controller = TextEditingController();
+  bool _submitCalled = false;
 
   @override
-  bool validate() => _formKey.currentState?.validate() ?? false;
+  bool validate() {
+    _submitCalled = true;
+    return _formKey.currentState?.validate() ?? false;
+  }
 
   @override
   String getFormData() => _controller.text.trim();
@@ -62,7 +66,9 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
                 ),
               ),
               validator: _validateName,
-              onChanged: (_) => { validate() },
+              onChanged: (_) => {
+                if (_submitCalled) {validate()},
+              },
             ),
           ],
         ),
