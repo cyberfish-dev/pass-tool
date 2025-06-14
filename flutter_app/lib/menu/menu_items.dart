@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/actions/show_add_pass_menu.dart';
+import 'package:flutter_app/actions/show_menu.dart';
+import 'package:flutter_app/enums/positions.dart';
+import 'package:flutter_app/menu/action_items.dart';
 import 'package:flutter_app/screens/vault_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -33,6 +35,6 @@ typedef ContextAction = void Function(BuildContext context, GlobalKey itemKey);
 
 final Map<int, ContextAction> menuActions = {
   0: (context, itemKey) {
-    showAddMenu(context, itemKey);
+    showCustomMenu(context, itemKey, actions, 180.0, gap: 8.0, pos: Position.topCenter);
   }
 };

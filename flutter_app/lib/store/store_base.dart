@@ -1,7 +1,7 @@
+import 'package:flutter_app/models/folder_model.dart';
+
 abstract class StoreBase {
-
   void addFolder(String item);
-  void removeFolder(String item);
-  List<String> listFolders();
-
+  void removeFolder(String id);
+  List<FolderModel> listFolders();
 }

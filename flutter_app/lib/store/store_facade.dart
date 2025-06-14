@@ -1,3 +1,4 @@
+import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/store/local_store.dart';
 import 'package:flutter_app/store/store_base.dart';
 
@@ -10,12 +11,12 @@ class StoreFacade implements StoreBase {
   }
 
   @override
-  void removeFolder(String item) {
-    _store.removeFolder(item);
+  void removeFolder(String id) {
+    _store.removeFolder(id);
   }
 
   @override
-  List<String> listFolders() {
+  List<FolderModel> listFolders() {
     return _store.listFolders();
   }
 }

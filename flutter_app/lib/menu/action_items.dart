@@ -11,30 +11,34 @@ final List<ListItemModel> actions = [
     Navigator.of(ctx).pop();
     final action = LoginAddAction();
     action.showCustomBottomSheet(ctx);
-  }),
+  }, '_login'),
   ListItemModel(
     'Card',
     PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
     null,
     (ctx) => {},
+    '_card',
   ),
   ListItemModel(
     'Identity',
     PhosphorIcons.identificationCard(PhosphorIconsStyle.thin),
     null,
     (ctx) => {},
+    '_identity',
   ),
   ListItemModel(
     'Secure Note',
     PhosphorIcons.note(PhosphorIconsStyle.thin),
     null,
     (ctx) => {},
+    '_note',
   ),
   ListItemModel(
     'SSH Key',
     PhosphorIcons.key(PhosphorIconsStyle.thin),
     null,
     (ctx) => {},
+    '_ssh_key',
   ),
   ListItemModel(
     'Folder',
@@ -45,5 +49,6 @@ final List<ListItemModel> actions = [
       final action = FolderAddAction();
       action.showCustomBottomSheet(ctx);
     },
+    '_folder',
   ),
 ];

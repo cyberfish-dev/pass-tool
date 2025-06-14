@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
+import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/models/form_base_state.dart';
+import 'package:flutter_app/models/list_item_model.dart';
+import 'package:flutter_app/store/store_facade.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddLoginForm extends StatefulWidget {
@@ -11,6 +15,8 @@ class AddLoginForm extends StatefulWidget {
 }
 
 class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
+  late final store = StoreFacade();
+
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
 
@@ -22,8 +28,8 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
   final _websiteCtrl = TextEditingController();
 
   // Dropdown
-  String _selectedFolder = 'No Folder';
-  final _folders = ['No Folder', 'Work', 'Personal'];
+  FolderModel? _selectedFolder;
+  List<ListItemModel> _folders = [];
 
   // Toggles
   bool _obscurePassword = true;
@@ -51,6 +57,31 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
       return 'Enter a valid URL';
     }
     return null;
+  }
+
+  void initFolders() {
+    setState(() {
+      _folders = store
+          .listFolders()
+          .map(
+            (el) => ListItemModel(
+              el.name,
+              PhosphorIcons.folderSimple(PhosphorIconsStyle.thin),
+              null,
+              (ctx) {
+                Navigator.pop(ctx, el);
+              },
+              el.id,
+            ),
+          )
+          .toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initFolders();
   }
 
   @override
@@ -87,21 +118,16 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
           SizedBox(height: 16),
 
           // Folder dropdown
-          TextFormField(
-            initialValue: _selectedFolder,
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: 'Folder',
-              prefixIcon: Icon(
-                PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
-                size: 20,
-              ),
-              suffixIcon: Icon(
-                PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
-                size: 20,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
+          CustomDropdown<FolderModel>(
+            value: _selectedFolder?.name ?? 'No Folder',
+            options: _folders,
+            onChanged: (selected) {
+              setState(() {
+                _selectedFolder = selected;
+              });
+            },
+            title: 'Folder',
+            icon: PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
           ),
 
           SizedBox(height: 24),
@@ -221,7 +247,6 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
 
           SizedBox(height: 24),
 
-          
           SectionHeader(title: 'AUTOFILL OPTIONS'),
           SizedBox(height: 8),
 

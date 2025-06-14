@@ -13,6 +13,7 @@ class ListItems extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.zero,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: items.map((cat) {
           var isLast = items.last == cat;
           return ItemRow(

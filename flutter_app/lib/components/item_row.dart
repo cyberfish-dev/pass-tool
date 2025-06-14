@@ -19,6 +19,7 @@ class ItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         InkWell(
           onTap: onTap,
@@ -27,25 +28,21 @@ class ItemRow extends StatelessWidget {
               horizontal: 16.0,
               vertical: 14.0,
             ),
-            child: Column(
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                    if (count != null)
-                      Text(
-                        count.toString(),
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                  ],
+                Icon(icon, size: 20),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
+                if (count != null)
+                  Text(
+                    count.toString(),
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
               ],
             ),
           ),

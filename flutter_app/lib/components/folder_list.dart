@@ -22,13 +22,14 @@ class FolderListState extends State<FolderList> {
           .listFolders()
           .map(
             (el) => ListItemModel(
-              el,
+              el.name,
               PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
               null,
               (ctx) {
-                store.removeFolder(el);
+                store.removeFolder(el.id);
                 update();
               },
+              el.id,
             ),
           )
           .toList();
