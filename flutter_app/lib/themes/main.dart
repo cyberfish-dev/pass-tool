@@ -32,28 +32,32 @@ final darkTeme = ThemeData.dark().copyWith(
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
-    hintStyle: textTheme.bodyMedium?.copyWith(color: textSecondary.withAlpha(180)),
-    labelStyle: textTheme.bodyMedium?.copyWith(color: textSecondary.withAlpha(180)),
+    hintStyle: textTheme.bodyMedium?.copyWith(
+      color: textSecondary.withAlpha(180),
+    ),
+    labelStyle: textTheme.bodyMedium?.copyWith(
+      color: textSecondary.withAlpha(180),
+    ),
     prefixIconColor: textSecondary,
     errorStyle: textTheme.bodySmall?.copyWith(color: errorColor),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: inputBorderColor, width: 1),
-    ),    
+    ),
     enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: inputBorderColor, width: 1),
     ),
     focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: accent.withAlpha(150), width: 1),
     ),
     focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: errorColor.withAlpha(200), width: 1),
     ),
     errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: errorColor.withAlpha(200), width: 1),
     ),
   ),
@@ -63,16 +67,29 @@ final darkTeme = ThemeData.dark().copyWith(
     unselectedItemColor: textSecondary,
     elevation: 0,
   ),
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: darkCard,
     foregroundColor: accent,
     elevation: 5,
+    shape: RoundedRectangleBorder(
+      side: BorderSide(color: accent.withAlpha(150), width: 1),
+      borderRadius: BorderRadius.circular(16.0),
+    ),
   ),
-  dividerColor: dividerColor,
+  dividerColor: inputBorderColor,
+  shadowColor: darkBg,
+  popupMenuTheme: PopupMenuThemeData(
+    shadowColor: darkBg,
+    elevation: 5,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+  ),
   dividerTheme: DividerThemeData(color: dividerColor, thickness: 1),
   cardTheme: CardThemeData(
     color: darkCard,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    shape: RoundedRectangleBorder(
+      side: BorderSide(color: inputBorderColor, width: 1),
+      borderRadius: BorderRadius.circular(12.0),
+    ),
   ),
   bottomSheetTheme: BottomSheetThemeData(
     backgroundColor: darkBg, // Or any color you want
@@ -81,8 +98,6 @@ final darkTeme = ThemeData.dark().copyWith(
     ),
   ),
   textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-      textStyle: textTheme.bodyMedium,
-    ),
+    style: TextButton.styleFrom(textStyle: textTheme.bodyMedium),
   ),
 );

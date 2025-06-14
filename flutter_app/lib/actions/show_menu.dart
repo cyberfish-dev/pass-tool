@@ -27,9 +27,6 @@ Future<T?> showCustomMenu<T>(
     position: position,
     menuPadding: EdgeInsets.zero,
     constraints: BoxConstraints.tightFor(width: popupWidth),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-    elevation: 5,
-    shadowColor: Theme.of(context).colorScheme.surface,
     items: [
       PopupMenuItem(
         padding: EdgeInsets.zero,

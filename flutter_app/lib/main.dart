@@ -78,12 +78,7 @@ class _MainLayoutState extends State<MainLayout> {
       floatingActionButton: menuActions.containsKey(_currentIndex)
           ? FloatingActionButton(
               key: _fabKey,
-              onPressed: () => menuActions[_currentIndex]!(context, _fabKey),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  16,
-                ),
-              ),
+              onPressed: () => menuActions[_currentIndex]!(context, _fabKey),            
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
