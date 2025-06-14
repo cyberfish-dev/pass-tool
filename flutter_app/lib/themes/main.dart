@@ -95,6 +95,7 @@ final darkTeme = ThemeData.dark().copyWith(
     backgroundColor: darkBg, // Or any color you want
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+      side: BorderSide(color: inputBorderColor, width: 1),
     ),
   ),
   textButtonTheme: TextButtonThemeData(

@@ -15,8 +15,7 @@ class PassToolApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PassTool',
-      themeMode:
-          ThemeMode.dark,
+      themeMode: ThemeMode.dark,
       theme: baseTheme,
       darkTheme: darkTeme,
       home: const MainLayout(),
@@ -41,19 +40,23 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final notchShape = RectangularNotchedRectangle(
+      notchWidth: 65,
+      notchHeight: 33,
+      notchRadius: 16,
+    );
+
+    final bool keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 0,),
+      appBar: AppBar(toolbarHeight: 0),
       body: pages[_currentIndex],
       bottomNavigationBar: SizedBox(
         height: 120,
         child: BottomAppBar(
           padding: EdgeInsets.only(bottom: 0, top: 20),
-          shape: RectangularNotchedRectangle(
-            notchWidth: 65,
-            notchHeight: 33,
-            notchRadius: 16,
-          ),
           elevation: 4,
+          shape: notchShape,
           notchMargin: 0,
           child: Builder(
             builder: (context) {
@@ -73,12 +76,13 @@ class _MainLayoutState extends State<MainLayout> {
           ),
         ),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: menuActions.containsKey(_currentIndex)
-          ? FloatingActionButton(
+          ? Visibility(
+            visible: !keyboardVisible,
+            child: FloatingActionButton(
               key: _fabKey,
-              onPressed: () => menuActions[_currentIndex]!(context, _fabKey),            
+              onPressed: () => menuActions[_currentIndex]!(context, _fabKey),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -88,7 +92,8 @@ class _MainLayoutState extends State<MainLayout> {
                   ),
                 ],
               ),
-            )
+            ),
+          )
           : null,
     );
   }

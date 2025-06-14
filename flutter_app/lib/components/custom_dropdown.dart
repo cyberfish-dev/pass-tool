@@ -37,6 +37,11 @@ class CustomDropdown<T> extends StatelessWidget {
         ),
       ),
       onTap: () async {
+
+        if (options.isEmpty) {
+          return;
+        }
+
         final box = _fieldKey.currentContext!.findRenderObject() as RenderBox;
         final inputWidth = box.size.width;
 

@@ -65,6 +65,8 @@ abstract class BottomSheetAction<
                   ),
                 ),
 
+                Divider(height: 1, thickness: 1, color: Theme.of(context).dividerColor),
+                
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
