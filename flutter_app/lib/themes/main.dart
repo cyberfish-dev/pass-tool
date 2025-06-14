@@ -72,7 +72,7 @@ final darkTeme = ThemeData.dark().copyWith(
     foregroundColor: accent,
     elevation: 5,
     shape: RoundedRectangleBorder(
-      side: BorderSide(color: accent.withAlpha(150), width: 1),
+      side: BorderSide(color: inputBorderColor, width: 1),
       borderRadius: BorderRadius.circular(16.0),
     ),
   ),
