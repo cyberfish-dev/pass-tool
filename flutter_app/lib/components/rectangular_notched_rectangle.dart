@@ -4,10 +4,12 @@ class RectangularNotchedRectangle extends NotchedShape {
   final double notchWidth;
   final double notchHeight;
   final double notchRadius;
+  final bool ignore;
 
   const RectangularNotchedRectangle({
     required this.notchWidth,
     required this.notchHeight,
+    required this.ignore,
     this.notchRadius = 0,
   });
 
@@ -26,6 +28,12 @@ class RectangularNotchedRectangle extends NotchedShape {
     final nr    = cx + halfW;
     final nh    = host.top + notchHeight;
     final r     = notchRadius;
+
+    if(ignore) {
+       return Path()
+      ..moveTo(host.left, host.top)
+      ..lineTo(host.right, host.top);
+    }
 
     // Carve out an inner rounded notch
     final notch = Path()

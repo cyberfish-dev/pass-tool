@@ -69,11 +69,14 @@ class _MainLayoutState extends State<MainLayout> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measureFab());
     final bool keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+    final hasFloating =
+        menuActions.containsKey(_currentIndex) && !keyboardVisible;
 
     final notch = RectangularNotchedRectangle(
       notchWidth: 65,
       notchHeight: 33,
       notchRadius: 16,
+      ignore: !hasFloating
     );
 
     return Scaffold(
@@ -83,18 +86,17 @@ class _MainLayoutState extends State<MainLayout> {
         height: 120,
         child: DecoratedBox(
           decoration: ShapeDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          shape: NotchedBorder(
-            notch: notch,
-            guest: _fabRect,
-            borderWidth: 2,
-            borderColor: Theme.of(context).colorScheme.primary,
+            shape: NotchedBorder(
+              notch: notch,
+              guest: _fabRect,
+              borderWidth: 2,
+              borderColor: Theme.of(context).colorScheme.primary,
+            ),
           ),
-        ),
           child: BottomAppBar(
             padding: EdgeInsets.only(bottom: 0, top: 20),
             elevation: 0,
-            shape: notch,
+            shape: hasFloating ? notch : null,
             notchMargin: 0,
             child: Builder(
               builder: (context) {
@@ -116,21 +118,18 @@ class _MainLayoutState extends State<MainLayout> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: menuActions.containsKey(_currentIndex)
-          ? Visibility(
-              visible: !keyboardVisible,
-              child: FloatingActionButton(
-                key: _fabKey,
-                onPressed: () => menuActions[_currentIndex]!(context, _fabKey),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      PhosphorIcons.plusCircle(PhosphorIconsStyle.fill),
-                      size: 25,
-                    ),
-                  ],
-                ),
+      floatingActionButton: hasFloating
+          ? FloatingActionButton(
+              key: _fabKey,
+              onPressed: () => menuActions[_currentIndex]!(context, _fabKey),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    PhosphorIcons.plusCircle(PhosphorIconsStyle.fill),
+                    size: 25,
+                  ),
+                ],
               ),
             )
           : null,
