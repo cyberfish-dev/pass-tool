@@ -42,6 +42,7 @@ pub fn generate_password(
     // Validate minimums
     let total_min =
         if include_digits { min_digits } else { 0 } + if include_symbols { min_symbols } else { 0 };
+
     if total_min > length {
         panic!("Sum of min_digits and min_symbols cannot exceed length");
     }
@@ -52,29 +53,47 @@ pub fn generate_password(
 
     // Add required counts
     if include_digits {
+        
         let digits: Vec<char> = ('0'..='9').collect();
         for _ in 0..min_digits {
             password.push(*digits.choose(&mut rng).unwrap());
         }
+
         charset.extend(digits);
+
+        if min_digits == 0 {
+            password.push(*charset.last().unwrap());
+        }
     }
+    
     if include_symbols {
+        
         for _ in 0..min_symbols {
             password.push(*SYMBOLS.choose(&mut rng).unwrap());
         }
+
         charset.extend(SYMBOLS.iter());
+
+        if min_symbols == 0 {
+            password.push(*charset.last().unwrap());
+        }
     }
+    
     if include_lower {
         charset.extend(('a'..='z').collect::<Vec<char>>());
+        password.push(*charset.last().unwrap());
     }
+
     if include_upper {
         charset.extend(('A'..='Z').collect::<Vec<char>>());
+        password.push(*charset.last().unwrap());
     }
 
     // Fill the rest
     for _ in password.len()..length {
         password.push(*charset.choose(&mut rng).unwrap());
     }
+    
     // Shuffle
     password.shuffle(&mut rng);
     password.into_iter().collect()
