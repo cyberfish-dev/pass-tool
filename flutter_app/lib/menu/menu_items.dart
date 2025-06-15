@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/show_menu.dart';
 import 'package:flutter_app/enums/positions.dart';
 import 'package:flutter_app/menu/action_items.dart';
+import 'package:flutter_app/screens/password_generator.dart';
 import 'package:flutter_app/screens/vault_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 const List<Widget> pages = <Widget>[
   VaultScreen(),
-  Center(child: Text('Generator', style: TextStyle(fontSize: 24))),
+  PasswordGenerator(),
   Center(child: Text('Send', style: TextStyle(fontSize: 24))),
   Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
 ];
