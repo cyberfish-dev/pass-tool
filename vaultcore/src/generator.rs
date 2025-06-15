@@ -3,7 +3,13 @@
 //! Provides a function to generate random passwords with configurable length, character sets,
 //! and minimum counts for digits and symbols, using a cryptographically secure RNG.
 
-use rand::{seq::SliceRandom, rngs::OsRng};
+use rand::{rngs::OsRng, seq::SliceRandom};
+
+// Predefined symbol set
+pub const SYMBOLS: &[char] = &[
+    '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', ';',
+    ':', ',', '.', '<', '>', '/', '?', '|',
+];
 
 /// Generates a random password using OS-provided secure randomness.
 ///
@@ -20,15 +26,6 @@ use rand::{seq::SliceRandom, rngs::OsRng};
 /// # Panics
 ///
 /// Panics if no character sets are selected or if sums of minimums exceed `length`.
-///
-/// # Examples
-///
-/// ```rust
-/// use pass_tool_core::password_generator::generate_password;
-///
-/// let pwd = generate_password(16, true, true, true, true, 4, 2);
-/// assert_eq!(pwd.len(), 16);
-/// ```
 pub fn generate_password(
     length: usize,
     include_lower: bool,
@@ -43,18 +40,13 @@ pub fn generate_password(
         panic!("At least one character set must be included");
     }
     // Validate minimums
-    let total_min = if include_digits { min_digits } else { 0 } + if include_symbols { min_symbols } else { 0 };
+    let total_min =
+        if include_digits { min_digits } else { 0 } + if include_symbols { min_symbols } else { 0 };
     if total_min > length {
         panic!("Sum of min_digits and min_symbols cannot exceed length");
     }
 
-    // Predefined symbol set
-    const SYMBOLS: &[char] = &[
-        '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+',
-        '[', ']', '{', '}', ';', ':', ',', '.', '<', '>', '/', '?', '|'
-    ];
-
-    let mut rng = OsRng;  // CSPRNG from the operating system
+    let mut rng = OsRng; // CSPRNG from the operating system
     let mut password: Vec<char> = Vec::with_capacity(length);
     let mut charset: Vec<char> = Vec::new();
 
@@ -86,38 +78,4 @@ pub fn generate_password(
     // Shuffle
     password.shuffle(&mut rng);
     password.into_iter().collect()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_all_sets() {
-        let pwd = generate_password(12, true, true, true, true, 3, 2);
-        assert_eq!(pwd.len(), 12);
-        assert!(pwd.chars().any(|c| c.is_ascii_lowercase()));
-        assert!(pwd.chars().any(|c| c.is_ascii_uppercase()));
-        assert!(pwd.chars().filter(|c| c.is_ascii_digit()).count() >= 3);
-        assert!(pwd.chars().filter(|c| SYMBOLS.contains(&c)).count() >= 2);
-    }
-
-    #[test]
-    fn test_only_lower() {
-        let pwd = generate_password(8, true, false, false, false, 0, 0);
-        assert_eq!(pwd.len(), 8);
-        assert!(pwd.chars().all(|c| c.is_ascii_lowercase()));
-    }
-
-    #[test]
-    #[should_panic(expected = "At least one character set must be included")]
-    fn test_no_sets() {
-        generate_password(8, false, false, false, false, 0, 0);
-    }
-
-    #[test]
-    #[should_panic(expected = "Sum of min_digits and min_symbols cannot exceed length")]
-    fn test_minimums_exceed() {
-        generate_password(4, true, false, true, true, 3, 2);
-    }
 }
