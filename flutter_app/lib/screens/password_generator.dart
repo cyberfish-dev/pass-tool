@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pass_tool_core/pass_tool_core.dart';
 
 class PasswordGenerator extends StatefulWidget {
   const PasswordGenerator({super.key});
@@ -29,9 +30,12 @@ class PasswordGeneratorState extends State<PasswordGenerator>
   }
 
   void _generatePassword() {
+
+    var name = greet(name: 'Flutter');
+    
     setState(() {
       // stub: replace with calling into Rust core
-      _generated = '••••••••••••••••••';
+      _generated = name;
     });
   }
 

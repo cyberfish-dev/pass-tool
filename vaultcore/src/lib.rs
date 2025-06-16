@@ -1,3 +1,5 @@
+pub mod api;
+mod frb_generated;
 pub mod vault;
 pub mod crypto;
 pub mod kdf;

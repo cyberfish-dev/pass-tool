@@ -6,6 +6,7 @@
 use rand::{rngs::OsRng, seq::SliceRandom};
 
 // Predefined symbol set
+#[flutter_rust_bridge::frb(sync)] 
 pub const SYMBOLS: &[char] = &[
     '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', ';',
     ':', ',', '.', '<', '>', '/', '?', '|',
@@ -26,6 +27,7 @@ pub const SYMBOLS: &[char] = &[
 /// # Panics
 ///
 /// Panics if no character sets are selected or if sums of minimums exceed `length`.
+#[flutter_rust_bridge::frb(sync)] 
 pub fn generate_password(
     length: usize,
     include_lower: bool,

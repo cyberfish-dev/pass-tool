@@ -1,4 +1,4 @@
-use vaultcore::generator::{generate_password, SYMBOLS};
+use pass_tool_core::generator::{generate_password, SYMBOLS};
 
 #[test]
 fn test_all_sets() {

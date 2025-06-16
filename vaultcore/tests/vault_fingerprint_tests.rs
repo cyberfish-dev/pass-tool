@@ -1,5 +1,5 @@
-use vaultcore::vault_fingerprint::*;
-use vaultcore::vault::*;
+use pass_tool_core::vault_fingerprint::*;
+use pass_tool_core::vault::*;
 
 #[test]
 fn test_fingerprint_vault_success() {

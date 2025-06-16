@@ -1,5 +1,5 @@
-use vaultcore::device_keys::*;
-use vaultcore::sync_message::SyncMessage;
+use pass_tool_core::device_keys::*;
+use pass_tool_core::sync_message::SyncMessage;
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 
 #[test]

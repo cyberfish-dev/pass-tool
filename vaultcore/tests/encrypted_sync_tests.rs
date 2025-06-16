@@ -1,6 +1,6 @@
 
 use rand_core::OsRng;
-use vaultcore::encrypted_sync::*;
+use pass_tool_core::encrypted_sync::*;
 use x25519_dalek::{EphemeralSecret, PublicKey};
 
 #[test]

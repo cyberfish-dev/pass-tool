@@ -1,4 +1,4 @@
-use vaultcore::crypto::{encrypt_entry, decrypt_entry, generate_key, generate_salt};
+use pass_tool_core::crypto::{encrypt_entry, decrypt_entry, generate_key, generate_salt};
 
 #[test]
 fn test_encrypt_decrypt_success() {

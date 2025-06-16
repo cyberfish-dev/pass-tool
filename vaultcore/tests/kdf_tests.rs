@@ -1,4 +1,4 @@
-use vaultcore::kdf::derive_key;
+use pass_tool_core::kdf::derive_key;
 use argon2::password_hash::SaltString;
 
 #[test]
