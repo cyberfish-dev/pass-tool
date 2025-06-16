@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/themes/colors.dart';
 
-const _fontFamily = 'SFProText'; // or 'Roboto', whichever you bundle
+const _fontFamily = 'JetBrainsMonoLight'; // or 'Roboto', whichever you bundle
 
 final textTheme = Typography.whiteMountainView.copyWith(
   headlineSmall: TextStyle(

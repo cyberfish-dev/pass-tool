@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/colored_password.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 
 class PasswordGenerator extends StatefulWidget {
@@ -61,10 +62,7 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        _generated,
-                        style: TextStyle(fontFamily: 'monospace', fontSize: 16),
-                      ),
+                      child: ColoredPassword(_generated),
                     ),
                     IconButton(
                       icon: Icon(Icons.refresh),
