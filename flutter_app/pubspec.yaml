@@ -33,6 +33,7 @@ dependencies:
   phosphor_flutter: ^2.1.0
   pass_tool_core:
     path: ./pass_tool_core
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

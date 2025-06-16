@@ -61,11 +61,11 @@ pub fn generate_password(
             password.push(*digits.choose(&mut rng).unwrap());
         }
 
-        charset.extend(digits);
-
         if min_digits == 0 {
-            password.push(*charset.last().unwrap());
+            password.push(*digits.choose(&mut rng).unwrap());
         }
+        
+        charset.extend(digits);
     }
     
     if include_symbols {
@@ -74,21 +74,23 @@ pub fn generate_password(
             password.push(*SYMBOLS.choose(&mut rng).unwrap());
         }
 
-        charset.extend(SYMBOLS.iter());
-
         if min_symbols == 0 {
-            password.push(*charset.last().unwrap());
+            password.push(*SYMBOLS.choose(&mut rng).unwrap());
         }
+
+        charset.extend(SYMBOLS.iter());
     }
     
     if include_lower {
-        charset.extend(('a'..='z').collect::<Vec<char>>());
-        password.push(*charset.last().unwrap());
+        let lower: Vec<char> = ('a'..='z').collect();
+        password.push(*lower.choose(&mut rng).unwrap());
+        charset.extend(lower);
     }
 
     if include_upper {
-        charset.extend(('A'..='Z').collect::<Vec<char>>());
-        password.push(*charset.last().unwrap());
+        let upper: Vec<char> = ('A'..='Z').collect();
+        password.push(*upper.choose(&mut rng).unwrap());
+        charset.extend(upper);
     }
 
     // Fill the rest

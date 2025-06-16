@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/colored_password.dart';
+import 'package:flutter_app/preferences/password_prefs.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -12,14 +14,8 @@ class PasswordGenerator extends StatefulWidget {
 
 class PasswordGeneratorState extends State<PasswordGenerator>
     with SingleTickerProviderStateMixin {
-  // Form state
-  double _length = 20;
-  bool _useUpper = true;
-  bool _useLower = true;
-  bool _useDigits = true;
-  bool _useSymbols = true;
-  int _minDigits = 1;
-  int _minSymbols = 1;
+  late PasswordPrefs _prefs;
+  bool _initComplete = false;
 
   // Generated password placeholder
   String _generated = '';
@@ -27,19 +23,25 @@ class PasswordGeneratorState extends State<PasswordGenerator>
   @override
   void initState() {
     super.initState();
-    // optionally generate initial password
-    _generatePassword();
+
+    PasswordPrefs.loadPrefs().then((p) {
+      setState(() {
+        _prefs = p;
+        _initComplete = true;
+      });
+      _generatePassword();
+    });
   }
 
   void _generatePassword() {
     final password = generatePassword(
-      includeDigits: _useDigits,
-      includeLower: _useLower,
-      includeSymbols: _useSymbols,
-      includeUpper: _useUpper,
-      length: BigInt.from(_length.toInt()),
-      minDigits: BigInt.from(_minDigits),
-      minSymbols: BigInt.from(_minSymbols),
+      includeDigits: _prefs.useDigits,
+      includeLower: _prefs.useLower,
+      includeSymbols: _prefs.useSymbols,
+      includeUpper: _prefs.useUpper,
+      length: BigInt.from(_prefs.length.toInt()),
+      minDigits: BigInt.from(_prefs.minDigits),
+      minSymbols: BigInt.from(_prefs.minSymbols),
     );
 
     setState(() {
@@ -48,42 +50,51 @@ class PasswordGeneratorState extends State<PasswordGenerator>
   }
 
   void _settingsChanged() {
-    if (_length < _getMinSliderValue()) {
+    if (_prefs.length < _getMinSliderValue()) {
       setState(() {
-        _length = _getMinSliderValue();
+        _prefs.length = _getMinSliderValue();
       });
     }
 
-    if (!_useDigits && !_useSymbols && !_useUpper && !_useLower) {
+    if (!_prefs.useDigits &&
+        !_prefs.useSymbols &&
+        !_prefs.useUpper &&
+        !_prefs.useLower) {
       setState(() {
-        _useLower = true;
+        _prefs.useLower = true;
       });
     }
 
-    // stub: handle settings changes if needed
-    _generatePassword();
+    // Save the updated preferences
+    PasswordPrefs.savePrefs(_prefs).then((_) {
+      _generatePassword();
+    });
   }
 
   void _copyPassword() {
-    // stub: copy to clipboard
+    Clipboard.setData(ClipboardData(text: _generated));
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Password copied to clipboard')));
   }
 
   _getMinSliderValue() {
     var minLength = 1;
 
-    if (_useDigits) {
-      minLength += _minDigits;
+    if (_prefs.useDigits) {
+      minLength += _prefs.minDigits;
     }
 
-    if (_useSymbols) {
-      minLength += _minSymbols;
+    if (_prefs.useSymbols) {
+      minLength += _prefs.minSymbols;
     }
 
-    if (_useUpper) {
+    if (_prefs.useUpper) {
       minLength += 1;
     }
 
-    if (_useLower) {
+    if (_prefs.useLower) {
       minLength += 1;
     }
 
@@ -92,6 +103,10 @@ class PasswordGeneratorState extends State<PasswordGenerator>
 
   @override
   Widget build(BuildContext context) {
+    if (!_initComplete) {
+      return Container();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -109,8 +124,11 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                 child: Row(
                   children: [
                     Expanded(child: ColoredPassword(_generated, 16.0)),
+                    const SizedBox(width: 16),
                     IconButton(
-                      icon: Icon(Icons.refresh),
+                      icon: Icon(PhosphorIcons.shuffle(
+                        PhosphorIconsStyle.fill,
+                      ), color: Theme.of(context).colorScheme.primary),
                       onPressed: _generatePassword,
                     ),
                   ],
@@ -149,16 +167,16 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                                 min: _getMinSliderValue(),
                                 max: 128,
                                 divisions: 124,
-                                label: _length.toInt().toString(),
-                                value: _length,
+                                label: _prefs.length.toInt().toString(),
+                                value: _prefs.length,
                                 onChanged: (v) {
-                                  setState(() => _length = v);
+                                  setState(() => _prefs.length = v);
                                   _settingsChanged();
                                 },
                               ),
                             ),
                             Text(
-                              '${_length.toInt()}',
+                              '${_prefs.length.toInt()}',
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
                           ],
@@ -184,9 +202,9 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Text('A-Z'),
                             Expanded(child: Container()),
                             Switch(
-                              value: _useUpper,
+                              value: _prefs.useUpper,
                               onChanged: (v) {
-                                setState(() => _useUpper = v);
+                                setState(() => _prefs.useUpper = v);
                                 _settingsChanged();
                               },
                             ),
@@ -212,9 +230,9 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Text('a-z'),
                             Expanded(child: Container()),
                             Switch(
-                              value: _useLower,
+                              value: _prefs.useLower,
                               onChanged: (v) {
-                                setState(() => _useLower = v);
+                                setState(() => _prefs.useLower = v);
                                 _settingsChanged();
                               },
                             ),
@@ -240,9 +258,9 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Text('0-9'),
                             Expanded(child: Container()),
                             Switch(
-                              value: _useDigits,
+                              value: _prefs.useDigits,
                               onChanged: (v) {
-                                setState(() => _useDigits = v);
+                                setState(() => _prefs.useDigits = v);
                                 _settingsChanged();
                               },
                             ),
@@ -268,9 +286,9 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Text('!@#\$%^&*'),
                             Expanded(child: Container()),
                             Switch(
-                              value: _useSymbols,
+                              value: _prefs.useSymbols,
                               onChanged: (v) {
-                                setState(() => _useSymbols = v);
+                                setState(() => _prefs.useSymbols = v);
                                 _settingsChanged();
                               },
                             ),
@@ -292,9 +310,9 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                       // minimum numbers
                       AnimatedOpacity(
                         duration: Duration(milliseconds: 200),
-                        opacity: _useDigits ? 1.0 : 0.4,
+                        opacity: _prefs.useDigits ? 1.0 : 0.4,
                         child: IgnorePointer(
-                          ignoring: !_useDigits,
+                          ignoring: !_prefs.useDigits,
                           child: Padding(
                             padding: const EdgeInsets.only(
                               top: 8.0,
@@ -310,15 +328,15 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                                       PhosphorIconsStyle.thin,
                                     ),
                                   ),
-                                  onPressed: _minDigits > 0
+                                  onPressed: _prefs.minDigits > 0
                                       ? () {
-                                          setState(() => _minDigits--);
+                                          setState(() => _prefs.minDigits--);
                                           _settingsChanged();
                                         }
                                       : null,
                                 ),
                                 Text(
-                                  '$_minDigits',
+                                  '${_prefs.minDigits}',
                                   style: Theme.of(
                                     context,
                                   ).textTheme.labelMedium,
@@ -330,7 +348,7 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                                     ),
                                   ),
                                   onPressed: () {
-                                    setState(() => _minDigits++);
+                                    setState(() => _prefs.minDigits++);
                                     _settingsChanged();
                                   },
                                 ),
@@ -354,9 +372,9 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                       // minimum symbols
                       AnimatedOpacity(
                         duration: Duration(milliseconds: 200),
-                        opacity: _useSymbols ? 1.0 : 0.4,
+                        opacity: _prefs.useSymbols ? 1.0 : 0.4,
                         child: IgnorePointer(
-                          ignoring: !_useSymbols,
+                          ignoring: !_prefs.useSymbols,
                           child: Padding(
                             padding: const EdgeInsets.only(
                               top: 8.0,
@@ -372,15 +390,15 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                                       PhosphorIconsStyle.thin,
                                     ),
                                   ),
-                                  onPressed: _minSymbols > 0
+                                  onPressed: _prefs.minSymbols > 0
                                       ? () {
-                                          setState(() => _minSymbols--);
+                                          setState(() => _prefs.minSymbols--);
                                           _settingsChanged();
                                         }
                                       : null,
                                 ),
                                 Text(
-                                  '$_minSymbols',
+                                  '${_prefs.minSymbols}',
                                   style: Theme.of(
                                     context,
                                   ).textTheme.labelMedium,
@@ -392,7 +410,7 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                                     ),
                                   ),
                                   onPressed: () {
-                                    setState(() => _minSymbols++);
+                                    setState(() => _prefs.minSymbols++);
                                     _settingsChanged();
                                   },
                                 ),

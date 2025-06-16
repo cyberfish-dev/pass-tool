@@ -19,7 +19,7 @@ final List<BottomNavigationBarItem> navItems = <BottomNavigationBarItem>[
     label: 'Vault',
   ),
   BottomNavigationBarItem(
-    icon: Icon(PhosphorIcons.wrench(PhosphorIconsStyle.fill)),
+    icon: Icon(PhosphorIcons.shuffle(PhosphorIconsStyle.fill)),
     label: 'Generator',
   ),
   BottomNavigationBarItem(
