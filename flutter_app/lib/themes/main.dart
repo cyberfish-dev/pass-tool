@@ -110,4 +110,18 @@ final darkTeme = ThemeData.dark().copyWith(
       ),
     ),
   ),
+  switchTheme: SwitchThemeData(
+          trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+            return states.any((state) => state == WidgetState.selected)
+                ? accent
+                : darkBg;
+          }),
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            return states.any((state) => state == WidgetState.selected)
+                ? textPrimary
+                : textSecondary;
+          }), 
+          overlayColor: WidgetStateProperty.all(Colors.transparent),          
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
 );

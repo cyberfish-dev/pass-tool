@@ -48,12 +48,46 @@ class PasswordGeneratorState extends State<PasswordGenerator>
   }
 
   void _settingsChanged() {
+    if (_length < _getMinSliderValue()) {
+      setState(() {
+        _length = _getMinSliderValue();
+      });
+    }
+
+    if (!_useDigits && !_useSymbols && !_useUpper && !_useLower) {
+      setState(() {
+        _useLower = true;
+      });
+    }
+
     // stub: handle settings changes if needed
     _generatePassword();
   }
 
   void _copyPassword() {
     // stub: copy to clipboard
+  }
+
+  _getMinSliderValue() {
+    var minLength = 1;
+
+    if (_useDigits) {
+      minLength += _minDigits;
+    }
+
+    if (_useSymbols) {
+      minLength += _minSymbols;
+    }
+
+    if (_useUpper) {
+      minLength += 1;
+    }
+
+    if (_useLower) {
+      minLength += 1;
+    }
+
+    return minLength.toDouble();
   }
 
   @override
@@ -68,16 +102,19 @@ class PasswordGeneratorState extends State<PasswordGenerator>
           // Generated password display
           Card(
             margin: EdgeInsets.zero,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  Expanded(child: ColoredPassword(_generated, 16.0)),
-                  IconButton(
-                    icon: Icon(Icons.refresh),
-                    onPressed: _generatePassword,
-                  ),
-                ],
+            child: Container(
+              constraints: BoxConstraints(minHeight: 180),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Row(
+                  children: [
+                    Expanded(child: ColoredPassword(_generated, 16.0)),
+                    IconButton(
+                      icon: Icon(Icons.refresh),
+                      onPressed: _generatePassword,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -109,7 +146,7 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Text('Length:'),
                             Expanded(
                               child: Slider(
-                                min: 4,
+                                min: _getMinSliderValue(),
                                 max: 128,
                                 divisions: 124,
                                 label: _length.toInt().toString(),
@@ -176,7 +213,10 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Expanded(child: Container()),
                             Switch(
                               value: _useLower,
-                              onChanged: (v) { setState(() => _useLower = v); _settingsChanged(); }
+                              onChanged: (v) {
+                                setState(() => _useLower = v);
+                                _settingsChanged();
+                              },
                             ),
                           ],
                         ),
@@ -201,7 +241,10 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Expanded(child: Container()),
                             Switch(
                               value: _useDigits,
-                              onChanged: (v) { setState(() => _useDigits = v); _settingsChanged(); }
+                              onChanged: (v) {
+                                setState(() => _useDigits = v);
+                                _settingsChanged();
+                              },
                             ),
                           ],
                         ),
@@ -226,7 +269,10 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                             Expanded(child: Container()),
                             Switch(
                               value: _useSymbols,
-                              onChanged: (v) { setState(() => _useSymbols = v); _settingsChanged(); }
+                              onChanged: (v) {
+                                setState(() => _useSymbols = v);
+                                _settingsChanged();
+                              },
                             ),
                           ],
                         ),
@@ -244,35 +290,53 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                       ),
 
                       // minimum numbers
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: Row(
-                          children: [
-                            Text('Minimum numbers'),
-                            Expanded(child: Container()),
-                            IconButton(
-                              icon: Icon(
-                                PhosphorIcons.minusCircle(
-                                  PhosphorIconsStyle.thin,
+                      AnimatedOpacity(
+                        duration: Duration(milliseconds: 200),
+                        opacity: _useDigits ? 1.0 : 0.4,
+                        child: IgnorePointer(
+                          ignoring: !_useDigits,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Text('Minimum numbers'),
+                                Expanded(child: Container()),
+                                IconButton(
+                                  icon: Icon(
+                                    PhosphorIcons.minusCircle(
+                                      PhosphorIconsStyle.thin,
+                                    ),
+                                  ),
+                                  onPressed: _minDigits > 0
+                                      ? () {
+                                          setState(() => _minDigits--);
+                                          _settingsChanged();
+                                        }
+                                      : null,
                                 ),
-                              ),
-                              onPressed: _minDigits > 0
-                                  ? () { setState(() => _minDigits--); _settingsChanged(); }
-                                  : null,
-                            ),
-                            Text(
-                              '$_minDigits',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                PhosphorIcons.plusCircle(
-                                  PhosphorIconsStyle.thin,
+                                Text(
+                                  '$_minDigits',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium,
                                 ),
-                              ),
-                              onPressed: () { setState(() => _minDigits++); _settingsChanged(); }
+                                IconButton(
+                                  icon: Icon(
+                                    PhosphorIcons.plusCircle(
+                                      PhosphorIconsStyle.thin,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    setState(() => _minDigits++);
+                                    _settingsChanged();
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                       Row(
@@ -288,35 +352,53 @@ class PasswordGeneratorState extends State<PasswordGenerator>
                       ),
 
                       // minimum symbols
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: Row(
-                          children: [
-                            Text('Minimum symbols'),
-                            Expanded(child: Container()),
-                            IconButton(
-                              icon: Icon(
-                                PhosphorIcons.minusCircle(
-                                  PhosphorIconsStyle.thin,
+                      AnimatedOpacity(
+                        duration: Duration(milliseconds: 200),
+                        opacity: _useSymbols ? 1.0 : 0.4,
+                        child: IgnorePointer(
+                          ignoring: !_useSymbols,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              bottom: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Text('Minimum symbols'),
+                                Expanded(child: Container()),
+                                IconButton(
+                                  icon: Icon(
+                                    PhosphorIcons.minusCircle(
+                                      PhosphorIconsStyle.thin,
+                                    ),
+                                  ),
+                                  onPressed: _minSymbols > 0
+                                      ? () {
+                                          setState(() => _minSymbols--);
+                                          _settingsChanged();
+                                        }
+                                      : null,
                                 ),
-                              ),
-                              onPressed: _minSymbols > 0
-                                  ? () { setState(() => _minSymbols--); _settingsChanged(); }
-                                  : null,
-                            ),
-                            Text(
-                              '$_minSymbols',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                PhosphorIcons.plusCircle(
-                                  PhosphorIconsStyle.thin,
+                                Text(
+                                  '$_minSymbols',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium,
                                 ),
-                              ),
-                              onPressed: () { setState(() => _minSymbols++); _settingsChanged(); }
+                                IconButton(
+                                  icon: Icon(
+                                    PhosphorIcons.plusCircle(
+                                      PhosphorIconsStyle.thin,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    setState(() => _minSymbols++);
+                                    _settingsChanged();
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
