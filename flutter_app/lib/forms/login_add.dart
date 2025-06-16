@@ -4,7 +4,9 @@ import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/models/form_base_state.dart';
 import 'package:flutter_app/models/list_item_model.dart';
+import 'package:flutter_app/preferences/password_prefs.dart';
 import 'package:flutter_app/store/store_facade.dart';
+import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddLoginForm extends StatefulWidget {
@@ -16,6 +18,8 @@ class AddLoginForm extends StatefulWidget {
 
 class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
   late final store = StoreFacade();
+
+  late PasswordPrefs _prefs;
 
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
@@ -82,6 +86,29 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
   void initState() {
     super.initState();
     initFolders();
+
+    PasswordPrefs.loadPrefs().then((p) {
+      setState(() {
+        _prefs = p;
+      });
+      _generatePassword();
+    });
+  }
+
+  void _generatePassword() {
+    final password = generatePassword(
+      includeDigits: _prefs.useDigits,
+      includeLower: _prefs.useLower,
+      includeSymbols: _prefs.useSymbols,
+      includeUpper: _prefs.useUpper,
+      length: BigInt.from(_prefs.length.toInt()),
+      minDigits: BigInt.from(_prefs.minDigits),
+      minSymbols: BigInt.from(_prefs.minSymbols),
+    );
+
+    setState(() {
+      _passwordCtrl.text = password;
+    });
   }
 
   @override
@@ -192,7 +219,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
                       size: 20,
                     ),
                     onPressed: () {
-                      // generate password
+                      _generatePassword();
                     },
                   ),
                 ],
