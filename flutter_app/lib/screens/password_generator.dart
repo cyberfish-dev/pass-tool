@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/colored_password.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class PasswordGenerator extends StatefulWidget {
   const PasswordGenerator({super.key});
@@ -31,13 +32,24 @@ class PasswordGeneratorState extends State<PasswordGenerator>
   }
 
   void _generatePassword() {
+    final password = generatePassword(
+      includeDigits: _useDigits,
+      includeLower: _useLower,
+      includeSymbols: _useSymbols,
+      includeUpper: _useUpper,
+      length: BigInt.from(_length.toInt()),
+      minDigits: BigInt.from(_minDigits),
+      minSymbols: BigInt.from(_minSymbols),
+    );
 
-    final password = generatePassword(includeDigits: _useDigits, includeLower: _useLower,
-        includeSymbols: _useSymbols, includeUpper: _useUpper, length: BigInt.from(_length.toInt()), minDigits: BigInt.from(_minDigits), minSymbols: BigInt.from(_minSymbols));  
-    
     setState(() {
       _generated = password;
     });
+  }
+
+  void _settingsChanged() {
+    // stub: handle settings changes if needed
+    _generatePassword();
   }
 
   void _copyPassword() {
@@ -55,13 +67,12 @@ class PasswordGeneratorState extends State<PasswordGenerator>
 
           // Generated password display
           Card(
+            margin: EdgeInsets.zero,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  Expanded(
-                    child: ColoredPassword(_generated),
-                  ),
+                  Expanded(child: ColoredPassword(_generated, 16.0)),
                   IconButton(
                     icon: Icon(Icons.refresh),
                     onPressed: _generatePassword,
@@ -71,10 +82,11 @@ class PasswordGeneratorState extends State<PasswordGenerator>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8.0,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(0, 48), // full width
+              ),
               onPressed: _copyPassword,
               child: const Text('Copy'),
             ),
@@ -83,78 +95,233 @@ class PasswordGeneratorState extends State<PasswordGenerator>
           // Settings form
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Length slider
-                  Text('Length: ${_length.toInt()}'),
-                  Slider(
-                    min: 4,
-                    max: 64,
-                    divisions: 60,
-                    label: _length.toInt().toString(),
-                    value: _length,
-                    onChanged: (v) => setState(() => _length = v),
-                  ),
-                  // toggles
-                  SwitchListTile(
-                    title: const Text('A-Z'),
-                    value: _useUpper,
-                    onChanged: (v) => setState(() => _useUpper = v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('a-z'),
-                    value: _useLower,
-                    onChanged: (v) => setState(() => _useLower = v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('0-9'),
-                    value: _useDigits,
-                    onChanged: (v) => setState(() => _useDigits = v),
-                  ),
-                  SwitchListTile(
-                    title: const Text('!@#\$%^&*'),
-                    value: _useSymbols,
-                    onChanged: (v) => setState(() => _useSymbols = v),
-                  ),
-                  // minimum numbers
-                  const SizedBox(height: 8),
-                  Text('Minimum numbers'),
-                  Row(
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle_outline),
-                        onPressed: _minDigits > 0
-                            ? () => setState(() => _minDigits--)
-                            : null,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('Length:'),
+                            Expanded(
+                              child: Slider(
+                                min: 4,
+                                max: 128,
+                                divisions: 124,
+                                label: _length.toInt().toString(),
+                                value: _length,
+                                onChanged: (v) {
+                                  setState(() => _length = v);
+                                  _settingsChanged();
+                                },
+                              ),
+                            ),
+                            Text(
+                              '${_length.toInt()}',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ],
+                        ),
                       ),
-                      Text('$_minDigits'),
-                      IconButton(
-                        icon: Icon(Icons.add_circle_outline),
-                        onPressed: () => setState(() => _minDigits++),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              height: 1,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('A-Z'),
+                            Expanded(child: Container()),
+                            Switch(
+                              value: _useUpper,
+                              onChanged: (v) {
+                                setState(() => _useUpper = v);
+                                _settingsChanged();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              height: 1,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('a-z'),
+                            Expanded(child: Container()),
+                            Switch(
+                              value: _useLower,
+                              onChanged: (v) { setState(() => _useLower = v); _settingsChanged(); }
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              height: 1,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('0-9'),
+                            Expanded(child: Container()),
+                            Switch(
+                              value: _useDigits,
+                              onChanged: (v) { setState(() => _useDigits = v); _settingsChanged(); }
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              height: 1,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('!@#\$%^&*'),
+                            Expanded(child: Container()),
+                            Switch(
+                              value: _useSymbols,
+                              onChanged: (v) { setState(() => _useSymbols = v); _settingsChanged(); }
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              height: 1,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // minimum numbers
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('Minimum numbers'),
+                            Expanded(child: Container()),
+                            IconButton(
+                              icon: Icon(
+                                PhosphorIcons.minusCircle(
+                                  PhosphorIconsStyle.thin,
+                                ),
+                              ),
+                              onPressed: _minDigits > 0
+                                  ? () { setState(() => _minDigits--); _settingsChanged(); }
+                                  : null,
+                            ),
+                            Text(
+                              '$_minDigits',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                PhosphorIcons.plusCircle(
+                                  PhosphorIconsStyle.thin,
+                                ),
+                              ),
+                              onPressed: () { setState(() => _minDigits++); _settingsChanged(); }
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              height: 1,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // minimum symbols
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: Row(
+                          children: [
+                            Text('Minimum symbols'),
+                            Expanded(child: Container()),
+                            IconButton(
+                              icon: Icon(
+                                PhosphorIcons.minusCircle(
+                                  PhosphorIconsStyle.thin,
+                                ),
+                              ),
+                              onPressed: _minSymbols > 0
+                                  ? () { setState(() => _minSymbols--); _settingsChanged(); }
+                                  : null,
+                            ),
+                            Text(
+                              '$_minSymbols',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                PhosphorIcons.plusCircle(
+                                  PhosphorIconsStyle.thin,
+                                ),
+                              ),
+                              onPressed: () { setState(() => _minSymbols++); _settingsChanged(); }
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  // minimum symbols
-                  const SizedBox(height: 8),
-                  Text('Minimum symbols'),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle_outline),
-                        onPressed: _minSymbols > 0
-                            ? () => setState(() => _minSymbols--)
-                            : null,
-                      ),
-                      Text('$_minSymbols'),
-                      IconButton(
-                        icon: Icon(Icons.add_circle_outline),
-                        onPressed: () => setState(() => _minSymbols++),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                ],
+                ),
               ),
             ),
           ),

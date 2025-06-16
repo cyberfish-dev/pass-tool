@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 
 class ColoredPassword extends StatelessWidget {
   final String password;
-  const ColoredPassword(this.password, {super.key});
+  final double? fontSize;
+  const ColoredPassword(this.password, this.fontSize, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textStyle = TextStyle(
       fontFamily: 'JetBrainsMono',
-      fontSize: 18,
+      fontSize: fontSize,
       color: theme.colorScheme.onSurface,
     );
 

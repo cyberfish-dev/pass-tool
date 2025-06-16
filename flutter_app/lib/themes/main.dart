@@ -101,4 +101,13 @@ final darkTeme = ThemeData.dark().copyWith(
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(textStyle: textTheme.bodyMedium),
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      textStyle: textTheme.bodyMedium,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        side: BorderSide(color: inputBorderColor, width: 1),
+      ),
+    ),
+  ),
 );
