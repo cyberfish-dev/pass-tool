@@ -3,7 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api/generator.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -53,7 +53,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
   @override
   Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
+    await api.crateApiMainInitApp();
   }
 
   @override
@@ -64,20 +64,28 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => -1918914929;
+  int get rustContentHash => -1828026174;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
         stem: 'pass_tool_core',
-        ioDirectory: 'rust/target/release/',
+        ioDirectory: '../../vaultcore/target/release/',
         webPrefix: 'pkg/',
       );
 }
 
 abstract class RustLibApi extends BaseApi {
-  String crateApiSimpleGreet({required String name});
+  String crateApiGeneratorGeneratePassword({
+    required BigInt length,
+    required bool includeLower,
+    required bool includeUpper,
+    required bool includeDigits,
+    required bool includeSymbols,
+    required BigInt minDigits,
+    required BigInt minSymbols,
+  });
 
-  Future<void> crateApiSimpleInitApp();
+  Future<void> crateApiMainInitApp();
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -89,30 +97,63 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  String crateApiSimpleGreet({required String name}) {
+  String crateApiGeneratorGeneratePassword({
+    required BigInt length,
+    required bool includeLower,
+    required bool includeUpper,
+    required bool includeDigits,
+    required bool includeSymbols,
+    required BigInt minDigits,
+    required BigInt minSymbols,
+  }) {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(name, serializer);
+          sse_encode_usize(length, serializer);
+          sse_encode_bool(includeLower, serializer);
+          sse_encode_bool(includeUpper, serializer);
+          sse_encode_bool(includeDigits, serializer);
+          sse_encode_bool(includeSymbols, serializer);
+          sse_encode_usize(minDigits, serializer);
+          sse_encode_usize(minSymbols, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiSimpleGreetConstMeta,
-        argValues: [name],
+        constMeta: kCrateApiGeneratorGeneratePasswordConstMeta,
+        argValues: [
+          length,
+          includeLower,
+          includeUpper,
+          includeDigits,
+          includeSymbols,
+          minDigits,
+          minSymbols,
+        ],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleGreetConstMeta =>
-      const TaskConstMeta(debugName: "greet", argNames: ["name"]);
+  TaskConstMeta get kCrateApiGeneratorGeneratePasswordConstMeta =>
+      const TaskConstMeta(
+        debugName: "generate_password",
+        argNames: [
+          "length",
+          "includeLower",
+          "includeUpper",
+          "includeDigits",
+          "includeSymbols",
+          "minDigits",
+          "minSymbols",
+        ],
+      );
 
   @override
-  Future<void> crateApiSimpleInitApp() {
+  Future<void> crateApiMainInitApp() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -128,20 +169,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiSimpleInitAppConstMeta,
+        constMeta: kCrateApiMainInitAppConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleInitAppConstMeta =>
+  TaskConstMeta get kCrateApiMainInitAppConstMeta =>
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
   }
 
   @protected
@@ -163,10 +210,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
   }
 
   @protected
@@ -188,21 +247,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
   }
 
   @protected
@@ -227,14 +292,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
+  void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
+    serializer.buffer.putInt32(self);
   }
 }

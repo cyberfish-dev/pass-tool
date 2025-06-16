@@ -31,11 +31,11 @@ class PasswordGeneratorState extends State<PasswordGenerator>
 
   void _generatePassword() {
 
-    var name = greet(name: 'Flutter');
+    final password = generatePassword(includeDigits: _useDigits, includeLower: _useLower,
+        includeSymbols: _useSymbols, includeUpper: _useUpper, length: BigInt.from(_length.toInt()), minDigits: BigInt.from(_minDigits), minSymbols: BigInt.from(_minSymbols));  
     
     setState(() {
-      // stub: replace with calling into Rust core
-      _generated = name;
+      _generated = password;
     });
   }
 
