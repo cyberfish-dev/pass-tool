@@ -54,28 +54,24 @@ class PasswordGeneratorState extends State<PasswordGenerator>
           const SizedBox(height: 12),
 
           // Generated password display
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ColoredPassword(_generated),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: _generatePassword,
-                    ),
-                  ],
-                ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ColoredPassword(_generated),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.refresh),
+                    onPressed: _generatePassword,
+                  ),
+                ],
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
               vertical: 8.0,
             ),
             child: ElevatedButton(
@@ -87,7 +83,6 @@ class PasswordGeneratorState extends State<PasswordGenerator>
           // Settings form
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

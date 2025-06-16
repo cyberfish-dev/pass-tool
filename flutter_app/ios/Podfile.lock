@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - pass_tool_core (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - pass_tool_core (from `.symlinks/plugins/pass_tool_core/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  pass_tool_core:
+    :path: ".symlinks/plugins/pass_tool_core/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  pass_tool_core: 4af6c34b045a76dcaedaa9ca1f15f87241998f33
+
+PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
+
+COCOAPODS: 1.16.2
