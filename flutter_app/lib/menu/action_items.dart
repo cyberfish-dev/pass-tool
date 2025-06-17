@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/actions/credit_add_action.dart';
 import 'package:flutter_app/actions/folder_add_action.dart';
 import 'package:flutter_app/actions/login_add_action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
@@ -16,7 +17,11 @@ final List<ListItemModel> actions = [
     'Card',
     PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
     null,
-    (ctx) => {},
+    (ctx) {
+      Navigator.of(ctx).pop();
+      final action = CreditAddAction();
+      action.showCustomBottomSheet(ctx);
+    },
     '_card',
   ),
   ListItemModel(

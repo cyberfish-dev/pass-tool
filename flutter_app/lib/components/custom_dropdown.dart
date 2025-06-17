@@ -10,7 +10,8 @@ class CustomDropdown<T> extends StatelessWidget {
   final String title;
   final IconData icon;
   final List<ListItemModel> options;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T?> onChanged;
+  final FormFieldValidator<String>? validator;
 
   CustomDropdown({
     super.key,
@@ -19,6 +20,7 @@ class CustomDropdown<T> extends StatelessWidget {
     required this.onChanged,
     required this.title,
     required this.icon,
+    required this.validator,
   });
 
   @override
@@ -30,14 +32,27 @@ class CustomDropdown<T> extends StatelessWidget {
       decoration: InputDecoration(
         labelText: title,
         prefixIcon: Icon(icon, size: 20),
-        suffixIcon: Icon(
-          PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
-          size: 20,
-          color: Theme.of(context).colorScheme.onSurface,
+        suffixIcon: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(
+                PhosphorIcons.trashSimple(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
+              onPressed: () => onChanged(null),
+            ),
+            IconButton(
+              icon: Icon(
+                PhosphorIcons.caretDown(PhosphorIconsStyle.thin),
+                size: 20,
+              ),
+              onPressed: () {},
+            ),
+          ],
         ),
       ),
       onTap: () async {
-
         if (options.isEmpty) {
           return;
         }
@@ -58,6 +73,8 @@ class CustomDropdown<T> extends StatelessWidget {
       },
       showCursor: false,
       enableInteractiveSelection: false,
+      canRequestFocus: false,
+      validator: validator,
     );
   }
 }

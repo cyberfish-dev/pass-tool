@@ -70,9 +70,9 @@ abstract class BottomSheetAction<
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
+                      36,
                       24,
-                      24,
-                      24,
+                      36,
                       // add bottom inset so content scrolls above the keyboard
                       24 + MediaQuery.of(context).viewInsets.bottom,
                     ),

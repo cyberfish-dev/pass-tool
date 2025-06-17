@@ -39,6 +39,7 @@ final darkTeme = ThemeData.dark().copyWith(
       color: textSecondary.withAlpha(180),
     ),
     prefixIconColor: textSecondary,
+    suffixIconColor: textSecondary,
     errorStyle: textTheme.bodySmall?.copyWith(color: errorColor),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),

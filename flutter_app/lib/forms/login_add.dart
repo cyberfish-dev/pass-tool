@@ -155,6 +155,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             },
             title: 'Folder',
             icon: PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
+            validator: (value) => null,
           ),
 
           SizedBox(height: 24),
