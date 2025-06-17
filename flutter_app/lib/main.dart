@@ -74,12 +74,61 @@ class _MainLayoutState extends State<MainLayout> {
     final hasFloating =
         menuActions.containsKey(_currentIndex) && !keyboardVisible;
 
+    final isWide = MediaQuery.of(context).size.width >= 600;
+
     final notch = RectangularNotchedRectangle(
       notchWidth: 65,
       notchHeight: 33,
       notchRadius: 16,
-      ignore: !hasFloating
+      ignore: !hasFloating,
     );
+
+    if (isWide) {
+      // For wide screens, we don't use a FAB
+      return Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: _onItemTapped,
+              labelType: NavigationRailLabelType.all,
+              destinations: navItems
+                  .map(
+                    (item) => NavigationRailDestination(
+                      icon: item.icon,
+                      label: Text(item.label ?? ''),
+                    ),
+                  )
+                  .toList(),
+            ),
+            Expanded(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 1000),
+                  child: pages[_currentIndex]),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: hasFloating
+            ? FloatingActionButton(
+                key: _fabKey,
+                onPressed: () => menuActions[_currentIndex]!(context, _fabKey),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      PhosphorIcons.plusCircle(PhosphorIconsStyle.fill),
+                      size: 25,
+                    ),
+                  ],
+                ),
+              )
+            : null,
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),

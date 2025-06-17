@@ -68,6 +68,18 @@ final darkTeme = ThemeData.dark().copyWith(
     unselectedItemColor: textSecondary,
     elevation: 0,
   ),
+  navigationRailTheme: NavigationRailThemeData(
+    backgroundColor: darkCard,
+    elevation: 0,
+    indicatorColor: textSecondary.withAlpha(50),
+    indicatorShape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    selectedIconTheme: IconThemeData(color: accent),
+    unselectedIconTheme: IconThemeData(color: textSecondary),
+    selectedLabelTextStyle: TextStyle(color: accent),
+    unselectedLabelTextStyle: TextStyle(color: textSecondary),
+  ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: darkCard,
     foregroundColor: accent,
@@ -112,17 +124,17 @@ final darkTeme = ThemeData.dark().copyWith(
     ),
   ),
   switchTheme: SwitchThemeData(
-          trackColor: WidgetStateProperty.resolveWith<Color>((states) {
-            return states.any((state) => state == WidgetState.selected)
-                ? accent
-                : darkBg;
-          }),
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            return states.any((state) => state == WidgetState.selected)
-                ? textPrimary
-                : textSecondary;
-          }), 
-          overlayColor: WidgetStateProperty.all(Colors.transparent),          
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
+    trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+      return states.any((state) => state == WidgetState.selected)
+          ? accent
+          : darkBg;
+    }),
+    thumbColor: WidgetStateProperty.resolveWith((states) {
+      return states.any((state) => state == WidgetState.selected)
+          ? textPrimary
+          : textSecondary;
+    }),
+    overlayColor: WidgetStateProperty.all(Colors.transparent),
+    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  ),
 );
