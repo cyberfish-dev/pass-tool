@@ -10,8 +10,14 @@ Future<T?> showCustomMenu<T>(
   double popupWidth, {
   Position pos = Position.bottomLeft,
   double gap = 4.0,
+  int maxPopupElements = 5,
 }) {
-  final popupHeight = items.length * 49.0 - 1;
+
+  var popupHeight = items.length * 49.0 - 1;
+  
+  if (items.length > maxPopupElements) {
+    popupHeight = maxPopupElements * 49.0 - 1;
+  }
 
   final position = computeMenuPosition(
     context: context,
@@ -26,12 +32,14 @@ Future<T?> showCustomMenu<T>(
     context: context,
     position: position,
     menuPadding: EdgeInsets.zero,
-    constraints: BoxConstraints.tightFor(width: popupWidth),
+    constraints: BoxConstraints.tightFor(width: popupWidth, height: popupHeight),
     items: [
       PopupMenuItem(
         padding: EdgeInsets.zero,
         enabled: false,
-        child: ListItems(items: items),
+        child: SizedBox(
+          height: popupHeight,
+          child: ListItems(items: items)),
       ),
     ],
   );

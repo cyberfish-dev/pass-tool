@@ -12,20 +12,24 @@ class ListItems extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: items.map((cat) {
-          var isLast = items.last == cat;
-          return ItemRow(
-            icon: cat.icon,
-            title: cat.title,
-            count: cat.count,
-            onTap: () {
-               cat.onTap(context);
-            },
-            isLast: isLast,
-          );
-        }).toList(),
+      child: SingleChildScrollView(
+        child: 
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: items.map((cat) {
+              var isLast = items.last == cat;
+              return ItemRow(
+                icon: cat.icon,
+                title: cat.title,
+                count: cat.count,
+                onTap: () {
+                   cat.onTap(context);
+                },
+                isLast: isLast,
+              );
+            }).toList(),
+          ),
+        
       ),
     );
   }

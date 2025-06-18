@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/credit_add_action.dart';
 import 'package:flutter_app/actions/folder_add_action.dart';
 import 'package:flutter_app/actions/login_add_action.dart';
+import 'package:flutter_app/actions/note_add_action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -28,7 +29,11 @@ final List<ListItemModel> actions = [
     'Secure Note',
     PhosphorIcons.note(PhosphorIconsStyle.thin),
     null,
-    (ctx) => {},
+    (ctx) {
+      Navigator.of(ctx).pop();
+      final action = NoteAddAction();
+      action.showCustomBottomSheet(ctx);
+    },
     '_note',
   ),
   ListItemModel(
