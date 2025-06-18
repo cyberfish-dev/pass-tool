@@ -6,15 +6,26 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `eq`, `fmt`, `fmt`, `fmt`, `hash`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VaultMetadataVault>>
 abstract class VaultMetadataVault implements RustOpaqueInterface {
+  Future<void> addEntry({
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  });
+
+  Future<Folder> addFolder({required String name});
+
   Map<EntryCategory, BigInt> get categoryCounts;
 
   List<VaultMetadataEntry> get entries;
 
   Map<String, BigInt> get folderCounts;
+
+  List<Folder> get folders;
 
   BigInt get trashedCount;
 
@@ -24,15 +35,37 @@ abstract class VaultMetadataVault implements RustOpaqueInterface {
 
   set folderCounts(Map<String, BigInt> folderCounts);
 
+  set folders(List<Folder> folders);
+
   set trashedCount(BigInt trashedCount);
 
   static Future<VaultMetadataVault> default_() =>
       RustLib.instance.api.crateApiVaultModelsVaultMetadataVaultDefault();
 
   Future<void> recalculateCounts();
+
+  Future<bool> removeFolderById({required String folderId});
 }
 
 enum EntryCategory { login, secureNote, creditCard }
+
+class Folder {
+  final String id;
+  final String name;
+
+  const Folder({required this.id, required this.name});
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Folder &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+}
 
 class VaultMetadataEntry {
   final String id;

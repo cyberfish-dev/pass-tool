@@ -3,35 +3,18 @@ use std::collections::HashMap;
 use chrono::Utc;
 use uuid::Uuid;
 
-use crate::api::vault_models::{EntryCategory, VaultMetadataEntry, VaultMetadataVault};
-
-#[flutter_rust_bridge::frb(sync)]
-pub fn create_empty_vault() -> VaultMetadataVaultAlias {
-    VaultMetadataVaultAlias::default()
-}
-
-#[flutter_rust_bridge::frb(sync)]
-pub fn add_entry_to_vault(
-    vault: VaultMetadataVaultAlias,
-    name: String,
-    category: EntryCategory,
-    folder: Option<String>,
-    icon: Option<String>,
-) -> VaultMetadataVaultAlias {
-    vault.add_entry(name, category, folder, icon)
-}
-
-#[flutter_rust_bridge::frb(non_opaque)]
-pub type VaultMetadataVaultAlias = VaultMetadataVault;
+use crate::api::{
+    vault_models::{EntryCategory, Folder, VaultMetadataEntry, VaultMetadataVault},
+};
 
 impl VaultMetadataVault {
     pub fn add_entry(
-        mut self,
+        &mut self,
         name: String,
         category: EntryCategory,
         folder: Option<String>,
         icon: Option<String>,
-    ) -> Self {
+    ) {
         let entry = VaultMetadataEntry {
             id: Uuid::new_v4().to_string(),
             name,
@@ -45,7 +28,33 @@ impl VaultMetadataVault {
 
         self.entries.push(entry.clone());
         self.recalculate_counts();
-        self
+    }
+
+    pub fn add_folder(&mut self, name: String) -> Folder {
+        let folder = Folder {
+            id: Uuid::new_v4().to_string(),
+            name,
+        };
+
+        self.folders.push(folder.clone());
+        folder
+    }
+
+    pub fn remove_folder_by_id(&mut self, folder_id: &str) -> bool {
+        let before = self.folders.len();
+        self.folders.retain(|f| f.id != folder_id);
+
+        // Remove folder reference from all entries
+        for entry in &mut self.entries {
+            if let Some(ref id) = entry.folder {
+                if id == folder_id {
+                    entry.folder = None;
+                }
+            }
+        }
+
+        self.recalculate_counts();
+        self.folders.len() < before
     }
 
     pub fn recalculate_counts(&mut self) {
@@ -75,6 +84,7 @@ impl Default for VaultMetadataVault {
     fn default() -> Self {
         Self {
             entries: Vec::new(),
+            folders: Vec::new(),
             folder_counts: HashMap::new(),
             category_counts: HashMap::new(),
             trashed_count: 0,

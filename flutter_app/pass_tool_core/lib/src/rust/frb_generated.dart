@@ -4,7 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/generator.dart';
-import 'api/vault_metadata.dart';
+import 'api/vault_manager.dart';
 import 'api/vault_models.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => -279771811;
+  int get rustContentHash => 44794241;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -77,6 +77,43 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  void crateApiVaultManagerVaultManagerAddEntry({
+    required VaultManager that,
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  });
+
+  void crateApiVaultManagerVaultManagerAddFolder({
+    required VaultManager that,
+    required String name,
+  });
+
+  Future<VaultManager> crateApiVaultManagerVaultManagerDefault();
+
+  VaultMetadataVault crateApiVaultManagerVaultManagerGetMetadata({
+    required VaultManager that,
+  });
+
+  bool crateApiVaultManagerVaultManagerRemoveFolder({
+    required VaultManager that,
+    required String id,
+  });
+
+  Future<void> crateApiVaultModelsVaultMetadataVaultAddEntry({
+    required VaultMetadataVault that,
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  });
+
+  Future<Folder> crateApiVaultModelsVaultMetadataVaultAddFolder({
+    required VaultMetadataVault that,
+    required String name,
+  });
+
   Map<EntryCategory, BigInt>
   crateApiVaultModelsVaultMetadataVaultAutoAccessorGetCategoryCounts({
     required VaultMetadataVault that,
@@ -89,6 +126,10 @@ abstract class RustLibApi extends BaseApi {
 
   Map<String, BigInt>
   crateApiVaultModelsVaultMetadataVaultAutoAccessorGetFolderCounts({
+    required VaultMetadataVault that,
+  });
+
+  List<Folder> crateApiVaultModelsVaultMetadataVaultAutoAccessorGetFolders({
     required VaultMetadataVault that,
   });
 
@@ -111,6 +152,11 @@ abstract class RustLibApi extends BaseApi {
     required Map<String, BigInt> folderCounts,
   });
 
+  void crateApiVaultModelsVaultMetadataVaultAutoAccessorSetFolders({
+    required VaultMetadataVault that,
+    required List<Folder> folders,
+  });
+
   void crateApiVaultModelsVaultMetadataVaultAutoAccessorSetTrashedCount({
     required VaultMetadataVault that,
     required BigInt trashedCount,
@@ -122,15 +168,12 @@ abstract class RustLibApi extends BaseApi {
     required VaultMetadataVault that,
   });
 
-  VaultMetadataVault crateApiVaultMetadataAddEntryToVault({
-    required VaultMetadataVault vault,
-    required String name,
-    required EntryCategory category,
-    String? folder,
-    String? icon,
+  Future<bool> crateApiVaultModelsVaultMetadataVaultRemoveFolderById({
+    required VaultMetadataVault that,
+    required String folderId,
   });
 
-  VaultMetadataVault crateApiVaultMetadataCreateEmptyVault();
+  VaultManager crateApiVaultManagerCreateEmptyVaultManager();
 
   String crateApiGeneratorGeneratePassword({
     required BigInt length,
@@ -143,6 +186,14 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<void> crateApiMainInitApp();
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_VaultManager;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_VaultManager;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_VaultManagerPtr;
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_VaultMetadataVault;
@@ -163,6 +214,253 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  void crateApiVaultManagerVaultManagerAddEntry({
+    required VaultManager that,
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(name, serializer);
+          sse_encode_entry_category(category, serializer);
+          sse_encode_opt_String(folder, serializer);
+          sse_encode_opt_String(icon, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerAddEntryConstMeta,
+        argValues: [that, name, category, folder, icon],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerAddEntryConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_add_entry",
+        argNames: ["that", "name", "category", "folder", "icon"],
+      );
+
+  @override
+  void crateApiVaultManagerVaultManagerAddFolder({
+    required VaultManager that,
+    required String name,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(name, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerAddFolderConstMeta,
+        argValues: [that, name],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerAddFolderConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_add_folder",
+        argNames: ["that", "name"],
+      );
+
+  @override
+  Future<VaultManager> crateApiVaultManagerVaultManagerDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 3,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerDefaultConstMeta =>
+      const TaskConstMeta(debugName: "VaultManager_default", argNames: []);
+
+  @override
+  VaultMetadataVault crateApiVaultManagerVaultManagerGetMetadata({
+    required VaultManager that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerGetMetadataConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerGetMetadataConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_get_metadata",
+        argNames: ["that"],
+      );
+
+  @override
+  bool crateApiVaultManagerVaultManagerRemoveFolder({
+    required VaultManager that,
+    required String id,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerRemoveFolderConstMeta,
+        argValues: [that, id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerRemoveFolderConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_remove_folder",
+        argNames: ["that", "id"],
+      );
+
+  @override
+  Future<void> crateApiVaultModelsVaultMetadataVaultAddEntry({
+    required VaultMetadataVault that,
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
+            that,
+            serializer,
+          );
+          sse_encode_String(name, serializer);
+          sse_encode_entry_category(category, serializer);
+          sse_encode_opt_String(folder, serializer);
+          sse_encode_opt_String(icon, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 6,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultModelsVaultMetadataVaultAddEntryConstMeta,
+        argValues: [that, name, category, folder, icon],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultModelsVaultMetadataVaultAddEntryConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultMetadataVault_add_entry",
+        argNames: ["that", "name", "category", "folder", "icon"],
+      );
+
+  @override
+  Future<Folder> crateApiVaultModelsVaultMetadataVaultAddFolder({
+    required VaultMetadataVault that,
+    required String name,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
+            that,
+            serializer,
+          );
+          sse_encode_String(name, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 7,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_folder,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultModelsVaultMetadataVaultAddFolderConstMeta,
+        argValues: [that, name],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultModelsVaultMetadataVaultAddFolderConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultMetadataVault_add_folder",
+        argNames: ["that", "name"],
+      );
+
+  @override
   Map<EntryCategory, BigInt>
   crateApiVaultModelsVaultMetadataVaultAutoAccessorGetCategoryCounts({
     required VaultMetadataVault that,
@@ -175,7 +473,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_Map_entry_category_usize_None,
@@ -209,7 +507,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_vault_metadata_entry,
@@ -243,7 +541,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_Map_String_usize_None,
@@ -265,6 +563,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  List<Folder> crateApiVaultModelsVaultMetadataVaultAutoAccessorGetFolders({
+    required VaultMetadataVault that,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_folder,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiVaultModelsVaultMetadataVaultAutoAccessorGetFoldersConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultModelsVaultMetadataVaultAutoAccessorGetFoldersConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultMetadataVault_auto_accessor_get_folders",
+        argNames: ["that"],
+      );
+
+  @override
   BigInt crateApiVaultModelsVaultMetadataVaultAutoAccessorGetTrashedCount({
     required VaultMetadataVault that,
   }) {
@@ -276,7 +607,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_usize,
@@ -311,7 +642,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_Map_entry_category_usize_None(categoryCounts, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -346,7 +677,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_list_vault_metadata_entry(entries, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -381,7 +712,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_Map_String_usize_None(folderCounts, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -403,6 +734,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  void crateApiVaultModelsVaultMetadataVaultAutoAccessorSetFolders({
+    required VaultMetadataVault that,
+    required List<Folder> folders,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
+            that,
+            serializer,
+          );
+          sse_encode_list_folder(folders, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiVaultModelsVaultMetadataVaultAutoAccessorSetFoldersConstMeta,
+        argValues: [that, folders],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultModelsVaultMetadataVaultAutoAccessorSetFoldersConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultMetadataVault_auto_accessor_set_folders",
+        argNames: ["that", "folders"],
+      );
+
+  @override
   void crateApiVaultModelsVaultMetadataVaultAutoAccessorSetTrashedCount({
     required VaultMetadataVault that,
     required BigInt trashedCount,
@@ -416,7 +782,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_usize(trashedCount, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -446,7 +812,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 18,
             port: port_,
           );
         },
@@ -483,7 +849,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 19,
             port: port_,
           );
         },
@@ -507,67 +873,70 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  VaultMetadataVault crateApiVaultMetadataAddEntryToVault({
-    required VaultMetadataVault vault,
-    required String name,
-    required EntryCategory category,
-    String? folder,
-    String? icon,
+  Future<bool> crateApiVaultModelsVaultMetadataVaultRemoveFolderById({
+    required VaultMetadataVault that,
+    required String folderId,
   }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
-            vault,
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
+            that,
             serializer,
           );
-          sse_encode_String(name, serializer);
-          sse_encode_entry_category(category, serializer);
-          sse_encode_opt_String(folder, serializer);
-          sse_encode_opt_String(icon, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+          sse_encode_String(folderId, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 20,
+            port: port_,
+          );
         },
         codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault,
+          decodeSuccessData: sse_decode_bool,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiVaultMetadataAddEntryToVaultConstMeta,
-        argValues: [vault, name, category, folder, icon],
+        constMeta:
+            kCrateApiVaultModelsVaultMetadataVaultRemoveFolderByIdConstMeta,
+        argValues: [that, folderId],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiVaultMetadataAddEntryToVaultConstMeta =>
+  TaskConstMeta
+  get kCrateApiVaultModelsVaultMetadataVaultRemoveFolderByIdConstMeta =>
       const TaskConstMeta(
-        debugName: "add_entry_to_vault",
-        argNames: ["vault", "name", "category", "folder", "icon"],
+        debugName: "VaultMetadataVault_remove_folder_by_id",
+        argNames: ["that", "folderId"],
       );
 
   @override
-  VaultMetadataVault crateApiVaultMetadataCreateEmptyVault() {
+  VaultManager crateApiVaultManagerCreateEmptyVaultManager() {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
         },
         codec: SseCodec(
           decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiVaultMetadataCreateEmptyVaultConstMeta,
+        constMeta: kCrateApiVaultManagerCreateEmptyVaultManagerConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiVaultMetadataCreateEmptyVaultConstMeta =>
-      const TaskConstMeta(debugName: "create_empty_vault", argNames: []);
+  TaskConstMeta get kCrateApiVaultManagerCreateEmptyVaultManagerConstMeta =>
+      const TaskConstMeta(
+        debugName: "create_empty_vault_manager",
+        argNames: [],
+      );
 
   @override
   String crateApiGeneratorGeneratePassword({
@@ -590,7 +959,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_bool(includeSymbols, serializer);
           sse_encode_usize(minDigits, serializer);
           sse_encode_usize(minSymbols, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -634,7 +1003,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 14,
+            funcId: 23,
             port: port_,
           );
         },
@@ -653,12 +1022,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_VaultManager => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_VaultManager => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager;
+
+  RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_VaultMetadataVault => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault;
 
   RustArcDecrementStrongCountFnType
   get rust_arc_decrement_strong_count_VaultMetadataVault => wire
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault;
+
+  @protected
+  VaultManager
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
 
   @protected
   VaultMetadataVault
@@ -670,12 +1056,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VaultManager
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   VaultMetadataVault
   dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return VaultMetadataVaultImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  VaultManager
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -708,6 +1112,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VaultManager
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   VaultMetadataVault
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     dynamic raw,
@@ -735,6 +1148,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Folder dco_decode_folder(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return Folder(
+      id: dco_decode_String(arr[0]),
+      name: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
   int dco_decode_i_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -744,6 +1169,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64 dco_decode_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeI64(raw);
+  }
+
+  @protected
+  List<Folder> dco_decode_list_folder(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_folder).toList();
   }
 
   @protected
@@ -843,6 +1274,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VaultManager
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   VaultMetadataVault
   sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     SseDeserializer deserializer,
@@ -855,12 +1298,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VaultManager
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   VaultMetadataVault
   sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return VaultMetadataVaultImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  VaultManager
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -897,6 +1364,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VaultManager
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return VaultManagerImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   VaultMetadataVault
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     SseDeserializer deserializer,
@@ -929,6 +1408,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Folder sse_decode_folder(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    return Folder(id: var_id, name: var_name);
+  }
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
@@ -938,6 +1425,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  List<Folder> sse_decode_list_folder(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Folder>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_folder(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -1070,6 +1569,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    VaultManager self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VaultManagerImpl).frbInternalSseEncode(move: true),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     VaultMetadataVault self,
     SseSerializer serializer,
@@ -1083,6 +1595,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    VaultManager self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VaultManagerImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     VaultMetadataVault self,
     SseSerializer serializer,
@@ -1090,6 +1615,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
       (self as VaultMetadataVaultImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    VaultManager self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VaultManagerImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -1133,6 +1671,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+    VaultManager self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as VaultManagerImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
     VaultMetadataVault self,
     SseSerializer serializer,
@@ -1163,6 +1714,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_folder(Folder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.id, serializer);
+    sse_encode_String(self.name, serializer);
+  }
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
@@ -1172,6 +1730,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_list_folder(List<Folder> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_folder(item, serializer);
+    }
   }
 
   @protected
@@ -1291,6 +1858,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
+class VaultManagerImpl extends RustOpaque implements VaultManager {
+  // Not to be used by end users
+  VaultManagerImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  VaultManagerImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_VaultManager,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_VaultManager,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_VaultManagerPtr,
+  );
+
+  void addEntry({
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  }) => RustLib.instance.api.crateApiVaultManagerVaultManagerAddEntry(
+    that: this,
+    name: name,
+    category: category,
+    folder: folder,
+    icon: icon,
+  );
+
+  void addFolder({required String name}) => RustLib.instance.api
+      .crateApiVaultManagerVaultManagerAddFolder(that: this, name: name);
+
+  VaultMetadataVault getMetadata() => RustLib.instance.api
+      .crateApiVaultManagerVaultManagerGetMetadata(that: this);
+
+  bool removeFolder({required String id}) => RustLib.instance.api
+      .crateApiVaultManagerVaultManagerRemoveFolder(that: this, id: id);
+}
+
+@sealed
 class VaultMetadataVaultImpl extends RustOpaque implements VaultMetadataVault {
   // Not to be used by end users
   VaultMetadataVaultImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -1313,6 +1922,22 @@ class VaultMetadataVaultImpl extends RustOpaque implements VaultMetadataVault {
         .rust_arc_decrement_strong_count_VaultMetadataVaultPtr,
   );
 
+  Future<void> addEntry({
+    required String name,
+    required EntryCategory category,
+    String? folder,
+    String? icon,
+  }) => RustLib.instance.api.crateApiVaultModelsVaultMetadataVaultAddEntry(
+    that: this,
+    name: name,
+    category: category,
+    folder: folder,
+    icon: icon,
+  );
+
+  Future<Folder> addFolder({required String name}) => RustLib.instance.api
+      .crateApiVaultModelsVaultMetadataVaultAddFolder(that: this, name: name);
+
   Map<EntryCategory, BigInt> get categoryCounts => RustLib.instance.api
       .crateApiVaultModelsVaultMetadataVaultAutoAccessorGetCategoryCounts(
         that: this,
@@ -1325,6 +1950,9 @@ class VaultMetadataVaultImpl extends RustOpaque implements VaultMetadataVault {
       .crateApiVaultModelsVaultMetadataVaultAutoAccessorGetFolderCounts(
         that: this,
       );
+
+  List<Folder> get folders => RustLib.instance.api
+      .crateApiVaultModelsVaultMetadataVaultAutoAccessorGetFolders(that: this);
 
   BigInt get trashedCount => RustLib.instance.api
       .crateApiVaultModelsVaultMetadataVaultAutoAccessorGetTrashedCount(
@@ -1351,6 +1979,12 @@ class VaultMetadataVaultImpl extends RustOpaque implements VaultMetadataVault {
         folderCounts: folderCounts,
       );
 
+  set folders(List<Folder> folders) => RustLib.instance.api
+      .crateApiVaultModelsVaultMetadataVaultAutoAccessorSetFolders(
+        that: this,
+        folders: folders,
+      );
+
   set trashedCount(BigInt trashedCount) => RustLib.instance.api
       .crateApiVaultModelsVaultMetadataVaultAutoAccessorSetTrashedCount(
         that: this,
@@ -1359,4 +1993,12 @@ class VaultMetadataVaultImpl extends RustOpaque implements VaultMetadataVault {
 
   Future<void> recalculateCounts() => RustLib.instance.api
       .crateApiVaultModelsVaultMetadataVaultRecalculateCounts(that: this);
+
+  Future<bool> removeFolderById({required String folderId}) => RustLib
+      .instance
+      .api
+      .crateApiVaultModelsVaultMetadataVaultRemoveFolderById(
+        that: this,
+        folderId: folderId,
+      );
 }

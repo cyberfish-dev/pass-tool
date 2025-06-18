@@ -6,7 +6,6 @@
 use rand::{rngs::OsRng, seq::SliceRandom};
 
 // Predefined symbol set
-#[flutter_rust_bridge::frb(sync)] 
 pub const SYMBOLS: &[char] = &[
     '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', ';',
     ':', ',', '.', '<', '>', '/', '?', '|',

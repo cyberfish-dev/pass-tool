@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/list_item_model.dart';
-import 'package:flutter_app/store/store_facade.dart';
+import 'package:flutter_app/vault/vault_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class FolderList extends StatefulWidget {
@@ -13,20 +13,22 @@ class FolderList extends StatefulWidget {
 }
 
 class FolderListState extends State<FolderList> {
-  late final store = StoreFacade();
   List<ListItemModel> _folders = [];
 
   void update() {
+    final metadata = VaultService.fetchMeta();
+
     setState(() {
-      _folders = store
-          .listFolders()
+      _folders = metadata.folders
           .map(
             (el) => ListItemModel(
               el.name,
               PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
-              null,
+              (metadata.folderCounts[el.id] ?? 0) as int?,
               (ctx) {
-                store.removeFolder(el.id);
+                // TODO: Implement folder navigation
+                
+                VaultService.deleteFolder(el.id);
                 update();
               },
               el.id,
@@ -44,6 +46,12 @@ class FolderListState extends State<FolderList> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_folders.isEmpty) {
+      // return some empty space here
+      return Container();
+    } 
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

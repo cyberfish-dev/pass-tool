@@ -3,11 +3,14 @@ import 'package:flutter_app/components/custom_border.dart';
 import 'package:flutter_app/components/rectangular_notched_rectangle.dart';
 import 'package:flutter_app/menu/menu_items.dart';
 import 'package:flutter_app/themes/main.dart';
+import 'package:flutter_app/vault/vault_service.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Future<void> main() async {
   await RustLib.init();
+  VaultService.init(); 
+  
   runApp(const PassToolApp());
 }
 

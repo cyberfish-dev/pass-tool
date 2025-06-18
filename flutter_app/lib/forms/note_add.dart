@@ -3,8 +3,6 @@ import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/models/form_base_state.dart';
-import 'package:flutter_app/models/list_item_model.dart';
-import 'package:flutter_app/store/store_facade.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddNoteForm extends StatefulWidget {
@@ -15,18 +13,12 @@ class AddNoteForm extends StatefulWidget {
 }
 
 class AddNoteFormState extends FormBaseState<AddNoteForm, String> {
-  late final store = StoreFacade();
-
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
 
   // Controllers
   final _itemNameCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
-
-  // Dropdown
-  FolderModel? _selectedFolder;
-  List<ListItemModel> _folders = [];
 
   @override
   void dispose() {
@@ -38,25 +30,6 @@ class AddNoteFormState extends FormBaseState<AddNoteForm, String> {
   String? _requiredValidator(String? v) {
     if (v == null || v.trim().isEmpty) return 'This field is required';
     return null;
-  }
-
-  void initFolders() {
-    setState(() {
-      _folders = store
-          .listFolders()
-          .map(
-            (el) => ListItemModel(
-              el.name,
-              PhosphorIcons.folderSimple(PhosphorIconsStyle.thin),
-              null,
-              (ctx) {
-                Navigator.pop(ctx, el);
-              },
-              el.id,
-            ),
-          )
-          .toList();
-    });
   }
 
   @override
@@ -100,11 +73,11 @@ class AddNoteFormState extends FormBaseState<AddNoteForm, String> {
 
           // Folder dropdown
           CustomDropdown<FolderModel>(
-            value: _selectedFolder?.name ?? 'No Folder',
-            options: _folders,
+            value: selectedFolder?.name ?? 'No Folder',
+            options: folders,
             onChanged: (selected) {
               setState(() {
-                _selectedFolder = selected;
+                selectedFolder = selected;
               });
             },
             title: 'Folder',

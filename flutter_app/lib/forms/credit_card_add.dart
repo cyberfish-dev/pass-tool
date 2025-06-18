@@ -5,7 +5,6 @@ import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/models/form_base_state.dart';
 import 'package:flutter_app/models/list_item_model.dart';
-import 'package:flutter_app/store/store_facade.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddCreditCardForm extends StatefulWidget {
@@ -16,8 +15,6 @@ class AddCreditCardForm extends StatefulWidget {
 }
 
 class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
-  late final store = StoreFacade();
-
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
 
@@ -85,32 +82,9 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
     ),
   );
 
-  // Dropdown
-  FolderModel? _selectedFolder;
-  List<ListItemModel> _folders = [];
-
   String? _requiredValidator(String? v) {
     if (v == null || v.trim().isEmpty) return 'This field is required';
     return null;
-  }
-
-  void initFolders() {
-    setState(() {
-      _folders = store
-          .listFolders()
-          .map(
-            (el) => ListItemModel(
-              el.name,
-              PhosphorIcons.folderSimple(PhosphorIconsStyle.thin),
-              null,
-              (ctx) {
-                Navigator.pop(ctx, el);
-              },
-              el.id,
-            ),
-          )
-          .toList();
-    });
   }
 
   @override
@@ -142,7 +116,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
           // ITEM DETAILS
           SectionHeader(title: 'ITEM DETAILS'),
           SizedBox(height: 8),
-          
+
           // Item Name
           TextFormField(
             controller: _itemNameController,
@@ -159,29 +133,29 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
-          
+
           SizedBox(height: 12),
-          
+
           // Folder dropdown
           CustomDropdown<FolderModel>(
-            value: _selectedFolder?.name ?? 'No Folder',
-            options: _folders,
+            value: selectedFolder?.name ?? 'No Folder',
+            options: folders,
             onChanged: (selected) {
               setState(() {
-                _selectedFolder = selected;
+                selectedFolder = selected;
               });
             },
             title: 'Folder',
             icon: PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
             validator: (value) => null,
           ),
-          
+
           SizedBox(height: 24),
-          
+
           // Card details header
           SectionHeader(title: 'CARD DETAILS'),
           SizedBox(height: 8),
-          
+
           TextFormField(
             controller: _cardholderController,
             decoration: InputDecoration(
@@ -197,7 +171,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             },
           ),
           SizedBox(height: 12),
-          
+
           // Number with eye
           TextFormField(
             controller: _numberController,
@@ -213,8 +187,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
                       ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
                       : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
                 ),
-                onPressed: () =>
-                    setState(() => _showNumber = !_showNumber),
+                onPressed: () => setState(() => _showNumber = !_showNumber),
               ),
             ),
             keyboardType: TextInputType.number,
@@ -225,9 +198,9 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           CustomDropdown<String>(
             value: _brand ?? '',
             options: _brandItems,
@@ -235,16 +208,16 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               setState(() {
                 _brand = selected;
               });
-          
+
               if (_submitCalled) _formKey.currentState!.validate();
             },
             title: 'Brand',
             icon: PhosphorIcons.cardholder(PhosphorIconsStyle.thin),
             validator: _requiredValidator,
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           CustomDropdown<Map<String, String>>(
             value: _expMonth?['title'] ?? '',
             options: _monthsItems,
@@ -252,16 +225,16 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               setState(() {
                 _expMonth = selected;
               });
-          
+
               if (_submitCalled) _formKey.currentState!.validate();
             },
             title: 'Expiration Month',
             icon: PhosphorIcons.calendar(PhosphorIconsStyle.thin),
             validator: _requiredValidator,
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           TextFormField(
             controller: _yearController,
             decoration: InputDecoration(
@@ -278,9 +251,9 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           TextFormField(
             controller: _codeController,
             decoration: InputDecoration(
@@ -295,8 +268,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
                       ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
                       : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
                 ),
-                onPressed: () =>
-                    setState(() => _showCode = !_showCode),
+                onPressed: () => setState(() => _showCode = !_showCode),
               ),
             ),
             keyboardType: TextInputType.number,
