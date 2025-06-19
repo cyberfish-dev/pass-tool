@@ -23,6 +23,7 @@ hex = "0.4"
 x25519-dalek = "2.0.1"
 hkdf = "0.12.4"
 chrono = "0.4.41"
+aes-gcm = "0.10.3"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

@@ -7,8 +7,15 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'vault_models.dart';
 
-VaultManager createEmptyVaultManager() =>
-    RustLib.instance.api.crateApiVaultManagerCreateEmptyVaultManager();
+// These functions are ignored because they are not marked as `pub`: `update_vault`
+
+VaultManager createVaultManager({
+  required String rootPath,
+  required String password,
+}) => RustLib.instance.api.crateApiVaultManagerCreateVaultManager(
+  rootPath: rootPath,
+  password: password,
+);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VaultManager>>
 abstract class VaultManager implements RustOpaqueInterface {
@@ -26,5 +33,5 @@ abstract class VaultManager implements RustOpaqueInterface {
 
   VaultMetadataVault getMetadata();
 
-  bool removeFolder({required String id});
+  void removeFolder({required String id});
 }

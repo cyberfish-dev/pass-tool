@@ -8,8 +8,11 @@ import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Future<void> main() async {
+  
+  WidgetsFlutterBinding.ensureInitialized();
+
   await RustLib.init();
-  VaultService.init(); 
+  await VaultService.initVault(); 
   
   runApp(const PassToolApp());
 }

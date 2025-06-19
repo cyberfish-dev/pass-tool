@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/crypto.dart';
 import 'api/generator.dart';
 import 'api/vault_manager.dart';
 import 'api/vault_models.dart';
@@ -106,6 +107,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Folder> dco_decode_list_folder(dynamic raw);
 
   @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
@@ -129,10 +133,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (String, BigInt) dco_decode_record_string_usize(dynamic raw);
 
   @protected
+  (U8Array32, U8Array32) dco_decode_record_u_8_array_32_u_8_array_32(
+    dynamic raw,
+  );
+
+  @protected
   int dco_decode_u_32(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
+
+  @protected
+  U8Array16 dco_decode_u_8_array_16(dynamic raw);
+
+  @protected
+  U8Array32 dco_decode_u_8_array_32(dynamic raw);
+
+  @protected
+  U8Array64 dco_decode_u_8_array_64(dynamic raw);
 
   @protected
   void dco_decode_unit(dynamic raw);
@@ -223,6 +241,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Folder> sse_decode_list_folder(SseDeserializer deserializer);
 
   @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
@@ -252,10 +273,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (String, BigInt) sse_decode_record_string_usize(SseDeserializer deserializer);
 
   @protected
+  (U8Array32, U8Array32) sse_decode_record_u_8_array_32_u_8_array_32(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   int sse_decode_u_32(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
+
+  @protected
+  U8Array16 sse_decode_u_8_array_16(SseDeserializer deserializer);
+
+  @protected
+  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer);
+
+  @protected
+  U8Array64 sse_decode_u_8_array_64(SseDeserializer deserializer);
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
@@ -358,6 +393,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_folder(List<Folder> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
     SseSerializer serializer,
@@ -397,10 +435,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_record_u_8_array_32_u_8_array_32(
+    (U8Array32, U8Array32) self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_8_array_16(U8Array16 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_8_array_64(U8Array64 self, SseSerializer serializer);
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);

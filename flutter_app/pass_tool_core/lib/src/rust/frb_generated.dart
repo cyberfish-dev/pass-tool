@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/crypto.dart';
 import 'api/generator.dart';
 import 'api/vault_manager.dart';
 import 'api/vault_models.dart';
@@ -66,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => 44794241;
+  int get rustContentHash => -1466180147;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -96,7 +97,7 @@ abstract class RustLibApi extends BaseApi {
     required VaultManager that,
   });
 
-  bool crateApiVaultManagerVaultManagerRemoveFolder({
+  void crateApiVaultManagerVaultManagerRemoveFolder({
     required VaultManager that,
     required String id,
   });
@@ -173,7 +174,25 @@ abstract class RustLibApi extends BaseApi {
     required String folderId,
   });
 
-  VaultManager crateApiVaultManagerCreateEmptyVaultManager();
+  VaultManager crateApiVaultManagerCreateVaultManager({
+    required String rootPath,
+    required String password,
+  });
+
+  Future<Uint8List> crateApiCryptoDecryptPayload({
+    required List<int> encryptedJsonBytes,
+    required U8Array32 masterKey,
+  });
+
+  Future<U8Array64> crateApiCryptoDeriveMasterKey({
+    required String password,
+    required List<int> salt,
+  });
+
+  Future<Uint8List> crateApiCryptoEncryptPayload({
+    required List<int> payload,
+    required U8Array32 masterKey,
+  });
 
   String crateApiGeneratorGeneratePassword({
     required BigInt length,
@@ -185,7 +204,13 @@ abstract class RustLibApi extends BaseApi {
     required BigInt minSymbols,
   });
 
+  Future<U8Array16> crateApiCryptoGenerateSalt();
+
   Future<void> crateApiMainInitApp();
+
+  Future<(U8Array32, U8Array32)> crateApiCryptoSplitMasterKey({
+    required U8Array64 masterKey,
+  });
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_VaultManager;
@@ -346,7 +371,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  bool crateApiVaultManagerVaultManagerRemoveFolder({
+  void crateApiVaultManagerVaultManagerRemoveFolder({
     required VaultManager that,
     required String id,
   }) {
@@ -362,7 +387,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
+          decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
         constMeta: kCrateApiVaultManagerVaultManagerRemoveFolderConstMeta,
@@ -913,29 +938,139 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  VaultManager crateApiVaultManagerCreateEmptyVaultManager() {
+  VaultManager crateApiVaultManagerCreateVaultManager({
+    required String rootPath,
+    required String password,
+  }) {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(rootPath, serializer);
+          sse_encode_String(password, serializer);
           return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
         },
         codec: SseCodec(
           decodeSuccessData:
               sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager,
-          decodeErrorData: null,
+          decodeErrorData: sse_decode_String,
         ),
-        constMeta: kCrateApiVaultManagerCreateEmptyVaultManagerConstMeta,
-        argValues: [],
+        constMeta: kCrateApiVaultManagerCreateVaultManagerConstMeta,
+        argValues: [rootPath, password],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiVaultManagerCreateEmptyVaultManagerConstMeta =>
+  TaskConstMeta get kCrateApiVaultManagerCreateVaultManagerConstMeta =>
       const TaskConstMeta(
-        debugName: "create_empty_vault_manager",
-        argNames: [],
+        debugName: "create_vault_manager",
+        argNames: ["rootPath", "password"],
+      );
+
+  @override
+  Future<Uint8List> crateApiCryptoDecryptPayload({
+    required List<int> encryptedJsonBytes,
+    required U8Array32 masterKey,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(encryptedJsonBytes, serializer);
+          sse_encode_u_8_array_32(masterKey, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 22,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiCryptoDecryptPayloadConstMeta,
+        argValues: [encryptedJsonBytes, masterKey],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoDecryptPayloadConstMeta =>
+      const TaskConstMeta(
+        debugName: "decrypt_payload",
+        argNames: ["encryptedJsonBytes", "masterKey"],
+      );
+
+  @override
+  Future<U8Array64> crateApiCryptoDeriveMasterKey({
+    required String password,
+    required List<int> salt,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(password, serializer);
+          sse_encode_list_prim_u_8_loose(salt, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 23,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_8_array_64,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiCryptoDeriveMasterKeyConstMeta,
+        argValues: [password, salt],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoDeriveMasterKeyConstMeta =>
+      const TaskConstMeta(
+        debugName: "derive_master_key",
+        argNames: ["password", "salt"],
+      );
+
+  @override
+  Future<Uint8List> crateApiCryptoEncryptPayload({
+    required List<int> payload,
+    required U8Array32 masterKey,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(payload, serializer);
+          sse_encode_u_8_array_32(masterKey, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 24,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiCryptoEncryptPayloadConstMeta,
+        argValues: [payload, masterKey],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoEncryptPayloadConstMeta =>
+      const TaskConstMeta(
+        debugName: "encrypt_payload",
+        argNames: ["payload", "masterKey"],
       );
 
   @override
@@ -959,7 +1094,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_bool(includeSymbols, serializer);
           sse_encode_usize(minDigits, serializer);
           sse_encode_usize(minSymbols, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -995,6 +1130,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<U8Array16> crateApiCryptoGenerateSalt() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 26,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_8_array_16,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCryptoGenerateSaltConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoGenerateSaltConstMeta =>
+      const TaskConstMeta(debugName: "generate_salt", argNames: []);
+
+  @override
   Future<void> crateApiMainInitApp() {
     return handler.executeNormal(
       NormalTask(
@@ -1003,7 +1165,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1020,6 +1182,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiMainInitAppConstMeta =>
       const TaskConstMeta(debugName: "init_app", argNames: []);
+
+  @override
+  Future<(U8Array32, U8Array32)> crateApiCryptoSplitMasterKey({
+    required U8Array64 masterKey,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_u_8_array_64(masterKey, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 28,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_record_u_8_array_32_u_8_array_32,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCryptoSplitMasterKeyConstMeta,
+        argValues: [masterKey],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoSplitMasterKeyConstMeta =>
+      const TaskConstMeta(
+        debugName: "split_master_key",
+        argNames: ["masterKey"],
+      );
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_VaultManager => wire
@@ -1178,6 +1373,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
@@ -1232,6 +1433,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (U8Array32, U8Array32) dco_decode_record_u_8_array_32_u_8_array_32(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (dco_decode_u_8_array_32(arr[0]), dco_decode_u_8_array_32(arr[1]));
+  }
+
+  @protected
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -1241,6 +1454,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  U8Array16 dco_decode_u_8_array_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array16(dco_decode_list_prim_u_8_strict(raw));
+  }
+
+  @protected
+  U8Array32 dco_decode_u_8_array_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array32(dco_decode_list_prim_u_8_strict(raw));
+  }
+
+  @protected
+  U8Array64 dco_decode_u_8_array_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array64(dco_decode_list_prim_u_8_strict(raw));
   }
 
   @protected
@@ -1440,6 +1671,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -1520,6 +1758,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (U8Array32, U8Array32) sse_decode_record_u_8_array_32_u_8_array_32(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_u_8_array_32(deserializer);
+    var var_field1 = sse_decode_u_8_array_32(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
@@ -1529,6 +1777,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  U8Array16 sse_decode_u_8_array_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array16(inner);
+  }
+
+  @protected
+  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array32(inner);
+  }
+
+  @protected
+  U8Array64 sse_decode_u_8_array_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array64(inner);
   }
 
   @protected
@@ -1742,6 +2011,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_prim_u_8_loose(
+    List<int> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer.putUint8List(
+      self is Uint8List ? self : Uint8List.fromList(self),
+    );
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
     SseSerializer serializer,
@@ -1818,6 +2099,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_record_u_8_array_32_u_8_array_32(
+    (U8Array32, U8Array32) self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8_array_32(self.$1, serializer);
+    sse_encode_u_8_array_32(self.$2, serializer);
+  }
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
@@ -1827,6 +2118,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_u_8_array_16(U8Array16 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
+  }
+
+  @protected
+  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
+  }
+
+  @protected
+  void sse_encode_u_8_array_64(U8Array64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
   }
 
   @protected
@@ -1895,7 +2204,7 @@ class VaultManagerImpl extends RustOpaque implements VaultManager {
   VaultMetadataVault getMetadata() => RustLib.instance.api
       .crateApiVaultManagerVaultManagerGetMetadata(that: this);
 
-  bool removeFolder({required String id}) => RustLib.instance.api
+  void removeFolder({required String id}) => RustLib.instance.api
       .crateApiVaultManagerVaultManagerRemoveFolder(that: this, id: id);
 }
 

@@ -1,4 +1,5 @@
 import 'package:pass_tool_core/pass_tool_core.dart';
+import 'package:path_provider/path_provider.dart';
 
 class VaultService {
   VaultManager? _vault;
@@ -9,9 +10,8 @@ class VaultService {
 
   VaultService._internal();
 
-  static void init() {
-    // TODO: make sure to load from disk if available
-    _instance.initEmptyVault();
+  static Future initVault() async{
+    await _instance.init();
   }
 
   static VaultMetadataVault fetchMeta() {
@@ -35,9 +35,9 @@ class VaultService {
     _metaDirty = true;
   }
 
-  /// Initialize a new vault (or load one)
-  void initEmptyVault() {
-    _vault = createEmptyVaultManager();
+  Future init() async {
+    final dir = await getApplicationDocumentsDirectory();
+    _vault = createVaultManager(password: 'some_password', rootPath: dir.path);
   }
 
   VaultManager get vault {
