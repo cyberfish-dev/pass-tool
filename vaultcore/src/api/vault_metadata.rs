@@ -14,7 +14,7 @@ impl VaultMetadataVault {
         category: EntryCategory,
         folder: Option<String>,
         icon: Option<String>,
-    ) {
+    ) -> String{
         let entry = VaultMetadataEntry {
             id: Uuid::new_v4().to_string(),
             name,
@@ -28,6 +28,8 @@ impl VaultMetadataVault {
 
         self.entries.push(entry.clone());
         self.recalculate_counts();
+
+        entry.id
     }
 
     pub fn add_folder(&mut self, name: String) -> Folder {

@@ -6,11 +6,11 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VaultMetadataVault>>
 abstract class VaultMetadataVault implements RustOpaqueInterface {
-  Future<void> addEntry({
+  Future<String> addEntry({
     required String name,
     required EntryCategory category,
     String? folder,
@@ -47,6 +47,46 @@ abstract class VaultMetadataVault implements RustOpaqueInterface {
   Future<bool> removeFolderById({required String folderId});
 }
 
+abstract class VaultPayload {}
+
+class CreditCardRecord {
+  final String number;
+  final String name;
+  final String expMonth;
+  final String expYear;
+  final String cvv;
+
+  const CreditCardRecord({
+    required this.number,
+    required this.name,
+    required this.expMonth,
+    required this.expYear,
+    required this.cvv,
+  });
+
+  static Future<EntryCategory> category() =>
+      RustLib.instance.api.crateApiVaultModelsCreditCardRecordCategory();
+
+  @override
+  int get hashCode =>
+      number.hashCode ^
+      name.hashCode ^
+      expMonth.hashCode ^
+      expYear.hashCode ^
+      cvv.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CreditCardRecord &&
+          runtimeType == other.runtimeType &&
+          number == other.number &&
+          name == other.name &&
+          expMonth == other.expMonth &&
+          expYear == other.expYear &&
+          cvv == other.cvv;
+}
+
 enum EntryCategory { login, secureNote, creditCard }
 
 class Folder {
@@ -65,6 +105,52 @@ class Folder {
           runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name;
+}
+
+class LoginRecord {
+  final String username;
+  final String password;
+  final String? website;
+
+  const LoginRecord({
+    required this.username,
+    required this.password,
+    this.website,
+  });
+
+  static Future<EntryCategory> category() =>
+      RustLib.instance.api.crateApiVaultModelsLoginRecordCategory();
+
+  @override
+  int get hashCode => username.hashCode ^ password.hashCode ^ website.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LoginRecord &&
+          runtimeType == other.runtimeType &&
+          username == other.username &&
+          password == other.password &&
+          website == other.website;
+}
+
+class SecureNoteRecord {
+  final String note;
+
+  const SecureNoteRecord({required this.note});
+
+  static Future<EntryCategory> category() =>
+      RustLib.instance.api.crateApiVaultModelsSecureNoteRecordCategory();
+
+  @override
+  int get hashCode => note.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SecureNoteRecord &&
+          runtimeType == other.runtimeType &&
+          note == other.note;
 }
 
 class VaultMetadataEntry {

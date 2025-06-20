@@ -7,7 +7,8 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'vault_models.dart';
 
-// These functions are ignored because they are not marked as `pub`: `update_vault`
+// These functions are ignored because they are not marked as `pub`: `add_generic_entry`, `update_vault_meta`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`, `from`, `from`
 
 VaultManager createVaultManager({
   required String rootPath,
@@ -19,19 +20,36 @@ VaultManager createVaultManager({
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VaultManager>>
 abstract class VaultManager implements RustOpaqueInterface {
-  void addEntry({
+  void addCreditCardRecord({
     required String name,
-    required EntryCategory category,
     String? folder,
     String? icon,
+    required CreditCardRecord record,
   });
 
-  void addFolder({required String name});
+  Folder addFolder({required String name});
+
+  void addLoginRecord({
+    required String name,
+    String? folder,
+    String? icon,
+    required LoginRecord record,
+  });
+
+  void addNoteRecord({
+    required String name,
+    String? folder,
+    String? icon,
+    required SecureNoteRecord record,
+  });
 
   static Future<VaultManager> default_() =>
       RustLib.instance.api.crateApiVaultManagerVaultManagerDefault();
 
   VaultMetadataVault getMetadata();
 
-  void removeFolder({required String id});
+  bool removeFolder({required String id});
 }
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VaultManagerError>>
+abstract class VaultManagerError implements RustOpaqueInterface {}

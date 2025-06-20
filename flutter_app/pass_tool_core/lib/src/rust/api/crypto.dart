@@ -8,24 +8,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `decrypt_it`, `encrypt_it`, `generate_submaster_key`
+// These functions are ignored because they have generic arguments: `decrypt_payload`, `encrypt_payload`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `EncryptedRecordFile`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`, `from`, `from`, `from`
 
-Future<Uint8List> encryptPayload({
-  required List<int> payload,
-  required U8Array32 masterKey,
-}) => RustLib.instance.api.crateApiCryptoEncryptPayload(
-  payload: payload,
-  masterKey: masterKey,
-);
-
-Future<Uint8List> decryptPayload({
-  required List<int> encryptedJsonBytes,
-  required U8Array32 masterKey,
-}) => RustLib.instance.api.crateApiCryptoDecryptPayload(
-  encryptedJsonBytes: encryptedJsonBytes,
-  masterKey: masterKey,
-);
-
+/// Derives a 64-byte master key from a password and salt using Argon2id.
+/// Zeroizes password after use.
 Future<U8Array64> deriveMasterKey({
   required String password,
   required List<int> salt,
@@ -34,11 +22,16 @@ Future<U8Array64> deriveMasterKey({
   salt: salt,
 );
 
+/// Splits a 64-byte master key into two 32-byte keys (encryption and MAC).
 Future<(U8Array32, U8Array32)> splitMasterKey({required U8Array64 masterKey}) =>
     RustLib.instance.api.crateApiCryptoSplitMasterKey(masterKey: masterKey);
 
+/// Generates a cryptographically secure random 16-byte salt.
 Future<U8Array16> generateSalt() =>
     RustLib.instance.api.crateApiCryptoGenerateSalt();
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CryptoError>>
+abstract class CryptoError implements RustOpaqueInterface {}
 
 class U8Array16 extends NonGrowableListView<int> {
   static const arraySize = 16;
