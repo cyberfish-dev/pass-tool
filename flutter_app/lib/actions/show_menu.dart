@@ -13,10 +13,10 @@ Future<T?> showCustomMenu<T>(
   int maxPopupElements = 5,
 }) {
 
-  var popupHeight = items.length * 60.0 - 1;
+  var popupHeight = items.length * 61.0 - 1;
   
   if (items.length > maxPopupElements) {
-    popupHeight = maxPopupElements * 60.0 - 1;
+    popupHeight = maxPopupElements * 61.0 - 1;
   }
 
   final position = computeMenuPosition(
