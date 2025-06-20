@@ -1,5 +1,6 @@
+// --- Imports ---
 use aes_gcm::{
-    aead::{Aead, KeyInit},
+    aead::{Aead, KeyInit, Payload},
     Aes256Gcm, Nonce,
 };
 use argon2::{
@@ -11,18 +12,97 @@ use chrono::Utc;
 use rand::RngCore;
 use rand_core::OsRng;
 use serde::{Deserialize, Serialize};
+use zeroize::Zeroize;
 
-pub fn encrypt_payload(payload: Vec<u8>, master_key: &[u8; 32]) -> Result<Vec<u8>, String> {
-    let submaster_key = generate_submaster_key();
+/// Custom error type for crypto operations.
+#[derive(Debug)]
+pub enum CryptoError {
+    SerdeJson(serde_json::Error),
+    Base64(base64::DecodeError),
+    AesGcm(aes_gcm::Error),
+    Argon2(argon2::password_hash::Error),
+    InvalidSalt,
+    InvalidKeyLength,
+    InvalidEncryptedKeyFormat,
+    MissingHash,
+    ShortDerivedKey,
+    Other(String),
+}
 
-    let file_meta = encrypt_it(&submaster_key[..], master_key)?;
-    let file_data = encrypt_it(&payload, &submaster_key)?;
+impl std::fmt::Display for CryptoError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        use CryptoError::*;
+        match self {
+            SerdeJson(e) => write!(f, "Serde JSON error: {}", e),
+            Base64(e) => write!(f, "Base64 decode error: {}", e),
+            AesGcm(e) => write!(f, "AES-GCM error: {}", e),
+            Argon2(e) => write!(f, "Argon2 error: {}", e),
+            InvalidSalt => write!(f, "Salt must be exactly 16 bytes for Argon2 compatibility."),
+            InvalidKeyLength => write!(f, "Decrypted key has invalid length."),
+            InvalidEncryptedKeyFormat => write!(f, "Invalid encrypted key format: too short."),
+            MissingHash => write!(f, "Missing hash output in Argon2 result."),
+            ShortDerivedKey => write!(f, "Derived hash is shorter than 64 bytes."),
+            Other(msg) => write!(f, "{}", msg),
+        }
+    }
+}
 
+impl std::error::Error for CryptoError {}
+
+impl From<serde_json::Error> for CryptoError {
+    fn from(e: serde_json::Error) -> Self {
+        CryptoError::SerdeJson(e)
+    }
+}
+impl From<base64::DecodeError> for CryptoError {
+    fn from(e: base64::DecodeError) -> Self {
+        CryptoError::Base64(e)
+    }
+}
+impl From<aes_gcm::Error> for CryptoError {
+    fn from(e: aes_gcm::Error) -> Self {
+        CryptoError::AesGcm(e)
+    }
+}
+impl From<argon2::password_hash::Error> for CryptoError {
+    fn from(e: argon2::password_hash::Error) -> Self {
+        CryptoError::Argon2(e)
+    }
+}
+
+/// Encrypts a payload using a randomly generated submaster key, which is itself encrypted with the master key.
+/// Uses AAD (Additional Authenticated Data) for extra integrity.
+/// Returns a JSON-encoded struct containing both encrypted submaster key and encrypted payload.
+pub fn encrypt_payload<T>(payload: T, master_key: &[u8; 32]) -> Result<Vec<u8>, CryptoError>
+where
+    T: serde::Serialize,
+{
+    // Generate a random 32-byte submaster key for encrypting the payload
+    let mut submaster_key = generate_submaster_key();
+
+    // Get current timestamp (seconds since epoch)
+    let now = Utc::now().timestamp();
+
+    // Prepare AAD (authenticated data) as the timestamp in bytes
+    let aad = now.to_le_bytes();
+
+    // Encrypt the submaster key with the master key (key wrapping), using AAD
+    let file_meta = encrypt_it(&submaster_key[..], master_key, &aad)?;
+
+    // Convert the payload to JSON bytes
+    let json_data = serde_json::to_vec(&payload)?;
+
+    // Encrypt the payload with the submaster key, using AAD
+    let file_data = encrypt_it(&json_data, &submaster_key, &aad)?;
+
+    // Zeroize submaster key after use
+    submaster_key.zeroize();
+
+    // Encode both encrypted blobs as base64 for safe JSON storage
     let encoded_meta = general_purpose::STANDARD.encode(file_meta);
     let encoded_data = general_purpose::STANDARD.encode(file_data);
 
-    let now = Utc::now().timestamp();
-
+    // Construct the record struct
     let record = EncryptedRecordFile {
         enc_item_key: encoded_meta,
         enc_data: encoded_data,
@@ -30,70 +110,86 @@ pub fn encrypt_payload(payload: Vec<u8>, master_key: &[u8; 32]) -> Result<Vec<u8
         updated_at: now,
     };
 
-    let json_bytes = serde_json::to_vec(&record).map_err(|e| e.to_string())?;
+    // Serialize the struct to JSON bytes
+    let json_bytes = serde_json::to_vec(&record)?;
     Ok(json_bytes)
 }
 
-pub fn decrypt_payload(
+/// Decrypts a JSON-encoded encrypted record using the master key.
+/// Uses AAD (Additional Authenticated Data) for extra integrity.
+pub fn decrypt_payload<T>(
     encrypted_json_bytes: &[u8],
     master_key: &[u8; 32],
-) -> Result<Vec<u8>, String> {
+) -> Result<T, CryptoError>
+where
+    T: serde::de::DeserializeOwned,
+{
     // Parse JSON to struct
-    let record: EncryptedRecordFile = serde_json::from_slice(encrypted_json_bytes)
-        .map_err(|e| format!("Failed to parse encrypted record: {}", e))?;
+    let record: EncryptedRecordFile = serde_json::from_slice(encrypted_json_bytes)?;
 
-    // Decode base64-encoded blobs
-    let enc_item_key = general_purpose::STANDARD
-        .decode(&record.enc_item_key)
-        .map_err(|e| format!("Failed to decode item key: {}", e))?;
+    // Prepare AAD (authenticated data) as the timestamp in bytes
+    let aad = record.created_at.to_le_bytes();
 
-    let enc_data = general_purpose::STANDARD
-        .decode(&record.enc_data)
-        .map_err(|e| format!("Failed to decode record data: {}", e))?;
+    // Decode base64-encoded encrypted submaster key
+    let enc_item_key = general_purpose::STANDARD.decode(&record.enc_item_key)?;
 
-    // Decrypt item_key with master_key
-    let item_key = decrypt_it(&enc_item_key, master_key)?;
+    // Decode base64-encoded encrypted payload
+    let enc_data = general_purpose::STANDARD.decode(&record.enc_data)?;
 
-    // Decrypt data with item_key
-    let (nonce_bytes, ciphertext) = enc_data.split_at(12);
-    let cipher = Aes256Gcm::new_from_slice(&item_key).map_err(|e| e.to_string())?;
-    let plaintext = cipher
-        .decrypt(Nonce::from_slice(nonce_bytes), ciphertext)
-        .map_err(|e| format!("Failed to decrypt payload: {}", e))?;
+    // Decrypt submaster key with master key, using AAD
+    let mut item_key = decrypt_it(&enc_item_key, master_key, &aad)?;
+
+    // Decrypt payload with submaster key, using AAD
+    let plaintext = decrypt_it(&enc_data, &item_key, &aad)?;
+
+    // Zeroize the item key after use
+    item_key.zeroize();
+
+    // Deserialize the plaintext bytes into the expected type T
+    let plaintext: T = serde_json::from_slice(&plaintext)
+        .map_err(|e| CryptoError::SerdeJson(e))?;
 
     Ok(plaintext)
 }
 
-pub fn derive_master_key(password: &str, salt: &[u8]) -> Result<[u8; 64], String> {
+/// Derives a 64-byte master key from a password and salt using Argon2id.
+/// Zeroizes password after use.
+pub fn derive_master_key(password: &str, salt: &[u8]) -> Result<[u8; 64], CryptoError> {
     if salt.len() != 16 {
-        return Err("Salt must be exactly 16 bytes for Argon2 compatibility.".to_string());
+        return Err(CryptoError::InvalidSalt);
     }
 
-    let params =
-        Params::new(131072, 4, 1, Some(64)).map_err(|_| "Invalid Argon2 parameters".to_string())?;
+    // Recommended Argon2id parameters for interactive login (OWASP 2024)
+    let params = Params::new(131072, 4, 1, Some(64)).map_err(|_| CryptoError::Other("Invalid Argon2 parameters".to_string()))?;
 
     let argon2 = Argon2::new(argon2::Algorithm::Argon2id, argon2::Version::V0x13, params);
-    let salt_str = SaltString::encode_b64(salt).map_err(|_| "Invalid salt bytes".to_string())?;
+    let salt_str = SaltString::encode_b64(salt).map_err(|_| CryptoError::Other("Invalid salt bytes".to_string()))?;
+
+    // Copy password to a mutable buffer for zeroization
+    let mut pw_buf = password.as_bytes().to_vec();
 
     // Perform key derivation
     let hash = argon2
-        .hash_password(password.as_bytes(), &salt_str)
-        .map_err(|_| "Argon2 hashing failed".to_string())?
+        .hash_password(&pw_buf, &salt_str)
+        .map_err(CryptoError::Argon2)?
         .hash
-        .ok_or("Missing hash output in Argon2 result".to_string())?;
+        .ok_or(CryptoError::MissingHash)?;
+
+    // Zeroize password buffer
+    pw_buf.zeroize();
 
     let bytes = hash.as_bytes();
 
     if bytes.len() < 64 {
-        return Err("Derived hash is shorter than 64 bytes.".into());
+        return Err(CryptoError::ShortDerivedKey);
     }
 
     let mut key = [0u8; 64];
     key.copy_from_slice(&bytes[..64]);
-
     Ok(key)
 }
 
+/// Splits a 64-byte master key into two 32-byte keys (encryption and MAC).
 pub fn split_master_key(master_key: &[u8; 64]) -> ([u8; 32], [u8; 32]) {
     let mut enc_key = [0u8; 32];
     let mut mac_key = [0u8; 32];
@@ -102,58 +198,81 @@ pub fn split_master_key(master_key: &[u8; 64]) -> ([u8; 32], [u8; 32]) {
     (enc_key, mac_key)
 }
 
+/// Generates a cryptographically secure random 16-byte salt.
 pub fn generate_salt() -> [u8; 16] {
     let mut salt = [0u8; 16];
     OsRng.fill_bytes(&mut salt);
     salt
 }
 
+/// Struct representing an encrypted record file.
+/// Contains base64-encoded encrypted submaster key, encrypted data, and timestamps.
 #[derive(Serialize, Deserialize)]
 struct EncryptedRecordFile {
-    pub enc_item_key: String, // base64(nonce + ciphertext)
-    pub enc_data: String,     // base64(nonce + ciphertext)
+    pub enc_item_key: String, // base64(nonce + ciphertext) of submaster key
+    pub enc_data: String,     // base64(nonce + ciphertext) of payload
     pub created_at: i64,
     pub updated_at: i64,
 }
 
+/// Generates a cryptographically secure random 32-byte submaster key.
 fn generate_submaster_key() -> [u8; 32] {
     let mut key = [0u8; 32];
     OsRng.fill_bytes(&mut key);
     key
 }
 
-fn encrypt_it(data: &[u8], enc_key: &[u8; 32]) -> Result<Vec<u8>, String> {
-    let cipher = Aes256Gcm::new_from_slice(enc_key).map_err(|e| e.to_string())?;
+/// Encrypts data using AES-256-GCM with a random nonce and AAD.
+/// Output is nonce || ciphertext.
+fn encrypt_it(data: &[u8], enc_key: &[u8; 32], aad: &[u8]) -> Result<Vec<u8>, CryptoError> {
+    let cipher = Aes256Gcm::new_from_slice(enc_key)
+        .map_err(|_| CryptoError::InvalidKeyLength)?;
 
+    // Generate a random 12-byte nonce (recommended for AES-GCM)
     let mut nonce = [0u8; 12];
     OsRng.fill_bytes(&mut nonce);
-    let nonce = Nonce::from_slice(&nonce);
 
-    let ciphertext = cipher.encrypt(nonce, data).map_err(|e| e.to_string())?;
+    // Encrypt the data with AAD
+    let ciphertext = cipher.encrypt(
+        Nonce::from_slice(&nonce),
+        Payload {
+            msg: data,
+            aad,
+        }
+    )?;
 
+    // Output is nonce || ciphertext
     let mut out = Vec::with_capacity(12 + ciphertext.len());
-    out.extend_from_slice(nonce);
+    out.extend_from_slice(&nonce);
     out.extend_from_slice(&ciphertext);
 
     Ok(out)
 }
 
-fn decrypt_it(enc_data: &[u8], enc_key: &[u8]) -> Result<[u8; 32], String> {
+/// Decrypts an encrypted submaster key using AES-256-GCM and AAD.
+/// Returns the decrypted submaster key.
+fn decrypt_it(enc_data: &[u8], enc_key: &[u8], aad: &[u8]) -> Result<[u8; 32], CryptoError> {
     if enc_data.len() < 12 {
-        return Err("Invalid encrypted key format: too short".to_string());
+        return Err(CryptoError::InvalidEncryptedKeyFormat);
     }
 
     let (nonce_bytes, ciphertext) = enc_data.split_at(12);
 
     let cipher = Aes256Gcm::new_from_slice(enc_key)
-        .map_err(|e| format!("Failed to initialize cipher: {}", e))?;
+        .map_err(|_| CryptoError::InvalidKeyLength)?;
 
     let plaintext = cipher
-        .decrypt(Nonce::from_slice(nonce_bytes), ciphertext)
-        .map_err(|e| format!("Failed to decrypt key: {}", e))?;
+        .decrypt(
+            Nonce::from_slice(nonce_bytes),
+            Payload {
+                msg: ciphertext,
+                aad,
+            }
+        )
+        .map_err(CryptoError::AesGcm)?;
 
     if plaintext.len() != 32 {
-        return Err("Decrypted key has invalid length".to_string());
+        return Err(CryptoError::InvalidKeyLength);
     }
 
     let mut out = [0u8; 32];
