@@ -28,7 +28,7 @@ final darkTeme = ThemeData.dark().copyWith(
     onSurface: textPrimary,
     secondary: accent,
   ),
-  iconTheme: const IconThemeData(color: textSecondary),
+  iconTheme: IconThemeData(color: textSecondary),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
@@ -62,7 +62,7 @@ final darkTeme = ThemeData.dark().copyWith(
       borderSide: BorderSide(color: errorColor.withAlpha(200), width: 1),
     ),
   ),
-  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
     backgroundColor: darkCard,
     selectedItemColor: accent,
     unselectedItemColor: textSecondary,
@@ -83,7 +83,7 @@ final darkTeme = ThemeData.dark().copyWith(
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: darkCard,
     foregroundColor: accent,
-    elevation: 5,
+    elevation: 0,
     shape: RoundedRectangleBorder(
       side: BorderSide(color: inputBorderColor, width: 1),
       borderRadius: BorderRadius.circular(16.0),
@@ -99,6 +99,7 @@ final darkTeme = ThemeData.dark().copyWith(
   dividerTheme: DividerThemeData(color: dividerColor, thickness: 1),
   cardTheme: CardThemeData(
     color: darkCard,
+    elevation: 0,
     shape: RoundedRectangleBorder(
       side: BorderSide(color: inputBorderColor, width: 1),
       borderRadius: BorderRadius.circular(12.0),

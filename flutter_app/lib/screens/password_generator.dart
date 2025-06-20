@@ -146,7 +146,7 @@ class PasswordGeneratorState extends State<PasswordGenerator>
               child: const Text('Copy'),
             ),
           ),
-          const Divider(indent: 24, endIndent: 24),
+          
           // Settings form
           Expanded(
             child: SingleChildScrollView(

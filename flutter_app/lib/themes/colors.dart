@@ -1,12 +1,12 @@
 import 'dart:ui';
 
-const darkBg = Color(0xFF212121);
-const darkCard = Color(0xFF303030);
-const accent = Color(0xFF10B981);
+const darkBg = Color(0xFF282F39);
+const darkCard = Color(0xFF212830);
+const accent = Color(0xFF09E1E0);
 
-const textSecondary = Color(0xffaaaaaa);
-final dividerColor = Color(0xffaaaaaa).withAlpha(5);
-final inputBorderColor = Color(0xffaaaaaa).withAlpha(50);
-final textPrimary = Color(0xFFFFFFFF).withAlpha(240);
+final textSecondary = Color(0xffC9D4E9).withAlpha(210);
+final dividerColor = textSecondary.withAlpha(15);
+final inputBorderColor = textSecondary.withAlpha(35);
+final textPrimary = Color(0xFFFCFCFC).withAlpha(240);
 
 const errorColor = Color(0xffFFBF00);
