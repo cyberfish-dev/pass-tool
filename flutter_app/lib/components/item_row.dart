@@ -23,27 +23,30 @@ class ItemRow extends StatelessWidget {
       children: [
         InkWell(
           onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 14.0,
-            ),
-            child: Row(
-              children: [
-                Icon(icon, size: 20),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodyMedium,
+          child: SizedBox(
+            height: 60,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 14.0,
+              ),
+              child: Row(
+                children: [
+                  Icon(icon),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
-                ),
-                if (count != null)
-                  Text(
-                    count.toString(),
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-              ],
+                  if (count != null)
+                    Text(
+                      count.toString(),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

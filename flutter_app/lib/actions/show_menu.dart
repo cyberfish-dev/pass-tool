@@ -13,10 +13,10 @@ Future<T?> showCustomMenu<T>(
   int maxPopupElements = 5,
 }) {
 
-  var popupHeight = items.length * 49.0 - 1;
+  var popupHeight = items.length * 60.0 - 1;
   
   if (items.length > maxPopupElements) {
-    popupHeight = maxPopupElements * 49.0 - 1;
+    popupHeight = maxPopupElements * 60.0 - 1;
   }
 
   final position = computeMenuPosition(
@@ -36,7 +36,7 @@ Future<T?> showCustomMenu<T>(
     items: [
       PopupMenuItem(
         padding: EdgeInsets.zero,
-        enabled: false,
+        enabled: true,
         child: SizedBox(
           height: popupHeight,
           child: ListItems(items: items)),

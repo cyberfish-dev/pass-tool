@@ -105,7 +105,6 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               labelText: 'Item name',
               prefixIcon: Icon(
                 PhosphorIcons.record(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             validator: _requiredValidator,
@@ -143,12 +142,10 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               labelText: 'Username',
               prefixIcon: Icon(
                 PhosphorIcons.user(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               suffixIcon: IconButton(
                 icon: Icon(
                   PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin),
-                  size: 20,
                 ),
                 onPressed: () {
                   // generate or suggest username
@@ -170,7 +167,6 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               labelText: 'Password',
               prefixIcon: Icon(
                 PhosphorIcons.password(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -180,7 +176,6 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
                       _obscurePassword
                           ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
                           : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
-                      size: 20,
                     ),
                     onPressed: () {
                       setState(() => _obscurePassword = !_obscurePassword);
@@ -189,7 +184,6 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
                   IconButton(
                     icon: Icon(
                       PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin),
-                      size: 20,
                     ),
                     onPressed: () {
                       _generatePassword();
@@ -217,14 +211,12 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               labelText: 'Authenticator key',
               prefixIcon: Icon(
                 PhosphorIcons.lockSimple(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureAuthKey
                       ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
                       : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
-                  size: 20,
                 ),
                 onPressed: () {
                   setState(() => _obscureAuthKey = !_obscureAuthKey);
@@ -240,7 +232,6 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             },
             icon: Icon(
               PhosphorIcons.camera(PhosphorIconsStyle.duotone),
-              size: 20,
             ),
             label: Text('Set up authenticator key'),
           ),
@@ -256,12 +247,10 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
               labelText: 'Website (URI)',
               prefixIcon: Icon(
                 PhosphorIcons.globe(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               suffixIcon: IconButton(
                 icon: Icon(
                   PhosphorIcons.gear(PhosphorIconsStyle.thin),
-                  size: 20,
                 ),
                 onPressed: () {
                   // open domain settings

@@ -32,7 +32,6 @@ class _VaultScreenState extends State<VaultScreen> {
               hintText: 'Search',
               prefixIcon: Icon(
                 PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               isDense: true,
             ),

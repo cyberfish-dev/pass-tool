@@ -62,7 +62,6 @@ class AddNoteFormState
               labelText: 'Item name',
               prefixIcon: Icon(
                 PhosphorIcons.record(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             validator: _requiredValidator,
@@ -95,7 +94,6 @@ class AddNoteFormState
               labelText: 'Secure Note',
               prefixIcon: Icon(
                 PhosphorIcons.note(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             validator: _requiredValidator,

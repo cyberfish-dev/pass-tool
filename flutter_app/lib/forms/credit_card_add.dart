@@ -125,7 +125,6 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               labelText: 'Item name',
               prefixIcon: Icon(
                 PhosphorIcons.record(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             validator: _requiredValidator,
@@ -162,7 +161,6 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               labelText: 'Cardholder Name',
               prefixIcon: Icon(
                 PhosphorIcons.user(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             validator: _requiredValidator,
@@ -179,7 +177,6 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               labelText: 'Card Number',
               prefixIcon: Icon(
                 PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -241,7 +238,6 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               labelText: 'Expiration Year',
               prefixIcon: Icon(
                 PhosphorIcons.calendarBlank(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             keyboardType: TextInputType.number,
@@ -260,7 +256,6 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               labelText: 'Security Code',
               prefixIcon: Icon(
                 PhosphorIcons.lockSimple(PhosphorIconsStyle.thin),
-                size: 20,
               ),
               suffixIcon: IconButton(
                 icon: Icon(

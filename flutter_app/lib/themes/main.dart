@@ -28,7 +28,7 @@ final darkTeme = ThemeData.dark().copyWith(
     onSurface: textPrimary,
     secondary: accent,
   ),
-  iconTheme: IconThemeData(color: iconsColor),
+  iconTheme: IconThemeData(color: iconsColor, size: 25),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,

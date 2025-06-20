@@ -61,7 +61,6 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
               labelText: 'Folder Name',
               prefixIcon: Icon(
                 PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
-                size: 20,
               ),
             ),
             validator: _validateName,

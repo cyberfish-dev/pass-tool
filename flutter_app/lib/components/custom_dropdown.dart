@@ -23,6 +23,26 @@ class CustomDropdown<T> extends StatelessWidget {
     required this.validator,
   });
 
+  _onTap(BuildContext context) async {
+    if (options.isEmpty) {
+      return;
+    }
+
+    final box = _fieldKey.currentContext!.findRenderObject() as RenderBox;
+    final inputWidth = box.size.width;
+
+    final selected = await showCustomMenu<T>(
+      context,
+      _fieldKey,
+      options,
+      inputWidth,
+    );
+
+    if (selected != null) {
+      onChanged(selected);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -31,45 +51,25 @@ class CustomDropdown<T> extends StatelessWidget {
       controller: TextEditingController(text: value),
       decoration: InputDecoration(
         labelText: title,
-        prefixIcon: Icon(icon, size: 20),
+        prefixIcon: Icon(icon),
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(
-                PhosphorIcons.trashSimple(PhosphorIconsStyle.thin),
-                size: 20,
-              ),
+              icon: Icon(PhosphorIcons.trashSimple(PhosphorIconsStyle.thin)),
               onPressed: () => onChanged(null),
             ),
             IconButton(
-              icon: Icon(
-                PhosphorIcons.caretDown(PhosphorIconsStyle.thin),
-                size: 20,
-              ),
-              onPressed: () {},
+              icon: Icon(PhosphorIcons.caretDown(PhosphorIconsStyle.thin)),
+              onPressed: () async{
+                await _onTap(context);
+              },
             ),
           ],
         ),
       ),
       onTap: () async {
-        if (options.isEmpty) {
-          return;
-        }
-
-        final box = _fieldKey.currentContext!.findRenderObject() as RenderBox;
-        final inputWidth = box.size.width;
-
-        final selected = await showCustomMenu<T>(
-          context,
-          _fieldKey,
-          options,
-          inputWidth,
-        );
-
-        if (selected != null) {
-          onChanged(selected);
-        }
+        await _onTap(context);
       },
       showCursor: false,
       enableInteractiveSelection: false,
