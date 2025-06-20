@@ -63,13 +63,13 @@ final darkTeme = ThemeData.dark().copyWith(
     ),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: darkCard,
+    backgroundColor: darkMenu,
     selectedItemColor: accent,
     unselectedItemColor: textSecondary,
     elevation: 0,
   ),
   navigationRailTheme: NavigationRailThemeData(
-    backgroundColor: darkCard,
+    backgroundColor: darkMenu,
     elevation: 0,
     indicatorColor: textSecondary.withAlpha(50),
     indicatorShape: RoundedRectangleBorder(
