@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => 734375974;
+  int get rustContentHash => 251098878;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -197,9 +197,21 @@ abstract class RustLibApi extends BaseApi {
 
   Future<EntryCategory> crateApiVaultModelsCreditCardRecordCategory();
 
+  Future<Uint8List> crateApiCryptoDecryptIt({
+    required List<int> encData,
+    required List<int> encKey,
+    required List<int> aad,
+  });
+
   Future<U8Array64> crateApiCryptoDeriveMasterKey({
     required String password,
     required List<int> salt,
+  });
+
+  Future<Uint8List> crateApiCryptoEncryptIt({
+    required List<int> data,
+    required U8Array32 encKey,
+    required List<int> aad,
   });
 
   String crateApiGeneratorGeneratePassword({
@@ -213,6 +225,8 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<U8Array16> crateApiCryptoGenerateSalt();
+
+  Future<U8Array32> crateApiCryptoGenerateSubmasterKey();
 
   Future<void> crateApiMainInitApp();
 
@@ -1114,6 +1128,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<Uint8List> crateApiCryptoDecryptIt({
+    required List<int> encData,
+    required List<int> encKey,
+    required List<int> aad,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(encData, serializer);
+          sse_encode_list_prim_u_8_loose(encKey, serializer);
+          sse_encode_list_prim_u_8_loose(aad, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 26,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCryptoError,
+        ),
+        constMeta: kCrateApiCryptoDecryptItConstMeta,
+        argValues: [encData, encKey, aad],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoDecryptItConstMeta => const TaskConstMeta(
+    debugName: "decrypt_it",
+    argNames: ["encData", "encKey", "aad"],
+  );
+
+  @override
   Future<U8Array64> crateApiCryptoDeriveMasterKey({
     required String password,
     required List<int> salt,
@@ -1127,7 +1178,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1150,6 +1201,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<Uint8List> crateApiCryptoEncryptIt({
+    required List<int> data,
+    required U8Array32 encKey,
+    required List<int> aad,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(data, serializer);
+          sse_encode_u_8_array_32(encKey, serializer);
+          sse_encode_list_prim_u_8_loose(aad, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 28,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_prim_u_8_strict,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCryptoError,
+        ),
+        constMeta: kCrateApiCryptoEncryptItConstMeta,
+        argValues: [data, encKey, aad],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoEncryptItConstMeta => const TaskConstMeta(
+    debugName: "encrypt_it",
+    argNames: ["data", "encKey", "aad"],
+  );
+
+  @override
   String crateApiGeneratorGeneratePassword({
     required BigInt length,
     required bool includeLower,
@@ -1170,7 +1258,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_bool(includeSymbols, serializer);
           sse_encode_usize(minDigits, serializer);
           sse_encode_usize(minSymbols, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1214,7 +1302,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 28,
+            funcId: 30,
             port: port_,
           );
         },
@@ -1233,6 +1321,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "generate_salt", argNames: []);
 
   @override
+  Future<U8Array32> crateApiCryptoGenerateSubmasterKey() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 31,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_u_8_array_32,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiCryptoGenerateSubmasterKeyConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiCryptoGenerateSubmasterKeyConstMeta =>
+      const TaskConstMeta(debugName: "generate_submaster_key", argNames: []);
+
+  @override
   Future<void> crateApiMainInitApp() {
     return handler.executeNormal(
       NormalTask(
@@ -1241,7 +1356,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 29,
+            funcId: 32,
             port: port_,
           );
         },
@@ -1268,7 +1383,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 30,
+            funcId: 33,
             port: port_,
           );
         },
@@ -1295,7 +1410,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 34,
             port: port_,
           );
         },
@@ -1328,7 +1443,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 35,
             port: port_,
           );
         },

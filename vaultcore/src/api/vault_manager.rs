@@ -192,7 +192,7 @@ impl VaultManager {
             encrypted,
         )?;
 
-        self.update_vault_meta();
+        self.update_vault_meta()?;
 
         Ok(())
     }

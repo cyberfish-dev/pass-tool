@@ -7,7 +7,6 @@ import '../frb_generated.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `decrypt_it`, `encrypt_it`, `generate_submaster_key`
 // These functions are ignored because they have generic arguments: `decrypt_payload`, `encrypt_payload`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `EncryptedRecordFile`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `fmt`, `from`, `from`, `from`, `from`
@@ -29,6 +28,34 @@ Future<(U8Array32, U8Array32)> splitMasterKey({required U8Array64 masterKey}) =>
 /// Generates a cryptographically secure random 16-byte salt.
 Future<U8Array16> generateSalt() =>
     RustLib.instance.api.crateApiCryptoGenerateSalt();
+
+/// Generates a cryptographically secure random 32-byte submaster key.
+Future<U8Array32> generateSubmasterKey() =>
+    RustLib.instance.api.crateApiCryptoGenerateSubmasterKey();
+
+/// Encrypts data using AES-256-GCM with a random nonce and AAD.
+/// Output is nonce || ciphertext.
+Future<Uint8List> encryptIt({
+  required List<int> data,
+  required U8Array32 encKey,
+  required List<int> aad,
+}) => RustLib.instance.api.crateApiCryptoEncryptIt(
+  data: data,
+  encKey: encKey,
+  aad: aad,
+);
+
+/// Decrypts an encrypted submaster key using AES-256-GCM and AAD.
+/// Returns the decrypted submaster key.
+Future<Uint8List> decryptIt({
+  required List<int> encData,
+  required List<int> encKey,
+  required List<int> aad,
+}) => RustLib.instance.api.crateApiCryptoDecryptIt(
+  encData: encData,
+  encKey: encKey,
+  aad: aad,
+);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CryptoError>>
 abstract class CryptoError implements RustOpaqueInterface {}

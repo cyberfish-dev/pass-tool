@@ -146,8 +146,7 @@ where
     item_key.zeroize();
 
     // Deserialize the plaintext bytes into the expected type T
-    let plaintext: T = serde_json::from_slice(&plaintext)
-        .map_err(|e| CryptoError::SerdeJson(e))?;
+    let plaintext: T = serde_json::from_slice(&plaintext).map_err(|e| CryptoError::SerdeJson(e))?;
 
     Ok(plaintext)
 }
@@ -160,10 +159,12 @@ pub fn derive_master_key(password: &str, salt: &[u8]) -> Result<[u8; 64], Crypto
     }
 
     // Recommended Argon2id parameters for interactive login (OWASP 2024)
-    let params = Params::new(131072, 4, 1, Some(64)).map_err(|_| CryptoError::Other("Invalid Argon2 parameters".to_string()))?;
+    let params = Params::new(131072, 4, 1, Some(64))
+        .map_err(|_| CryptoError::Other("Invalid Argon2 parameters".to_string()))?;
 
     let argon2 = Argon2::new(argon2::Algorithm::Argon2id, argon2::Version::V0x13, params);
-    let salt_str = SaltString::encode_b64(salt).map_err(|_| CryptoError::Other("Invalid salt bytes".to_string()))?;
+    let salt_str = SaltString::encode_b64(salt)
+        .map_err(|_| CryptoError::Other("Invalid salt bytes".to_string()))?;
 
     // Copy password to a mutable buffer for zeroization
     let mut pw_buf = password.as_bytes().to_vec();
@@ -208,7 +209,7 @@ pub fn generate_salt() -> [u8; 16] {
 /// Struct representing an encrypted record file.
 /// Contains base64-encoded encrypted submaster key, encrypted data, and timestamps.
 #[derive(Serialize, Deserialize)]
-struct EncryptedRecordFile {
+pub struct EncryptedRecordFile {
     pub enc_item_key: String, // base64(nonce + ciphertext) of submaster key
     pub enc_data: String,     // base64(nonce + ciphertext) of payload
     pub created_at: i64,
@@ -216,7 +217,7 @@ struct EncryptedRecordFile {
 }
 
 /// Generates a cryptographically secure random 32-byte submaster key.
-fn generate_submaster_key() -> [u8; 32] {
+pub fn generate_submaster_key() -> [u8; 32] {
     let mut key = [0u8; 32];
     OsRng.fill_bytes(&mut key);
     key
@@ -224,22 +225,15 @@ fn generate_submaster_key() -> [u8; 32] {
 
 /// Encrypts data using AES-256-GCM with a random nonce and AAD.
 /// Output is nonce || ciphertext.
-fn encrypt_it(data: &[u8], enc_key: &[u8; 32], aad: &[u8]) -> Result<Vec<u8>, CryptoError> {
-    let cipher = Aes256Gcm::new_from_slice(enc_key)
-        .map_err(|_| CryptoError::InvalidKeyLength)?;
+pub fn encrypt_it(data: &[u8], enc_key: &[u8; 32], aad: &[u8]) -> Result<Vec<u8>, CryptoError> {
+    let cipher = Aes256Gcm::new_from_slice(enc_key).map_err(|_| CryptoError::InvalidKeyLength)?;
 
     // Generate a random 12-byte nonce (recommended for AES-GCM)
     let mut nonce = [0u8; 12];
     OsRng.fill_bytes(&mut nonce);
 
     // Encrypt the data with AAD
-    let ciphertext = cipher.encrypt(
-        Nonce::from_slice(&nonce),
-        Payload {
-            msg: data,
-            aad,
-        }
-    )?;
+    let ciphertext = cipher.encrypt(Nonce::from_slice(&nonce), Payload { msg: data, aad })?;
 
     // Output is nonce || ciphertext
     let mut out = Vec::with_capacity(12 + ciphertext.len());
@@ -251,15 +245,14 @@ fn encrypt_it(data: &[u8], enc_key: &[u8; 32], aad: &[u8]) -> Result<Vec<u8>, Cr
 
 /// Decrypts an encrypted submaster key using AES-256-GCM and AAD.
 /// Returns the decrypted submaster key.
-fn decrypt_it(enc_data: &[u8], enc_key: &[u8], aad: &[u8]) -> Result<[u8; 32], CryptoError> {
+pub fn decrypt_it(enc_data: &[u8], enc_key: &[u8], aad: &[u8]) -> Result<Vec<u8>, CryptoError> {
     if enc_data.len() < 12 {
         return Err(CryptoError::InvalidEncryptedKeyFormat);
     }
 
     let (nonce_bytes, ciphertext) = enc_data.split_at(12);
 
-    let cipher = Aes256Gcm::new_from_slice(enc_key)
-        .map_err(|_| CryptoError::InvalidKeyLength)?;
+    let cipher = Aes256Gcm::new_from_slice(enc_key).map_err(|_| CryptoError::InvalidKeyLength)?;
 
     let plaintext = cipher
         .decrypt(
@@ -267,15 +260,9 @@ fn decrypt_it(enc_data: &[u8], enc_key: &[u8], aad: &[u8]) -> Result<[u8; 32], C
             Payload {
                 msg: ciphertext,
                 aad,
-            }
+            },
         )
         .map_err(CryptoError::AesGcm)?;
 
-    if plaintext.len() != 32 {
-        return Err(CryptoError::InvalidKeyLength);
-    }
-
-    let mut out = [0u8; 32];
-    out.copy_from_slice(&plaintext);
-    Ok(out)
+    Ok(plaintext)
 }
