@@ -3,6 +3,8 @@ import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/models/form_base_state.dart';
+import 'package:flutter_app/models/record_base.dart';
+import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddNoteForm extends StatefulWidget {
@@ -12,7 +14,8 @@ class AddNoteForm extends StatefulWidget {
   AddNoteFormState createState() => AddNoteFormState();
 }
 
-class AddNoteFormState extends FormBaseState<AddNoteForm, String> {
+class AddNoteFormState
+    extends FormBaseState<AddNoteForm, RecordBase<SecureNoteRecord>> {
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
 
@@ -109,8 +112,14 @@ class AddNoteFormState extends FormBaseState<AddNoteForm, String> {
   }
 
   @override
-  String getFormData() {
-    return '';
+  RecordBase<SecureNoteRecord> getFormData() {
+    // TODO: handle icons
+    return RecordBase<SecureNoteRecord>(
+      data: SecureNoteRecord(note: _noteCtrl.text),
+      itemName: _itemNameCtrl.text,
+      folder: selectedFolder?.id,
+      icon: null,
+    );
   }
 
   @override

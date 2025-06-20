@@ -188,7 +188,7 @@ impl VaultManager {
         let record_id = self.vault.add_entry(name, T::category(), folder, icon);
 
         fs::write(
-            format!("{}/records/{}.dat", self.root_path, record_id),
+            format!("{}/{}.dat", self.root_path, record_id),
             encrypted,
         )?;
 

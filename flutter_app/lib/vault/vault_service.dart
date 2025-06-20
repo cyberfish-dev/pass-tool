@@ -1,5 +1,8 @@
+import 'package:flutter_app/models/record_base.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:path_provider/path_provider.dart';
+
+// TODO: properly handle errors and exceptions
 
 class VaultService {
   VaultManager? _vault;
@@ -27,6 +30,11 @@ class VaultService {
 
   static void addFolder(String name) {
     _instance.vault.addFolder(name: name);
+    _metaDirty = true;
+  }
+
+  static void addSecureNote(RecordBase<SecureNoteRecord> record) {
+    _instance.vault.addNoteRecord(name: record.itemName, record: record.data, folder: record.folder, icon: record.icon);
     _metaDirty = true;
   }
 

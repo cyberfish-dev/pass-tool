@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/categories_list.dart';
 import 'package:flutter_app/components/folder_list.dart';
-import 'package:flutter_app/components/list_items.dart';
-import 'package:flutter_app/components/section_header.dart';
-import 'package:flutter_app/menu/category_items.dart';
+import 'package:flutter_app/components/no_folder_list.dart';
 import 'package:flutter_app/updater/screen_updater.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -46,12 +45,13 @@ class _VaultScreenState extends State<VaultScreen> {
           Expanded(
             child: ListView(
               children: [
-                SectionHeader(title: 'TYPES', count: categories.length),
-                ListItems(items: categories),
-
+                CategoryList(key: ScreenUpdater.categoryListGlobalKey),
                 const SizedBox(height: 24),
 
                 FolderList(key: ScreenUpdater.folderListGlobalKey),
+                const SizedBox(height: 24),
+
+                NoFolderList(key: ScreenUpdater.noFolderListGlobalKey),
               ],
             ),
           ),
