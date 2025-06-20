@@ -49,8 +49,6 @@ class _VaultScreenState extends State<VaultScreen> {
                 const SizedBox(height: 24),
 
                 FolderList(key: ScreenUpdater.folderListGlobalKey),
-                const SizedBox(height: 24),
-
                 NoFolderList(key: ScreenUpdater.noFolderListGlobalKey),
               ],
             ),

@@ -22,6 +22,7 @@ class NoFolderListState extends State<NoFolderList> {
       final items = metadata.entries
           .where((item) => item.folder == null)
           .toList();
+
       _items = items.map((item) {
         return ListItemModel(
           item.name,

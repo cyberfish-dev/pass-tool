@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
-import 'package:flutter_app/models/folder_model.dart';
 import 'package:flutter_app/models/form_base_state.dart';
 import 'package:flutter_app/preferences/password_prefs.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
@@ -118,7 +117,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
           SizedBox(height: 16),
 
           // Folder dropdown
-          CustomDropdown<FolderModel>(
+          CustomDropdown<Folder>(
             value: selectedFolder?.name ?? 'No Folder',
             options: folders,
             onChanged: (selected) {

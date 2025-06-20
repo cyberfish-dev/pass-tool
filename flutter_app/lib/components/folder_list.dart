@@ -24,7 +24,7 @@ class FolderListState extends State<FolderList> {
             (el) => ListItemModel(
               el.name,
               PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
-              (metadata.folderCounts[el.id] ?? 0) as int?,
+              (metadata.folderCounts[el.id] ?? BigInt.zero).toInt(),
               (ctx) {
                 // TODO: Implement folder navigation
                 
@@ -56,7 +56,8 @@ class FolderListState extends State<FolderList> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(title: 'FOLDERS', count: _folders.length),
-        if (_folders.isNotEmpty) ListItems(items: _folders),
+        ListItems(items: _folders),
+        const SizedBox(height: 24),
       ],
     );
   }
