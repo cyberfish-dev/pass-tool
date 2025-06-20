@@ -68,6 +68,10 @@ final darkTeme = ThemeData.dark().copyWith(
     unselectedItemColor: textSecondary,
     elevation: 0,
   ),
+  bottomAppBarTheme: BottomAppBarTheme(
+    color: darkMenu,
+    elevation: 0,
+  ),
   navigationRailTheme: NavigationRailThemeData(
     backgroundColor: darkMenu,
     elevation: 0,
