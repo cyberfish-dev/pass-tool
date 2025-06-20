@@ -48,7 +48,7 @@ class ItemRow extends StatelessWidget {
           ),
         ),
         if (!isLast)
-          Row(children: [Expanded(child: Divider(height: 1, indent: 45))]),
+          Row(children: [Expanded(child: Divider(height: 1, indent: 45, endIndent: 1,))]),
       ],
     );
   }

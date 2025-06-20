@@ -28,7 +28,7 @@ final darkTeme = ThemeData.dark().copyWith(
     onSurface: textPrimary,
     secondary: accent,
   ),
-  iconTheme: IconThemeData(color: textSecondary),
+  iconTheme: IconThemeData(color: iconsColor),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: darkCard,
@@ -38,8 +38,8 @@ final darkTeme = ThemeData.dark().copyWith(
     labelStyle: textTheme.bodyMedium?.copyWith(
       color: textSecondary.withAlpha(180),
     ),
-    prefixIconColor: textSecondary,
-    suffixIconColor: textSecondary,
+    prefixIconColor: iconsColor,
+    suffixIconColor: iconsColor,
     errorStyle: textTheme.bodySmall?.copyWith(color: errorColor),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
