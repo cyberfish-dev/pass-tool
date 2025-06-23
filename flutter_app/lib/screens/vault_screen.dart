@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/categories_list.dart';
 import 'package:flutter_app/components/folder_list.dart';
-import 'package:flutter_app/components/no_folder_list.dart';
+import 'package:flutter_app/components/records_list.dart';
 import 'package:flutter_app/updater/screen_updater.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -48,7 +48,8 @@ class _VaultScreenState extends State<VaultScreen> {
                 const SizedBox(height: 24),
 
                 FolderList(key: ScreenUpdater.folderListGlobalKey),
-                NoFolderList(key: ScreenUpdater.noFolderListGlobalKey),
+                RecordsList(key: ScreenUpdater.noFolderListGlobalKey, searchText: _searchText, showTrash: false, 
+                  category: null, folderId: null, title: 'NO FOLDER',),
               ],
             ),
           ),

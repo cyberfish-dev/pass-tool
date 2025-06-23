@@ -3,16 +3,24 @@ import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:flutter_app/vault/vault_service.dart';
+import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class NoFolderList extends StatefulWidget {
-  const NoFolderList({super.key});
+class RecordsList extends StatefulWidget {
+  
+  final String? searchText;
+  final EntryCategory? category;
+  final String? folderId;
+  final bool showTrash;
+  final String title;
+
+  const RecordsList({super.key, this.searchText, this.category, this.folderId, required this.showTrash, required this.title});
 
   @override
-  State<NoFolderList> createState() => NoFolderListState();
+  State<RecordsList> createState() => RecordsListState();
 }
 
-class NoFolderListState extends State<NoFolderList> {
+class RecordsListState extends State<RecordsList> {
   List<ListItemModel> _items = [];
 
   void update() {
@@ -20,7 +28,10 @@ class NoFolderListState extends State<NoFolderList> {
 
     setState(() {
       final items = metadata.entries
-          .where((item) => item.folder == null)
+          .where((item) => item.folder == widget.folderId && 
+                          (widget.category == null || item.category == widget.category) &&
+                          (widget.showTrash ? item.isTrashed : true) &&
+                          (widget.searchText == null || widget.searchText!.isEmpty || item.name.toLowerCase().contains(widget.searchText!.toLowerCase())))
           .toList();
 
       _items = items.map((item) {
@@ -46,7 +57,7 @@ class NoFolderListState extends State<NoFolderList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: 'NO FOLDER', count: _items.length),
+        SectionHeader(title: widget.title, count: _items.length),
         ListItems(items: _items),
       ],
     );

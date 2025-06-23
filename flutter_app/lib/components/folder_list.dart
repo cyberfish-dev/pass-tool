@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/list_item_model.dart';
+import 'package:flutter_app/screens/records_screen.dart';
 import 'package:flutter_app/vault/vault_service.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -26,10 +27,17 @@ class FolderListState extends State<FolderList> {
               PhosphorIcons.folderOpen(PhosphorIconsStyle.thin),
               (metadata.folderCounts[el.id] ?? BigInt.zero).toInt(),
               (ctx) {
-                // TODO: Implement folder navigation
-                
-                VaultService.deleteFolder(el.id);
-                update();
+                Navigator.push(
+                  ctx,
+                  MaterialPageRoute(
+                    builder: (context) => RecordsScreen(
+                      showTrash: false,
+                      category: null,
+                      folderId: el.id,
+                      title: el.name,
+                    ),
+                  ),
+                );
               },
               el.id,
             ),
@@ -46,11 +54,10 @@ class FolderListState extends State<FolderList> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_folders.isEmpty) {
       // return some empty space here
       return Container();
-    } 
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
