@@ -6,6 +6,15 @@ import 'package:flutter_app/screens/password_generator.dart';
 import 'package:flutter_app/screens/vault_screen.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+final vaultNavigatorKey = GlobalKey<NavigatorState>();
+
+ final List<GlobalKey<NavigatorState>> navigatorKeys = [
+    vaultNavigatorKey,
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
 const List<Widget> pages = <Widget>[
   VaultScreen(),
   PasswordGenerator(),

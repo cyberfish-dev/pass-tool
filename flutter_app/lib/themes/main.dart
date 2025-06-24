@@ -17,6 +17,9 @@ final darkTeme = ThemeData.dark().copyWith(
     surfaceTintColor: Colors.transparent,
     shadowColor: Colors.transparent,
     foregroundColor: Colors.transparent,
+    iconTheme: IconThemeData(color: iconsColor, size: 25),
+    titleTextStyle: textTheme.labelLarge,
+    centerTitle: false,
     elevation: 0,
   ),
   splashFactory: NoSplash.splashFactory,
@@ -68,10 +71,7 @@ final darkTeme = ThemeData.dark().copyWith(
     unselectedItemColor: textSecondary,
     elevation: 0,
   ),
-  bottomAppBarTheme: BottomAppBarTheme(
-    color: darkMenu,
-    elevation: 0,
-  ),
+  bottomAppBarTheme: BottomAppBarTheme(color: darkMenu, elevation: 0),
   navigationRailTheme: NavigationRailThemeData(
     backgroundColor: darkMenu,
     elevation: 0,

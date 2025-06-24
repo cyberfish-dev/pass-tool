@@ -8,12 +8,11 @@ import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Future<void> main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
 
   await RustLib.init();
-  await VaultService.initVault(); 
-  
+  await VaultService.initVault();
+
   runApp(const PassToolApp());
 }
 
@@ -112,7 +111,22 @@ class _MainLayoutState extends State<MainLayout> {
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 1000),
-                  child: pages[_currentIndex]),
+                  child: Stack(
+                    children: List.generate(pages.length, (index) {
+                      return Offstage(
+                        offstage: _currentIndex != index,
+                        child: Navigator(
+                          key: navigatorKeys[index],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => pages[index],
+                            );
+                          },
+                        ),
+                      );
+                    }),
+                  ),
+                ),
               ),
             ),
           ],
@@ -138,7 +152,19 @@ class _MainLayoutState extends State<MainLayout> {
 
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
-      body: pages[_currentIndex],
+      body: Stack(
+        children: List.generate(pages.length, (index) {
+          return Offstage(
+            offstage: _currentIndex != index,
+            child: Navigator(
+              key: navigatorKeys[index],
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(builder: (context) => pages[index]);
+              },
+            ),
+          );
+        }),
+      ),
       bottomNavigationBar: SizedBox(
         height: 120,
         child: DecoratedBox(

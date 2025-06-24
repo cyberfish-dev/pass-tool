@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
+import 'package:flutter_app/menu/menu_items.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:flutter_app/screens/records_screen.dart';
 import 'package:flutter_app/vault/vault_service.dart';
@@ -21,8 +22,7 @@ class CategoryListState extends State<CategoryList> {
       PhosphorIcons.globe(PhosphorIconsStyle.thin),
       null,
       (ctx) {
-        Navigator.push(
-          ctx,
+        Navigator.of(vaultNavigatorKey.currentContext!).push(
           MaterialPageRoute(
             builder: (context) => RecordsScreen(
               showTrash: false,
@@ -40,8 +40,7 @@ class CategoryListState extends State<CategoryList> {
       PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
       null,
       (ctx) {
-        Navigator.push(
-          ctx,
+        Navigator.of(vaultNavigatorKey.currentContext!).push(
           MaterialPageRoute(
             builder: (context) => RecordsScreen(
               showTrash: false,
@@ -59,8 +58,7 @@ class CategoryListState extends State<CategoryList> {
       PhosphorIcons.note(PhosphorIconsStyle.thin),
       null,
       (ctx) {
-        Navigator.push(
-          ctx,
+        Navigator.of(vaultNavigatorKey.currentContext!).push(
           MaterialPageRoute(
             builder: (context) => RecordsScreen(
               showTrash: false,
@@ -76,8 +74,7 @@ class CategoryListState extends State<CategoryList> {
     ListItemModel('Trash', PhosphorIcons.trash(PhosphorIconsStyle.thin), null, (
       ctx,
     ) {
-      Navigator.push(
-        ctx,
+      Navigator.of(vaultNavigatorKey.currentContext!).push(
         MaterialPageRoute(
           builder: (context) => RecordsScreen(
             showTrash: true,
