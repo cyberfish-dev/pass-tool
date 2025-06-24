@@ -119,13 +119,14 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
 
           // Item Name
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _itemNameController,
             autofocus: true,
             decoration: InputDecoration(
               labelText: 'Item name',
-              prefixIcon: Icon(
-                PhosphorIcons.record(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.record(PhosphorIconsStyle.thin)),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
@@ -156,12 +157,13 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
           SizedBox(height: 8),
 
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _cardholderController,
             decoration: InputDecoration(
               labelText: 'Cardholder Name',
-              prefixIcon: Icon(
-                PhosphorIcons.user(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.user(PhosphorIconsStyle.thin)),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
@@ -172,6 +174,9 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
 
           // Number with eye
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _numberController,
             decoration: InputDecoration(
               labelText: 'Card Number',
@@ -233,6 +238,9 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
           const SizedBox(height: 12),
 
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _yearController,
             decoration: InputDecoration(
               labelText: 'Expiration Year',
@@ -251,6 +259,9 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
           const SizedBox(height: 12),
 
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _codeController,
             decoration: InputDecoration(
               labelText: 'Security Code',

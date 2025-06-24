@@ -99,13 +99,14 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
 
           // Item Name
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _itemNameCtrl,
             autofocus: true,
             decoration: InputDecoration(
               labelText: 'Item name',
-              prefixIcon: Icon(
-                PhosphorIcons.record(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.record(PhosphorIconsStyle.thin)),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
@@ -137,12 +138,13 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
 
           // Username
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _usernameCtrl,
             decoration: InputDecoration(
               labelText: 'Username',
-              prefixIcon: Icon(
-                PhosphorIcons.user(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.user(PhosphorIconsStyle.thin)),
               suffixIcon: IconButton(
                 icon: Icon(
                   PhosphorIcons.arrowsClockwise(PhosphorIconsStyle.thin),
@@ -161,13 +163,14 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
 
           // Password
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _passwordCtrl,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
               labelText: 'Password',
-              prefixIcon: Icon(
-                PhosphorIcons.password(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.password(PhosphorIconsStyle.thin)),
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -205,6 +208,9 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
           SizedBox(height: 8),
 
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _authKeyCtrl,
             obscureText: _obscureAuthKey,
             decoration: InputDecoration(
@@ -230,9 +236,7 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
             onPressed: () {
               // launch setup flow
             },
-            icon: Icon(
-              PhosphorIcons.camera(PhosphorIconsStyle.duotone),
-            ),
+            icon: Icon(PhosphorIcons.camera(PhosphorIconsStyle.duotone)),
             label: Text('Set up authenticator key'),
           ),
 
@@ -242,16 +246,15 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
           SizedBox(height: 8),
 
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _websiteCtrl,
             decoration: InputDecoration(
               labelText: 'Website (URI)',
-              prefixIcon: Icon(
-                PhosphorIcons.globe(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.globe(PhosphorIconsStyle.thin)),
               suffixIcon: IconButton(
-                icon: Icon(
-                  PhosphorIcons.gear(PhosphorIconsStyle.thin),
-                ),
+                icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.thin)),
                 onPressed: () {
                   // open domain settings
                 },

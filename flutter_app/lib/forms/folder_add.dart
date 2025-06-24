@@ -55,6 +55,9 @@ class AddFolderFormState extends FormBaseState<AddFolderForm, String> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _controller,
             autofocus: true,
             decoration: InputDecoration(

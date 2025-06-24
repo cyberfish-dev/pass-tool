@@ -46,6 +46,9 @@ class CustomDropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autocorrect: false,
+      enableSuggestions: false,
+      textCapitalization: TextCapitalization.none,
       key: _fieldKey,
       readOnly: true,
       controller: TextEditingController(text: value),
@@ -61,7 +64,7 @@ class CustomDropdown<T> extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(PhosphorIcons.caretDown(PhosphorIconsStyle.thin)),
-              onPressed: () async{
+              onPressed: () async {
                 await _onTap(context);
               },
             ),

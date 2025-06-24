@@ -56,13 +56,14 @@ class AddNoteFormState
 
           // Item Name
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _itemNameCtrl,
             autofocus: true,
             decoration: InputDecoration(
               labelText: 'Item name',
-              prefixIcon: Icon(
-                PhosphorIcons.record(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.record(PhosphorIconsStyle.thin)),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
@@ -89,12 +90,13 @@ class AddNoteFormState
           SizedBox(height: 16),
 
           TextFormField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _noteCtrl,
             decoration: InputDecoration(
               labelText: 'Secure Note',
-              prefixIcon: Icon(
-                PhosphorIcons.note(PhosphorIconsStyle.thin),
-              ),
+              prefixIcon: Icon(PhosphorIcons.note(PhosphorIconsStyle.thin)),
             ),
             validator: _requiredValidator,
             maxLines: 10,

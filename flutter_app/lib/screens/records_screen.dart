@@ -58,6 +58,9 @@ class _RecordsScreenState extends State<RecordsScreen> {
             // Search field
             TextField(
               controller: _searchController,
+              autocorrect: false,
+              enableSuggestions: false,
+              textCapitalization: TextCapitalization.none,
               decoration: InputDecoration(
                 filled: true,
                 hintText: 'Search',
@@ -67,14 +70,13 @@ class _RecordsScreenState extends State<RecordsScreen> {
                 isDense: true,
                 suffixIcon: _searchText.isNotEmpty
                     ? IconButton(
-                        icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.thin),),
+                        icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.thin)),
                         onPressed: () {
-                          setState(() => _searchController.clear());
+                          _searchController.clear();
                         },
                       )
                     : null,
               ),
-              onChanged: (v) => setState(() => _searchText = v),
             ),
 
             const SizedBox(height: 24),

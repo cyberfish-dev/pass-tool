@@ -45,6 +45,9 @@ class _VaultScreenState extends State<VaultScreen> {
 
           // Search field
           TextField(
+            autocorrect: false,
+            enableSuggestions: false,
+            textCapitalization: TextCapitalization.none,
             controller: _searchController,
             decoration: InputDecoration(
               filled: true,
@@ -55,11 +58,9 @@ class _VaultScreenState extends State<VaultScreen> {
               isDense: true,
               suffixIcon: _searchText.isNotEmpty
                   ? IconButton(
-                      icon: Icon(
-                        PhosphorIcons.x(PhosphorIconsStyle.thin),
-                      ),
+                      icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.thin)),
                       onPressed: () {
-                        setState(() => _searchController.clear());
+                        _searchController.clear();
                       },
                     )
                   : null,
@@ -70,18 +71,20 @@ class _VaultScreenState extends State<VaultScreen> {
 
           // Content list
           Expanded(
-            child: _searchText.isNotEmpty
-                ? RecordsList(
-                    key: ScreenUpdater.noFolderListGlobalKey,
-                    searchText: _searchText,
-                    showTrash: false,
-                    category: null,
-                    folderId: null,
-                    title: 'ALL RECORDS',
-                    hasNoFolder: false,
-                  )
-                : ListView(
-                    children: [
+            child: ListView(
+              children: _searchText.isNotEmpty
+                  ? [
+                      RecordsList(
+                        key: ScreenUpdater.noFolderListGlobalKey,
+                        searchText: _searchText,
+                        showTrash: false,
+                        category: null,
+                        folderId: null,
+                        title: 'ALL RECORDS',
+                        hasNoFolder: false,
+                      ),
+                    ]
+                  : [
                       CategoryList(key: ScreenUpdater.categoryListGlobalKey),
                       const SizedBox(height: 24),
 
@@ -96,7 +99,7 @@ class _VaultScreenState extends State<VaultScreen> {
                         hasNoFolder: true,
                       ),
                     ],
-                  ),
+            ),
           ),
         ],
       ),
