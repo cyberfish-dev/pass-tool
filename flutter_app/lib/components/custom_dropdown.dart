@@ -3,9 +3,7 @@ import 'package:flutter_app/actions/show_menu.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class CustomDropdown<T> extends StatelessWidget {
-  final GlobalKey _fieldKey = GlobalKey();
-
+class CustomDropdown<T> extends StatefulWidget {
   final String? value;
   final String title;
   final IconData icon;
@@ -13,7 +11,7 @@ class CustomDropdown<T> extends StatelessWidget {
   final ValueChanged<T?> onChanged;
   final FormFieldValidator<String>? validator;
 
-  CustomDropdown({
+  const CustomDropdown({
     super.key,
     required this.value,
     required this.options,
@@ -23,62 +21,81 @@ class CustomDropdown<T> extends StatelessWidget {
     required this.validator,
   });
 
-  _onTap(BuildContext context) async {
-    
-    if (options.isEmpty) {
-      return;
-    }
+  @override
+  State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
+}
 
-    final box = _fieldKey.currentContext!.findRenderObject() as RenderBox;
-    final inputWidth = box.size.width;
+class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
+  final GlobalKey _fieldKey = GlobalKey();
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value ?? '');
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomDropdown<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value) {
+      _controller.text = widget.value ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onTap() async {
+    if (widget.options.isEmpty) return;
+
+    final renderBox = _fieldKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+
+    final inputWidth = renderBox.size.width;
 
     final selected = await showCustomMenu<T>(
       context,
       _fieldKey,
-      options,
+      widget.options,
       inputWidth,
     );
 
     if (selected != null) {
-      onChanged(selected);
+      widget.onChanged(selected);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      autocorrect: false,
-      enableSuggestions: false,
-      textCapitalization: TextCapitalization.none,
       key: _fieldKey,
       readOnly: true,
-      controller: TextEditingController(text: value),
+      controller: _controller,
       decoration: InputDecoration(
-        labelText: title,
-        prefixIcon: Icon(icon),
+        labelText: widget.title,
+        prefixIcon: Icon(widget.icon),
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               icon: Icon(PhosphorIcons.trashSimple(PhosphorIconsStyle.thin)),
-              onPressed: () => onChanged(null),
+              onPressed: () => widget.onChanged(null),
             ),
             IconButton(
               icon: Icon(PhosphorIcons.caretDown(PhosphorIconsStyle.thin)),
-              onPressed: () async {
-                await _onTap(context);
-              },
+              onPressed: _onTap,
             ),
           ],
         ),
       ),
-      onTap: () async {
-        await _onTap(context);
-      },
+      onTap: _onTap,
       showCursor: false,
       enableInteractiveSelection: false,
-      canRequestFocus: false,
-      validator: validator,
+      validator: widget.validator,
     );
   }
 }
