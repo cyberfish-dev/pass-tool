@@ -38,9 +38,11 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   void didUpdateWidget(covariant CustomDropdown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.value != oldWidget.value) {
-      _controller.text = widget.value ?? '';
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _controller.text = widget.value ?? '';
+      }
+    });
   }
 
   @override
