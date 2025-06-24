@@ -3,9 +3,7 @@ use std::collections::HashMap;
 use chrono::Utc;
 use uuid::Uuid;
 
-use crate::api::{
-    vault_models::{EntryCategory, Folder, VaultMetadataEntry, VaultMetadataVault},
-};
+use crate::api::vault_models::{EntryCategory, Folder, VaultMetadataEntry, VaultMetadataVault};
 
 impl VaultMetadataVault {
     pub fn add_entry(
@@ -14,7 +12,7 @@ impl VaultMetadataVault {
         category: EntryCategory,
         folder: Option<String>,
         icon: Option<String>,
-    ) -> String{
+    ) -> String {
         let entry = VaultMetadataEntry {
             id: Uuid::new_v4().to_string(),
             name,
@@ -30,6 +28,30 @@ impl VaultMetadataVault {
         self.recalculate_counts();
 
         entry.id
+    }
+
+    pub fn update_entry(
+        &mut self,
+        id: &str,
+        name: String,
+        folder: Option<String>,
+        icon: Option<String>,
+        is_trashed: bool,
+    ) -> bool {
+        if let Some(entry) = self.entries.iter_mut().find(|e| e.id == id) {
+            entry.name = name;
+            entry.folder = folder;
+            entry.icon = icon;
+            entry.is_trashed = is_trashed;
+            entry.updated_at = Utc::now().timestamp();
+            entry.version += 1;
+
+            self.recalculate_counts();
+
+            return true;
+        }
+
+        return false;
     }
 
     pub fn add_folder(&mut self, name: String) -> Folder {
@@ -67,6 +89,7 @@ impl VaultMetadataVault {
         for entry in &self.entries {
             if entry.is_trashed {
                 trashed_count += 1;
+                continue;
             }
 
             if let Some(folder) = &entry.folder {

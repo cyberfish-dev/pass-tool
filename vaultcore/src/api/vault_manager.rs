@@ -1,5 +1,6 @@
 use std::{fs, io};
 
+use serde::de::DeserializeOwned;
 use zeroize::Zeroize;
 
 use crate::api::crypto::{
@@ -7,8 +8,7 @@ use crate::api::crypto::{
     CryptoError,
 };
 use crate::api::vault_models::{
-    CreditCardRecord, Folder, LoginRecord, SecureNoteRecord, VaultMetadataVault,
-    VaultPayload,
+    CreditCardRecord, Folder, LoginRecord, SecureNoteRecord, VaultMetadataVault, VaultPayload,
 };
 
 /// Custom error type for vault manager operations.
@@ -20,6 +20,7 @@ pub enum VaultManagerError {
     IncorrectPassword,
     Serialization(serde_json::Error),
     Other(String),
+    NoEntryFound(String),
 }
 
 impl std::fmt::Display for VaultManagerError {
@@ -32,6 +33,7 @@ impl std::fmt::Display for VaultManagerError {
             IncorrectPassword => write!(f, "Incorrect password or vault data is corrupted."),
             Serialization(e) => write!(f, "Serialization error: {}", e),
             Other(msg) => write!(f, "{}", msg),
+            NoEntryFound(msg) => write!(f, "{}", msg),
         }
     }
 }
@@ -177,6 +179,69 @@ impl VaultManager {
         self.add_generic_entry(name, folder, icon, &record)
     }
 
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn update_login_record(
+        &mut self,
+        record_id: String,
+        is_trashed: bool,
+        name: String,
+        folder: Option<String>,
+        icon: Option<String>,
+        record: LoginRecord,
+    ) -> Result<(), VaultManagerError> {
+        self.update_generic_entry(record_id, name, folder, icon, is_trashed, &record)
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn update_note_record(
+        &mut self,
+        record_id: String,
+        is_trashed: bool,
+        name: String,
+        folder: Option<String>,
+        icon: Option<String>,
+        record: SecureNoteRecord,
+    ) -> Result<(), VaultManagerError> {
+        self.update_generic_entry(record_id, name, folder, icon, is_trashed, &record)
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn update_credit_card_record(
+        &mut self,
+        record_id: String,
+        is_trashed: bool,
+        name: String,
+        folder: Option<String>,
+        icon: Option<String>,
+        record: CreditCardRecord,
+    ) -> Result<(), VaultManagerError> {
+        self.update_generic_entry(record_id, name, folder, icon, is_trashed, &record)
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn get_login_record(
+        &mut self,
+        record_id: String,
+    ) -> Result<LoginRecord, VaultManagerError> {
+        self.get_generic_entry(record_id)
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn get_note_record(
+        &mut self,
+        record_id: String,
+    ) -> Result<SecureNoteRecord, VaultManagerError> {
+        self.get_generic_entry(record_id)
+    }
+
+    #[flutter_rust_bridge::frb(sync)]
+    pub fn get_credit_card_record(
+        &mut self,
+        record_id: String,
+    ) -> Result<CreditCardRecord, VaultManagerError> {
+        self.get_generic_entry(record_id)
+    }
+
     fn add_generic_entry<T: VaultPayload>(
         &mut self,
         name: String,
@@ -187,11 +252,49 @@ impl VaultManager {
         let encrypted = encrypt_payload(payload, &self.enc_key)?;
         let record_id = self.vault.add_entry(name, T::category(), folder, icon);
 
-        fs::write(
-            format!("{}/{}.dat", self.root_path, record_id),
-            encrypted,
-        )?;
+        fs::write(format!("{}/{}.dat", self.root_path, record_id), encrypted)?;
 
+        self.update_vault_meta()?;
+
+        Ok(())
+    }
+
+    fn get_generic_entry<T: VaultPayload>(
+        &mut self,
+        record_id: String,
+    ) -> Result<T, VaultManagerError>
+    where
+        T: VaultPayload + DeserializeOwned,
+    {
+        let file_data = fs::read(format!("{}/{}.dat", self.root_path, record_id))?;
+        let decrypted = decrypt_payload(&file_data, &self.enc_key).map_err(|e| match e {
+            CryptoError::AesGcm(_) => VaultManagerError::IncorrectPassword,
+            CryptoError::Base64(_) | CryptoError::SerdeJson(_) => VaultManagerError::VaultCorrupted,
+            _ => VaultManagerError::Crypto(e),
+        })?;
+
+        Ok(decrypted)
+    }
+
+    fn update_generic_entry<T: VaultPayload>(
+        &mut self,
+        record_id: String,
+        name: String,
+        folder: Option<String>,
+        icon: Option<String>,
+        is_trashed: bool,
+        payload: &T,
+    ) -> Result<(), VaultManagerError> {
+        let encrypted = encrypt_payload(payload, &self.enc_key)?;
+        let result = self
+            .vault
+            .update_entry(&record_id, name, folder, icon, is_trashed);
+
+        if !result {
+            VaultManagerError::NoEntryFound(record_id.clone());
+        }
+
+        fs::write(format!("{}/{}.dat", self.root_path, record_id), encrypted)?;
         self.update_vault_meta()?;
 
         Ok(())

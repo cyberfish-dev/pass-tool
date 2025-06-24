@@ -67,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.10.0';
 
   @override
-  int get rustContentHash => 251098878;
+  int get rustContentHash => -1997998781;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -109,13 +109,58 @@ abstract class RustLibApi extends BaseApi {
 
   Future<VaultManager> crateApiVaultManagerVaultManagerDefault();
 
+  CreditCardRecord crateApiVaultManagerVaultManagerGetCreditCardRecord({
+    required VaultManager that,
+    required String recordId,
+  });
+
+  LoginRecord crateApiVaultManagerVaultManagerGetLoginRecord({
+    required VaultManager that,
+    required String recordId,
+  });
+
   VaultMetadataVault crateApiVaultManagerVaultManagerGetMetadata({
     required VaultManager that,
+  });
+
+  SecureNoteRecord crateApiVaultManagerVaultManagerGetNoteRecord({
+    required VaultManager that,
+    required String recordId,
   });
 
   bool crateApiVaultManagerVaultManagerRemoveFolder({
     required VaultManager that,
     required String id,
+  });
+
+  void crateApiVaultManagerVaultManagerUpdateCreditCardRecord({
+    required VaultManager that,
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required CreditCardRecord record,
+  });
+
+  void crateApiVaultManagerVaultManagerUpdateLoginRecord({
+    required VaultManager that,
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required LoginRecord record,
+  });
+
+  void crateApiVaultManagerVaultManagerUpdateNoteRecord({
+    required VaultManager that,
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required SecureNoteRecord record,
   });
 
   Future<String> crateApiVaultModelsVaultMetadataVaultAddEntry({
@@ -188,6 +233,15 @@ abstract class RustLibApi extends BaseApi {
   Future<bool> crateApiVaultModelsVaultMetadataVaultRemoveFolderById({
     required VaultMetadataVault that,
     required String folderId,
+  });
+
+  Future<bool> crateApiVaultModelsVaultMetadataVaultUpdateEntry({
+    required VaultMetadataVault that,
+    required String id,
+    required String name,
+    String? folder,
+    String? icon,
+    required bool isTrashed,
   });
 
   VaultManager crateApiVaultManagerCreateVaultManager({
@@ -466,6 +520,76 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "VaultManager_default", argNames: []);
 
   @override
+  CreditCardRecord crateApiVaultManagerVaultManagerGetCreditCardRecord({
+    required VaultManager that,
+    required String recordId,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(recordId, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_credit_card_record,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManagerError,
+        ),
+        constMeta:
+            kCrateApiVaultManagerVaultManagerGetCreditCardRecordConstMeta,
+        argValues: [that, recordId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultManagerVaultManagerGetCreditCardRecordConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_get_credit_card_record",
+        argNames: ["that", "recordId"],
+      );
+
+  @override
+  LoginRecord crateApiVaultManagerVaultManagerGetLoginRecord({
+    required VaultManager that,
+    required String recordId,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(recordId, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_login_record,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManagerError,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerGetLoginRecordConstMeta,
+        argValues: [that, recordId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerGetLoginRecordConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_get_login_record",
+        argNames: ["that", "recordId"],
+      );
+
+  @override
   VaultMetadataVault crateApiVaultManagerVaultManagerGetMetadata({
     required VaultManager that,
   }) {
@@ -477,7 +601,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -498,6 +622,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  SecureNoteRecord crateApiVaultManagerVaultManagerGetNoteRecord({
+    required VaultManager that,
+    required String recordId,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(recordId, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_secure_note_record,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManagerError,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerGetNoteRecordConstMeta,
+        argValues: [that, recordId],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiVaultManagerVaultManagerGetNoteRecordConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_get_note_record",
+        argNames: ["that", "recordId"],
+      );
+
+  @override
   bool crateApiVaultManagerVaultManagerRemoveFolder({
     required VaultManager that,
     required String id,
@@ -511,7 +669,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_String(id, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
@@ -529,6 +687,166 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "VaultManager_remove_folder",
         argNames: ["that", "id"],
+      );
+
+  @override
+  void crateApiVaultManagerVaultManagerUpdateCreditCardRecord({
+    required VaultManager that,
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required CreditCardRecord record,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(recordId, serializer);
+          sse_encode_bool(isTrashed, serializer);
+          sse_encode_String(name, serializer);
+          sse_encode_opt_String(folder, serializer);
+          sse_encode_opt_String(icon, serializer);
+          sse_encode_box_autoadd_credit_card_record(record, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManagerError,
+        ),
+        constMeta:
+            kCrateApiVaultManagerVaultManagerUpdateCreditCardRecordConstMeta,
+        argValues: [that, recordId, isTrashed, name, folder, icon, record],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultManagerVaultManagerUpdateCreditCardRecordConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_update_credit_card_record",
+        argNames: [
+          "that",
+          "recordId",
+          "isTrashed",
+          "name",
+          "folder",
+          "icon",
+          "record",
+        ],
+      );
+
+  @override
+  void crateApiVaultManagerVaultManagerUpdateLoginRecord({
+    required VaultManager that,
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required LoginRecord record,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(recordId, serializer);
+          sse_encode_bool(isTrashed, serializer);
+          sse_encode_String(name, serializer);
+          sse_encode_opt_String(folder, serializer);
+          sse_encode_opt_String(icon, serializer);
+          sse_encode_box_autoadd_login_record(record, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManagerError,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerUpdateLoginRecordConstMeta,
+        argValues: [that, recordId, isTrashed, name, folder, icon, record],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultManagerVaultManagerUpdateLoginRecordConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_update_login_record",
+        argNames: [
+          "that",
+          "recordId",
+          "isTrashed",
+          "name",
+          "folder",
+          "icon",
+          "record",
+        ],
+      );
+
+  @override
+  void crateApiVaultManagerVaultManagerUpdateNoteRecord({
+    required VaultManager that,
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required SecureNoteRecord record,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManager(
+            that,
+            serializer,
+          );
+          sse_encode_String(recordId, serializer);
+          sse_encode_bool(isTrashed, serializer);
+          sse_encode_String(name, serializer);
+          sse_encode_opt_String(folder, serializer);
+          sse_encode_opt_String(icon, serializer);
+          sse_encode_box_autoadd_secure_note_record(record, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultManagerError,
+        ),
+        constMeta: kCrateApiVaultManagerVaultManagerUpdateNoteRecordConstMeta,
+        argValues: [that, recordId, isTrashed, name, folder, icon, record],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultManagerVaultManagerUpdateNoteRecordConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultManager_update_note_record",
+        argNames: [
+          "that",
+          "recordId",
+          "isTrashed",
+          "name",
+          "folder",
+          "icon",
+          "record",
+        ],
       );
 
   @override
@@ -554,7 +872,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 15,
             port: port_,
           );
         },
@@ -592,7 +910,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 10,
+            funcId: 16,
             port: port_,
           );
         },
@@ -626,7 +944,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_Map_entry_category_usize_None,
@@ -660,7 +978,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_vault_metadata_entry,
@@ -694,7 +1012,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_Map_String_usize_None,
@@ -727,7 +1045,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_list_folder,
@@ -760,7 +1078,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_usize,
@@ -795,7 +1113,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_Map_entry_category_usize_None(categoryCounts, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -830,7 +1148,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_list_vault_metadata_entry(entries, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -865,7 +1183,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_Map_String_usize_None(folderCounts, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -900,7 +1218,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_list_folder(folders, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -935,7 +1253,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_usize(trashedCount, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -965,7 +1283,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1002,7 +1320,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 28,
             port: port_,
           );
         },
@@ -1042,7 +1360,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 29,
             port: port_,
           );
         },
@@ -1066,6 +1384,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> crateApiVaultModelsVaultMetadataVaultUpdateEntry({
+    required VaultMetadataVault that,
+    required String id,
+    required String name,
+    String? folder,
+    String? icon,
+    required bool isTrashed,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVaultMetadataVault(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          sse_encode_String(name, serializer);
+          sse_encode_opt_String(folder, serializer);
+          sse_encode_opt_String(icon, serializer);
+          sse_encode_bool(isTrashed, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 30,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiVaultModelsVaultMetadataVaultUpdateEntryConstMeta,
+        argValues: [that, id, name, folder, icon, isTrashed],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiVaultModelsVaultMetadataVaultUpdateEntryConstMeta =>
+      const TaskConstMeta(
+        debugName: "VaultMetadataVault_update_entry",
+        argNames: ["that", "id", "name", "folder", "icon", "isTrashed"],
+      );
+
+  @override
   VaultManager crateApiVaultManagerCreateVaultManager({
     required String rootPath,
     required String password,
@@ -1076,7 +1441,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(rootPath, serializer);
           sse_encode_String(password, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
         },
         codec: SseCodec(
           decodeSuccessData:
@@ -1106,7 +1471,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 32,
             port: port_,
           );
         },
@@ -1143,7 +1508,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 26,
+            funcId: 33,
             port: port_,
           );
         },
@@ -1178,7 +1543,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 27,
+            funcId: 34,
             port: port_,
           );
         },
@@ -1216,7 +1581,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 28,
+            funcId: 35,
             port: port_,
           );
         },
@@ -1258,7 +1623,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_bool(includeSymbols, serializer);
           sse_encode_usize(minDigits, serializer);
           sse_encode_usize(minSymbols, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 36)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
@@ -1302,7 +1667,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 30,
+            funcId: 37,
             port: port_,
           );
         },
@@ -1329,7 +1694,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 38,
             port: port_,
           );
         },
@@ -1356,7 +1721,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 39,
             port: port_,
           );
         },
@@ -1383,7 +1748,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 33,
+            funcId: 40,
             port: port_,
           );
         },
@@ -1410,7 +1775,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 34,
+            funcId: 41,
             port: port_,
           );
         },
@@ -1443,7 +1808,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 35,
+            funcId: 42,
             port: port_,
           );
         },
@@ -2851,11 +3216,81 @@ class VaultManagerImpl extends RustOpaque implements VaultManager {
     record: record,
   );
 
+  CreditCardRecord getCreditCardRecord({required String recordId}) =>
+      RustLib.instance.api.crateApiVaultManagerVaultManagerGetCreditCardRecord(
+        that: this,
+        recordId: recordId,
+      );
+
+  LoginRecord getLoginRecord({required String recordId}) =>
+      RustLib.instance.api.crateApiVaultManagerVaultManagerGetLoginRecord(
+        that: this,
+        recordId: recordId,
+      );
+
   VaultMetadataVault getMetadata() => RustLib.instance.api
       .crateApiVaultManagerVaultManagerGetMetadata(that: this);
 
+  SecureNoteRecord getNoteRecord({required String recordId}) =>
+      RustLib.instance.api.crateApiVaultManagerVaultManagerGetNoteRecord(
+        that: this,
+        recordId: recordId,
+      );
+
   bool removeFolder({required String id}) => RustLib.instance.api
       .crateApiVaultManagerVaultManagerRemoveFolder(that: this, id: id);
+
+  void updateCreditCardRecord({
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required CreditCardRecord record,
+  }) => RustLib.instance.api
+      .crateApiVaultManagerVaultManagerUpdateCreditCardRecord(
+        that: this,
+        recordId: recordId,
+        isTrashed: isTrashed,
+        name: name,
+        folder: folder,
+        icon: icon,
+        record: record,
+      );
+
+  void updateLoginRecord({
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required LoginRecord record,
+  }) => RustLib.instance.api.crateApiVaultManagerVaultManagerUpdateLoginRecord(
+    that: this,
+    recordId: recordId,
+    isTrashed: isTrashed,
+    name: name,
+    folder: folder,
+    icon: icon,
+    record: record,
+  );
+
+  void updateNoteRecord({
+    required String recordId,
+    required bool isTrashed,
+    required String name,
+    String? folder,
+    String? icon,
+    required SecureNoteRecord record,
+  }) => RustLib.instance.api.crateApiVaultManagerVaultManagerUpdateNoteRecord(
+    that: this,
+    recordId: recordId,
+    isTrashed: isTrashed,
+    name: name,
+    folder: folder,
+    icon: icon,
+    record: record,
+  );
 }
 
 @sealed
@@ -2960,4 +3395,19 @@ class VaultMetadataVaultImpl extends RustOpaque implements VaultMetadataVault {
         that: this,
         folderId: folderId,
       );
+
+  Future<bool> updateEntry({
+    required String id,
+    required String name,
+    String? folder,
+    String? icon,
+    required bool isTrashed,
+  }) => RustLib.instance.api.crateApiVaultModelsVaultMetadataVaultUpdateEntry(
+    that: this,
+    id: id,
+    name: name,
+    folder: folder,
+    icon: icon,
+    isTrashed: isTrashed,
+  );
 }

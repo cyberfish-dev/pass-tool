@@ -45,6 +45,14 @@ abstract class VaultMetadataVault implements RustOpaqueInterface {
   Future<void> recalculateCounts();
 
   Future<bool> removeFolderById({required String folderId});
+
+  Future<bool> updateEntry({
+    required String id,
+    required String name,
+    String? folder,
+    String? icon,
+    required bool isTrashed,
+  });
 }
 
 abstract class VaultPayload {}
