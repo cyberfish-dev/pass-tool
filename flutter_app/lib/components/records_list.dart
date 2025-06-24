@@ -22,7 +22,8 @@ class RecordsList extends StatefulWidget {
     this.category,
     this.folderId,
     required this.showTrash,
-    required this.title, required this.hasNoFolder,
+    required this.title,
+    required this.hasNoFolder,
   });
 
   @override
@@ -37,39 +38,42 @@ class RecordsListState extends State<RecordsList> {
     final metadata = VaultService.fetchMeta();
 
     setState(() {
-      final items = metadata.entries
-          .where(
-            (item) {
+      final items = metadata.entries.where((item) {
+        var result = true;
 
-              var result = true;
+        if (widget.hasNoFolder) {
+          result = result && item.folder == null;
+        }
 
-              if (widget.hasNoFolder) {
-                result = result && item.folder == null;
-              }
+        if (widget.folderId != null) {
+          result = result && item.folder == widget.folderId;
+        }
 
-              if (widget.folderId != null) {
-                result = result && item.folder == widget.folderId;
-              }
+        if (widget.category != null) {
+          result = result && item.category == widget.category;
+        }
 
-              if (widget.category != null) {
-                result = result && item.category == widget.category;
-              }
+        if (widget.showTrash) {
+          result = result && item.isTrashed;
+        }
 
-              if (widget.showTrash) {
-                result = result && item.isTrashed;
-              }
+        if (!widget.showTrash) {
+          result = result && !item.isTrashed;
+        }
 
-              if (widget.searchText != null && widget.searchText!.isNotEmpty) {
-                result = result && item.name.toLowerCase().contains(
-                      widget.searchText!.toLowerCase(),
-                    );
-              }
+        if (widget.searchText != null && widget.searchText!.trim().isNotEmpty) {
+          final keywords = widget.searchText!
+              .toLowerCase()
+              .split(RegExp(r'\s+'))
+              .where((s) => s.isNotEmpty);
 
-              return result;
-            }
-                
-          )
-          .toList();
+          result =
+              result &&
+              keywords.every((kw) => item.name.toLowerCase().contains(kw));
+        }
+
+        return result;
+      }).toList();
 
       _items = items.map((item) {
         return ListItemModel(

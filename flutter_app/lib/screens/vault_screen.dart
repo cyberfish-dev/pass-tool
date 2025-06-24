@@ -42,7 +42,12 @@ class _VaultScreenState extends State<VaultScreen> {
 
           // Content list
           Expanded(
-            child: ListView(
+            child: _searchText.isNotEmpty ? 
+            
+            RecordsList(key: ScreenUpdater.noFolderListGlobalKey, searchText: _searchText, showTrash: false, 
+                  category: null, folderId: null, title: 'ALL RECORDS', hasNoFolder: false,)
+
+            : ListView(
               children: [
                 CategoryList(key: ScreenUpdater.categoryListGlobalKey),
                 const SizedBox(height: 24),
