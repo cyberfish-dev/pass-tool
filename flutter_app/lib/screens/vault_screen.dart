@@ -13,7 +13,25 @@ class VaultScreen extends StatefulWidget {
 }
 
 class _VaultScreenState extends State<VaultScreen> {
+  final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _searchController.addListener(() {
+      setState(() {
+        _searchText = _searchController.text;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +45,7 @@ class _VaultScreenState extends State<VaultScreen> {
 
           // Search field
           TextField(
+            controller: _searchController,
             decoration: InputDecoration(
               filled: true,
               hintText: 'Search',
@@ -34,29 +53,50 @@ class _VaultScreenState extends State<VaultScreen> {
                 PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
               ),
               isDense: true,
+              suffixIcon: _searchText.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(
+                        PhosphorIcons.x(PhosphorIconsStyle.thin),
+                      ),
+                      onPressed: () {
+                        setState(() => _searchController.clear());
+                      },
+                    )
+                  : null,
             ),
-            onChanged: (v) => setState(() => _searchText = v),
           ),
 
           const SizedBox(height: 24),
 
           // Content list
           Expanded(
-            child: _searchText.isNotEmpty ? 
-            
-            RecordsList(key: ScreenUpdater.noFolderListGlobalKey, searchText: _searchText, showTrash: false, 
-                  category: null, folderId: null, title: 'ALL RECORDS', hasNoFolder: false,)
+            child: _searchText.isNotEmpty
+                ? RecordsList(
+                    key: ScreenUpdater.noFolderListGlobalKey,
+                    searchText: _searchText,
+                    showTrash: false,
+                    category: null,
+                    folderId: null,
+                    title: 'ALL RECORDS',
+                    hasNoFolder: false,
+                  )
+                : ListView(
+                    children: [
+                      CategoryList(key: ScreenUpdater.categoryListGlobalKey),
+                      const SizedBox(height: 24),
 
-            : ListView(
-              children: [
-                CategoryList(key: ScreenUpdater.categoryListGlobalKey),
-                const SizedBox(height: 24),
-
-                FolderList(key: ScreenUpdater.folderListGlobalKey),
-                RecordsList(key: ScreenUpdater.noFolderListGlobalKey, searchText: _searchText, showTrash: false, 
-                  category: null, folderId: null, title: 'NO FOLDER', hasNoFolder: true,),
-              ],
-            ),
+                      FolderList(key: ScreenUpdater.folderListGlobalKey),
+                      RecordsList(
+                        key: ScreenUpdater.noFolderListGlobalKey,
+                        searchText: _searchText,
+                        showTrash: false,
+                        category: null,
+                        folderId: null,
+                        title: 'NO FOLDER',
+                        hasNoFolder: true,
+                      ),
+                    ],
+                  ),
           ),
         ],
       ),

@@ -14,7 +14,7 @@ class RecordsScreen extends StatefulWidget {
     super.key,
     required this.showTrash,
     this.category,
-    this.folderId, 
+    this.folderId,
     required this.title,
   });
 
@@ -23,15 +23,30 @@ class RecordsScreen extends StatefulWidget {
 }
 
 class _RecordsScreenState extends State<RecordsScreen> {
+  final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _searchController.addListener(() {
+      setState(() {
+        _searchText = _searchController.text;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title
-        ),),
+      appBar: AppBar(title: Text(widget.title)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -39,9 +54,10 @@ class _RecordsScreenState extends State<RecordsScreen> {
           children: [
             // Header
             const SizedBox(height: 12),
-      
+
             // Search field
             TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 filled: true,
                 hintText: 'Search',
@@ -49,12 +65,20 @@ class _RecordsScreenState extends State<RecordsScreen> {
                   PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.thin),
                 ),
                 isDense: true,
+                suffixIcon: _searchText.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(PhosphorIcons.x(PhosphorIconsStyle.thin),),
+                        onPressed: () {
+                          setState(() => _searchController.clear());
+                        },
+                      )
+                    : null,
               ),
               onChanged: (v) => setState(() => _searchText = v),
             ),
-      
+
             const SizedBox(height: 24),
-      
+
             // Content list
             Expanded(
               child: ListView(
