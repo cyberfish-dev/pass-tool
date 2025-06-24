@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/credit_add_action.dart';
 import 'package:flutter_app/actions/folder_add_action.dart';
 import 'package:flutter_app/actions/login_add_action.dart';
-import 'package:flutter_app/actions/note_add_action.dart';
+import 'package:flutter_app/actions/note_action.dart';
+import 'package:flutter_app/enums/action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -12,7 +13,7 @@ final List<ListItemModel> actions = [
   ) {
     Navigator.of(ctx).pop();
     final action = LoginAddAction();
-    action.showCustomBottomSheet(ctx);
+    action.showCustomBottomSheet(ctx, null);
   }, '_login'),
   ListItemModel(
     'Card',
@@ -21,7 +22,7 @@ final List<ListItemModel> actions = [
     (ctx) {
       Navigator.of(ctx).pop();
       final action = CreditAddAction();
-      action.showCustomBottomSheet(ctx);
+      action.showCustomBottomSheet(ctx, null);
     },
     '_card',
   ),
@@ -31,8 +32,8 @@ final List<ListItemModel> actions = [
     null,
     (ctx) {
       Navigator.of(ctx).pop();
-      final action = NoteAddAction();
-      action.showCustomBottomSheet(ctx);
+      final action = NoteAction(RecordAction.add);
+      action.showCustomBottomSheet(ctx, null);
     },
     '_note',
   ),
@@ -43,7 +44,7 @@ final List<ListItemModel> actions = [
     (ctx) {
       Navigator.of(ctx).pop();
       final action = FolderAddAction();
-      action.showCustomBottomSheet(ctx);
+      action.showCustomBottomSheet(ctx, null);
     },
     '_folder',
   ),

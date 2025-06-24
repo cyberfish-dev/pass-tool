@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/form_base_state.dart';
+import 'package:pass_tool_core/pass_tool_core.dart';
 
 abstract class BottomSheetAction<
   TData,
@@ -10,10 +11,14 @@ abstract class BottomSheetAction<
 
   const BottomSheetAction({required this.title, required this.formKey});
 
-  Widget buildBody(BuildContext context);
-  void onAction(BuildContext context, TData data);
+  Widget buildBody(BuildContext context, TData? data);
+  void onAction(String? id, BuildContext context, TData data);
+  TData? fetchData(VaultMetadataEntry? entry);
 
-  void showCustomBottomSheet(BuildContext context) {
+  void showCustomBottomSheet(BuildContext context, VaultMetadataEntry? vaultMetadataEntry) {
+    
+    final data = fetchData(vaultMetadataEntry);
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -55,7 +60,7 @@ abstract class BottomSheetAction<
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               final data = formKey.currentState!.getFormData();
-                              onAction(context, data);
+                              onAction(vaultMetadataEntry?.id, context, data);
                             }
                           },
                           child: Text('Save'),
@@ -76,7 +81,7 @@ abstract class BottomSheetAction<
                       // add bottom inset so content scrolls above the keyboard
                       24 + MediaQuery.of(context).viewInsets.bottom,
                     ),
-                    child: SingleChildScrollView(child: buildBody(context)),
+                    child: SingleChildScrollView(child: buildBody(context, data)),
                   ),
                 ),
               ],

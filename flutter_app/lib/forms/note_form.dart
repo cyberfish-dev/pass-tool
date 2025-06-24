@@ -6,15 +6,16 @@ import 'package:flutter_app/models/record_base.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class AddNoteForm extends StatefulWidget {
-  const AddNoteForm({super.key});
+class NoteForm extends StatefulWidget {
+  final RecordBase<SecureNoteRecord>? record;
+  const NoteForm({super.key, this.record});
 
   @override
-  AddNoteFormState createState() => AddNoteFormState();
+  NoteFormState createState() => NoteFormState();
 }
 
-class AddNoteFormState
-    extends FormBaseState<AddNoteForm, RecordBase<SecureNoteRecord>> {
+class NoteFormState
+    extends FormBaseState<NoteForm, RecordBase<SecureNoteRecord>> {
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
 
@@ -38,6 +39,26 @@ class AddNoteFormState
   void initState() {
     super.initState();
     initFolders();
+
+    final record = widget.record;
+    if (record != null) {
+      _itemNameCtrl.text = record.itemName;
+      _noteCtrl.text = record.data.note;
+
+      if (record.folder != null) {
+        final listFolderItem = folders
+            .where((f) => f.id == record.folder)
+            .firstOrNull;
+        if (listFolderItem != null) {
+          setState(() {
+            selectedFolder = Folder(
+              id: listFolderItem.id,
+              name: listFolderItem.title,
+            );
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -112,12 +133,13 @@ class AddNoteFormState
 
   @override
   RecordBase<SecureNoteRecord> getFormData() {
-    // TODO: handle icons
+    // TODO: handle icons and trash
     return RecordBase<SecureNoteRecord>(
       data: SecureNoteRecord(note: _noteCtrl.text),
       itemName: _itemNameCtrl.text,
       folder: selectedFolder?.id,
       icon: null,
+      isTrashed: false,
     );
   }
 

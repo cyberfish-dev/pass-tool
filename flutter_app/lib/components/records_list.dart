@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/actions/note_action.dart';
 import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
+import 'package:flutter_app/enums/action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
 import 'package:flutter_app/vault/vault_service.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
@@ -80,7 +82,19 @@ class RecordsListState extends State<RecordsList> {
           item.name,
           PhosphorIcons.globe(PhosphorIconsStyle.thin),
           null,
-          (ctx) => {},
+          (ctx) {
+            switch (item.category) {
+              case EntryCategory.login:
+                throw UnimplementedError();
+              case EntryCategory.secureNote:
+                {
+                  final action = NoteAction(RecordAction.update);
+                  action.showCustomBottomSheet(ctx, item);
+                }
+              case EntryCategory.creditCard:
+                throw UnimplementedError();
+            }
+          },
           item.id,
         );
       }).toList();

@@ -13,7 +13,7 @@ class VaultService {
 
   VaultService._internal();
 
-  static Future initVault() async{
+  static Future initVault() async {
     await _instance.init();
   }
 
@@ -34,8 +34,32 @@ class VaultService {
   }
 
   static void addSecureNote(RecordBase<SecureNoteRecord> record) {
-    _instance.vault.addNoteRecord(name: record.itemName, record: record.data, folder: record.folder, icon: record.icon);
+    _instance.vault.addNoteRecord(
+      name: record.itemName,
+      record: record.data,
+      folder: record.folder,
+      icon: record.icon,
+    );
     _metaDirty = true;
+  }
+
+  static void updateSecureNote(
+    String itemId,
+    RecordBase<SecureNoteRecord> record,
+  ) {
+    _instance.vault.updateNoteRecord(
+      recordId: itemId,
+      name: record.itemName,
+      record: record.data,
+      folder: record.folder,
+      icon: record.icon,
+      isTrashed: record.isTrashed,
+    );
+    _metaDirty = true;
+  }
+
+  static SecureNoteRecord getSecureNote(String itemId) {
+    return _instance.vault.getNoteRecord(recordId: itemId);
   }
 
   static void deleteFolder(String id) {
