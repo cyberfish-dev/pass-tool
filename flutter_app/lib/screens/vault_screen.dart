@@ -49,7 +49,7 @@ class _VaultScreenState extends State<VaultScreen> {
 
                 FolderList(key: ScreenUpdater.folderListGlobalKey),
                 RecordsList(key: ScreenUpdater.noFolderListGlobalKey, searchText: _searchText, showTrash: false, 
-                  category: null, folderId: null, title: 'NO FOLDER',),
+                  category: null, folderId: null, title: 'NO FOLDER', hasNoFolder: true,),
               ],
             ),
           ),

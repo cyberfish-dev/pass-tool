@@ -66,6 +66,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
                     category: widget.category,
                     folderId: widget.folderId,
                     title: widget.title,
+                    hasNoFolder: false,
                   ),
                 ],
               ),
