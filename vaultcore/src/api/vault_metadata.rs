@@ -22,6 +22,8 @@ impl VaultMetadataVault {
             version: 1,
             is_trashed: false,
             icon,
+            websites: Vec::new(),
+            android_packages: Vec::new(),
         };
 
         self.entries.push(entry.clone());

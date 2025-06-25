@@ -2097,12 +2097,14 @@ impl SseDecode for crate::api::vault_models::CreditCardRecord {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_number = <String>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_brand = <String>::sse_decode(deserializer);
         let mut var_expMonth = <String>::sse_decode(deserializer);
         let mut var_expYear = <String>::sse_decode(deserializer);
         let mut var_cvv = <String>::sse_decode(deserializer);
         return crate::api::vault_models::CreditCardRecord {
             number: var_number,
             name: var_name,
+            brand: var_brand,
             exp_month: var_expMonth,
             exp_year: var_expYear,
             cvv: var_cvv,
@@ -2146,6 +2148,18 @@ impl SseDecode for i64 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_i64::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<String>::sse_decode(deserializer));
+        }
+        return ans_;
     }
 }
 
@@ -2197,6 +2211,20 @@ impl SseDecode for Vec<(String, usize)> {
     }
 }
 
+impl SseDecode for Vec<crate::api::vault_models::SiteMapping> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::vault_models::SiteMapping>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::vault_models::VaultMetadataEntry> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2216,11 +2244,28 @@ impl SseDecode for crate::api::vault_models::LoginRecord {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_username = <String>::sse_decode(deserializer);
         let mut var_password = <String>::sse_decode(deserializer);
-        let mut var_website = <Option<String>>::sse_decode(deserializer);
+        let mut var_totp = <Option<crate::api::vault_models::TOTPConfig>>::sse_decode(deserializer);
         return crate::api::vault_models::LoginRecord {
             username: var_username,
             password: var_password,
-            website: var_website,
+            totp: var_totp,
+        };
+    }
+}
+
+impl SseDecode for crate::api::vault_models::MatchType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::vault_models::MatchType::Default,
+            1 => crate::api::vault_models::MatchType::BaseDomain,
+            2 => crate::api::vault_models::MatchType::Host,
+            3 => crate::api::vault_models::MatchType::StartsWith,
+            4 => crate::api::vault_models::MatchType::Exact,
+            5 => crate::api::vault_models::MatchType::Regexp,
+            6 => crate::api::vault_models::MatchType::Never,
+            _ => unreachable!("Invalid variant for MatchType: {}", inner),
         };
     }
 }
@@ -2230,6 +2275,19 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::vault_models::TOTPConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::vault_models::TOTPConfig>::sse_decode(
+                deserializer,
+            ));
         } else {
             return None;
         }
@@ -2268,6 +2326,51 @@ impl SseDecode for crate::api::vault_models::SecureNoteRecord {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_note = <String>::sse_decode(deserializer);
         return crate::api::vault_models::SecureNoteRecord { note: var_note };
+    }
+}
+
+impl SseDecode for crate::api::vault_models::SiteMapping {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_url = <String>::sse_decode(deserializer);
+        let mut var_matchType = <crate::api::vault_models::MatchType>::sse_decode(deserializer);
+        return crate::api::vault_models::SiteMapping {
+            url: var_url,
+            match_type: var_matchType,
+        };
+    }
+}
+
+impl SseDecode for crate::api::vault_models::TOTPAlgorithm {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::vault_models::TOTPAlgorithm::SHA1,
+            1 => crate::api::vault_models::TOTPAlgorithm::SHA256,
+            2 => crate::api::vault_models::TOTPAlgorithm::SHA512,
+            _ => unreachable!("Invalid variant for TOTPAlgorithm: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::vault_models::TOTPConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_secret = <String>::sse_decode(deserializer);
+        let mut var_period = <u32>::sse_decode(deserializer);
+        let mut var_digits = <u8>::sse_decode(deserializer);
+        let mut var_algorithm = <crate::api::vault_models::TOTPAlgorithm>::sse_decode(deserializer);
+        let mut var_issuer = <Option<String>>::sse_decode(deserializer);
+        let mut var_accountName = <Option<String>>::sse_decode(deserializer);
+        return crate::api::vault_models::TOTPConfig {
+            secret: var_secret,
+            period: var_period,
+            digits: var_digits,
+            algorithm: var_algorithm,
+            issuer: var_issuer,
+            account_name: var_accountName,
+        };
     }
 }
 
@@ -2332,6 +2435,9 @@ impl SseDecode for crate::api::vault_models::VaultMetadataEntry {
         let mut var_version = <u32>::sse_decode(deserializer);
         let mut var_isTrashed = <bool>::sse_decode(deserializer);
         let mut var_icon = <Option<String>>::sse_decode(deserializer);
+        let mut var_androidPackages = <Vec<String>>::sse_decode(deserializer);
+        let mut var_websites =
+            <Vec<crate::api::vault_models::SiteMapping>>::sse_decode(deserializer);
         return crate::api::vault_models::VaultMetadataEntry {
             id: var_id,
             name: var_name,
@@ -2341,6 +2447,8 @@ impl SseDecode for crate::api::vault_models::VaultMetadataEntry {
             version: var_version,
             is_trashed: var_isTrashed,
             icon: var_icon,
+            android_packages: var_androidPackages,
+            websites: var_websites,
         };
     }
 }
@@ -2534,6 +2642,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::vault_models::CreditCardRecor
         [
             self.number.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
+            self.brand.into_into_dart().into_dart(),
             self.exp_month.into_into_dart().into_dart(),
             self.exp_year.into_into_dart().into_dart(),
             self.cvv.into_into_dart().into_dart(),
@@ -2601,7 +2710,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::vault_models::LoginRecord {
         [
             self.username.into_into_dart().into_dart(),
             self.password.into_into_dart().into_dart(),
-            self.website.into_into_dart().into_dart(),
+            self.totp.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2614,6 +2723,32 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::vault_models::LoginRecord>
     for crate::api::vault_models::LoginRecord
 {
     fn into_into_dart(self) -> crate::api::vault_models::LoginRecord {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::vault_models::MatchType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Default => 0.into_dart(),
+            Self::BaseDomain => 1.into_dart(),
+            Self::Host => 2.into_dart(),
+            Self::StartsWith => 3.into_dart(),
+            Self::Exact => 4.into_dart(),
+            Self::Regexp => 5.into_dart(),
+            Self::Never => 6.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::vault_models::MatchType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::vault_models::MatchType>
+    for crate::api::vault_models::MatchType
+{
+    fn into_into_dart(self) -> crate::api::vault_models::MatchType {
         self
     }
 }
@@ -2635,6 +2770,74 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::vault_models::SecureNoteRecor
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::vault_models::SiteMapping {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.url.into_into_dart().into_dart(),
+            self.match_type.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::vault_models::SiteMapping
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::vault_models::SiteMapping>
+    for crate::api::vault_models::SiteMapping
+{
+    fn into_into_dart(self) -> crate::api::vault_models::SiteMapping {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::vault_models::TOTPAlgorithm {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::SHA1 => 0.into_dart(),
+            Self::SHA256 => 1.into_dart(),
+            Self::SHA512 => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::vault_models::TOTPAlgorithm
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::vault_models::TOTPAlgorithm>
+    for crate::api::vault_models::TOTPAlgorithm
+{
+    fn into_into_dart(self) -> crate::api::vault_models::TOTPAlgorithm {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::vault_models::TOTPConfig {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.secret.into_into_dart().into_dart(),
+            self.period.into_into_dart().into_dart(),
+            self.digits.into_into_dart().into_dart(),
+            self.algorithm.into_into_dart().into_dart(),
+            self.issuer.into_into_dart().into_dart(),
+            self.account_name.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::vault_models::TOTPConfig
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::vault_models::TOTPConfig>
+    for crate::api::vault_models::TOTPConfig
+{
+    fn into_into_dart(self) -> crate::api::vault_models::TOTPConfig {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::vault_models::VaultMetadataEntry {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -2646,6 +2849,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::vault_models::VaultMetadataEn
             self.version.into_into_dart().into_dart(),
             self.is_trashed.into_into_dart().into_dart(),
             self.icon.into_into_dart().into_dart(),
+            self.android_packages.into_into_dart().into_dart(),
+            self.websites.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2770,6 +2975,7 @@ impl SseEncode for crate::api::vault_models::CreditCardRecord {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.number, serializer);
         <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.brand, serializer);
         <String>::sse_encode(self.exp_month, serializer);
         <String>::sse_encode(self.exp_year, serializer);
         <String>::sse_encode(self.cvv, serializer);
@@ -2815,6 +3021,16 @@ impl SseEncode for i64 {
     }
 }
 
+impl SseEncode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <String>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::vault_models::Folder> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2855,6 +3071,16 @@ impl SseEncode for Vec<(String, usize)> {
     }
 }
 
+impl SseEncode for Vec<crate::api::vault_models::SiteMapping> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::vault_models::SiteMapping>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::vault_models::VaultMetadataEntry> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2870,7 +3096,28 @@ impl SseEncode for crate::api::vault_models::LoginRecord {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.username, serializer);
         <String>::sse_encode(self.password, serializer);
-        <Option<String>>::sse_encode(self.website, serializer);
+        <Option<crate::api::vault_models::TOTPConfig>>::sse_encode(self.totp, serializer);
+    }
+}
+
+impl SseEncode for crate::api::vault_models::MatchType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::vault_models::MatchType::Default => 0,
+                crate::api::vault_models::MatchType::BaseDomain => 1,
+                crate::api::vault_models::MatchType::Host => 2,
+                crate::api::vault_models::MatchType::StartsWith => 3,
+                crate::api::vault_models::MatchType::Exact => 4,
+                crate::api::vault_models::MatchType::Regexp => 5,
+                crate::api::vault_models::MatchType::Never => 6,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -2880,6 +3127,16 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::vault_models::TOTPConfig> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::vault_models::TOTPConfig>::sse_encode(value, serializer);
         }
     }
 }
@@ -2912,6 +3169,43 @@ impl SseEncode for crate::api::vault_models::SecureNoteRecord {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.note, serializer);
+    }
+}
+
+impl SseEncode for crate::api::vault_models::SiteMapping {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.url, serializer);
+        <crate::api::vault_models::MatchType>::sse_encode(self.match_type, serializer);
+    }
+}
+
+impl SseEncode for crate::api::vault_models::TOTPAlgorithm {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::vault_models::TOTPAlgorithm::SHA1 => 0,
+                crate::api::vault_models::TOTPAlgorithm::SHA256 => 1,
+                crate::api::vault_models::TOTPAlgorithm::SHA512 => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::vault_models::TOTPConfig {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.secret, serializer);
+        <u32>::sse_encode(self.period, serializer);
+        <u8>::sse_encode(self.digits, serializer);
+        <crate::api::vault_models::TOTPAlgorithm>::sse_encode(self.algorithm, serializer);
+        <Option<String>>::sse_encode(self.issuer, serializer);
+        <Option<String>>::sse_encode(self.account_name, serializer);
     }
 }
 
@@ -2994,6 +3288,8 @@ impl SseEncode for crate::api::vault_models::VaultMetadataEntry {
         <u32>::sse_encode(self.version, serializer);
         <bool>::sse_encode(self.is_trashed, serializer);
         <Option<String>>::sse_encode(self.icon, serializer);
+        <Vec<String>>::sse_encode(self.android_packages, serializer);
+        <Vec<crate::api::vault_models::SiteMapping>>::sse_encode(self.websites, serializer);
     }
 }
 

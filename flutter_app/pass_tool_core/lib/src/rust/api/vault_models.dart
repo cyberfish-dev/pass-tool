@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `hash`, `hash`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VaultMetadataVault>>
 abstract class VaultMetadataVault implements RustOpaqueInterface {
@@ -60,6 +60,7 @@ abstract class VaultPayload {}
 class CreditCardRecord {
   final String number;
   final String name;
+  final String brand;
   final String expMonth;
   final String expYear;
   final String cvv;
@@ -67,6 +68,7 @@ class CreditCardRecord {
   const CreditCardRecord({
     required this.number,
     required this.name,
+    required this.brand,
     required this.expMonth,
     required this.expYear,
     required this.cvv,
@@ -79,6 +81,7 @@ class CreditCardRecord {
   int get hashCode =>
       number.hashCode ^
       name.hashCode ^
+      brand.hashCode ^
       expMonth.hashCode ^
       expYear.hashCode ^
       cvv.hashCode;
@@ -90,6 +93,7 @@ class CreditCardRecord {
           runtimeType == other.runtimeType &&
           number == other.number &&
           name == other.name &&
+          brand == other.brand &&
           expMonth == other.expMonth &&
           expYear == other.expYear &&
           cvv == other.cvv;
@@ -118,19 +122,19 @@ class Folder {
 class LoginRecord {
   final String username;
   final String password;
-  final String? website;
+  final TOTPConfig? totp;
 
   const LoginRecord({
     required this.username,
     required this.password,
-    this.website,
+    this.totp,
   });
 
   static Future<EntryCategory> category() =>
       RustLib.instance.api.crateApiVaultModelsLoginRecordCategory();
 
   @override
-  int get hashCode => username.hashCode ^ password.hashCode ^ website.hashCode;
+  int get hashCode => username.hashCode ^ password.hashCode ^ totp.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -139,8 +143,10 @@ class LoginRecord {
           runtimeType == other.runtimeType &&
           username == other.username &&
           password == other.password &&
-          website == other.website;
+          totp == other.totp;
 }
+
+enum MatchType { default_, baseDomain, host, startsWith, exact, regexp, never }
 
 class SecureNoteRecord {
   final String note;
@@ -161,6 +167,65 @@ class SecureNoteRecord {
           note == other.note;
 }
 
+class SiteMapping {
+  final String url;
+  final MatchType matchType;
+
+  const SiteMapping({required this.url, required this.matchType});
+
+  @override
+  int get hashCode => url.hashCode ^ matchType.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SiteMapping &&
+          runtimeType == other.runtimeType &&
+          url == other.url &&
+          matchType == other.matchType;
+}
+
+enum TOTPAlgorithm { sha1, sha256, sha512 }
+
+class TOTPConfig {
+  final String secret;
+  final int period;
+  final int digits;
+  final TOTPAlgorithm algorithm;
+  final String? issuer;
+  final String? accountName;
+
+  const TOTPConfig({
+    required this.secret,
+    required this.period,
+    required this.digits,
+    required this.algorithm,
+    this.issuer,
+    this.accountName,
+  });
+
+  @override
+  int get hashCode =>
+      secret.hashCode ^
+      period.hashCode ^
+      digits.hashCode ^
+      algorithm.hashCode ^
+      issuer.hashCode ^
+      accountName.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TOTPConfig &&
+          runtimeType == other.runtimeType &&
+          secret == other.secret &&
+          period == other.period &&
+          digits == other.digits &&
+          algorithm == other.algorithm &&
+          issuer == other.issuer &&
+          accountName == other.accountName;
+}
+
 class VaultMetadataEntry {
   final String id;
   final String name;
@@ -170,6 +235,8 @@ class VaultMetadataEntry {
   final int version;
   final bool isTrashed;
   final String? icon;
+  final List<String> androidPackages;
+  final List<SiteMapping> websites;
 
   const VaultMetadataEntry({
     required this.id,
@@ -180,6 +247,8 @@ class VaultMetadataEntry {
     required this.version,
     required this.isTrashed,
     this.icon,
+    required this.androidPackages,
+    required this.websites,
   });
 
   @override
@@ -191,7 +260,9 @@ class VaultMetadataEntry {
       updatedAt.hashCode ^
       version.hashCode ^
       isTrashed.hashCode ^
-      icon.hashCode;
+      icon.hashCode ^
+      androidPackages.hashCode ^
+      websites.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -205,5 +276,7 @@ class VaultMetadataEntry {
           updatedAt == other.updatedAt &&
           version == other.version &&
           isTrashed == other.isTrashed &&
-          icon == other.icon;
+          icon == other.icon &&
+          androidPackages == other.androidPackages &&
+          websites == other.websites;
 }

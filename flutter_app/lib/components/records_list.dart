@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/actions/credit_action.dart';
 import 'package:flutter_app/actions/note_action.dart';
 import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
@@ -88,7 +89,10 @@ class RecordsListState extends State<RecordsList> {
                 action.showCustomBottomSheet(ctx, item);
               }
             case EntryCategory.creditCard:
-              throw UnimplementedError();
+              {
+                final action = CreditAction(RecordAction.update);
+                action.showCustomBottomSheet(ctx, item);
+              }
           }
         }, item.id);
       }).toList();
@@ -116,7 +120,7 @@ class RecordsListState extends State<RecordsList> {
 
     if (oldWidget.searchText != widget.searchText) {
       _debounce?.cancel();
-      _debounce = Timer(Duration(milliseconds: 300), () {
+      _debounce = Timer(Duration(milliseconds: 200), () {
         update();
       });
     }

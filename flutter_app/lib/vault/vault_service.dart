@@ -33,6 +33,35 @@ class VaultService {
     _metaDirty = true;
   }
 
+  static void addCreditCard(RecordBase<CreditCardRecord> record) {
+    _instance.vault.addCreditCardRecord(
+      name: record.itemName,
+      record: record.data,
+      folder: record.folder,
+      icon: record.icon,
+    );
+    _metaDirty = true;
+  }
+
+  static void updateCreditCard(
+    String itemId,
+    RecordBase<CreditCardRecord> record,
+  ) {
+    _instance.vault.updateCreditCardRecord(
+      recordId: itemId,
+      name: record.itemName,
+      record: record.data,
+      folder: record.folder,
+      icon: record.icon,
+      isTrashed: record.isTrashed,
+    );
+    _metaDirty = true;
+  }
+
+  static CreditCardRecord getCreditCard(String itemId) {
+    return _instance.vault.getCreditCardRecord(recordId: itemId);
+  }
+
   static void addSecureNote(RecordBase<SecureNoteRecord> record) {
     _instance.vault.addNoteRecord(
       name: record.itemName,

@@ -138,6 +138,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SecureNoteRecord dco_decode_box_autoadd_secure_note_record(dynamic raw);
 
   @protected
+  TOTPConfig dco_decode_box_autoadd_totp_config(dynamic raw);
+
+  @protected
   CreditCardRecord dco_decode_credit_card_record(dynamic raw);
 
   @protected
@@ -151,6 +154,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw);
 
   @protected
   List<Folder> dco_decode_list_folder(dynamic raw);
@@ -170,13 +176,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(String, BigInt)> dco_decode_list_record_string_usize(dynamic raw);
 
   @protected
+  List<SiteMapping> dco_decode_list_site_mapping(dynamic raw);
+
+  @protected
   List<VaultMetadataEntry> dco_decode_list_vault_metadata_entry(dynamic raw);
 
   @protected
   LoginRecord dco_decode_login_record(dynamic raw);
 
   @protected
+  MatchType dco_decode_match_type(dynamic raw);
+
+  @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  TOTPConfig? dco_decode_opt_box_autoadd_totp_config(dynamic raw);
 
   @protected
   (EntryCategory, BigInt) dco_decode_record_entry_category_usize(dynamic raw);
@@ -191,6 +206,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SecureNoteRecord dco_decode_secure_note_record(dynamic raw);
+
+  @protected
+  SiteMapping dco_decode_site_mapping(dynamic raw);
+
+  @protected
+  TOTPAlgorithm dco_decode_totp_algorithm(dynamic raw);
+
+  @protected
+  TOTPConfig dco_decode_totp_config(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -318,6 +342,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  TOTPConfig sse_decode_box_autoadd_totp_config(SseDeserializer deserializer);
+
+  @protected
   CreditCardRecord sse_decode_credit_card_record(SseDeserializer deserializer);
 
   @protected
@@ -331,6 +358,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
   List<Folder> sse_decode_list_folder(SseDeserializer deserializer);
@@ -352,6 +382,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  List<SiteMapping> sse_decode_list_site_mapping(SseDeserializer deserializer);
+
+  @protected
   List<VaultMetadataEntry> sse_decode_list_vault_metadata_entry(
     SseDeserializer deserializer,
   );
@@ -360,7 +393,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   LoginRecord sse_decode_login_record(SseDeserializer deserializer);
 
   @protected
+  MatchType sse_decode_match_type(SseDeserializer deserializer);
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  TOTPConfig? sse_decode_opt_box_autoadd_totp_config(
+    SseDeserializer deserializer,
+  );
 
   @protected
   (EntryCategory, BigInt) sse_decode_record_entry_category_usize(
@@ -377,6 +418,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SecureNoteRecord sse_decode_secure_note_record(SseDeserializer deserializer);
+
+  @protected
+  SiteMapping sse_decode_site_mapping(SseDeserializer deserializer);
+
+  @protected
+  TOTPAlgorithm sse_decode_totp_algorithm(SseDeserializer deserializer);
+
+  @protected
+  TOTPConfig sse_decode_totp_config(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -525,6 +575,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_box_autoadd_totp_config(
+    TOTPConfig self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_credit_card_record(
     CreditCardRecord self,
     SseSerializer serializer,
@@ -541,6 +597,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_folder(List<Folder> self, SseSerializer serializer);
@@ -567,6 +626,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_site_mapping(
+    List<SiteMapping> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_vault_metadata_entry(
     List<VaultMetadataEntry> self,
     SseSerializer serializer,
@@ -576,7 +641,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_login_record(LoginRecord self, SseSerializer serializer);
 
   @protected
+  void sse_encode_match_type(MatchType self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_totp_config(
+    TOTPConfig? self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_record_entry_category_usize(
@@ -601,6 +675,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     SecureNoteRecord self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_site_mapping(SiteMapping self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_totp_algorithm(TOTPAlgorithm self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_totp_config(TOTPConfig self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

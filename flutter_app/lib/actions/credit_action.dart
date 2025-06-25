@@ -1,47 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/show_bottom_sheet.dart';
 import 'package:flutter_app/enums/action.dart';
-import 'package:flutter_app/forms/note_form.dart';
+import 'package:flutter_app/forms/credit_card_form.dart';
 import 'package:flutter_app/models/record_base.dart';
 import 'package:flutter_app/updater/screen_updater.dart';
 import 'package:flutter_app/vault/vault_service.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 
-class NoteAction
-    extends BottomSheetAction<RecordBase<SecureNoteRecord>, NoteFormState> {
+class CreditAction
+    extends
+        BottomSheetAction<RecordBase<CreditCardRecord>, CreditCardFormState> {
   final RecordAction action;
 
-  NoteAction(this.action)
+  CreditAction(this.action)
     : super(
         title: _getActionTitle(action),
-        formKey: GlobalKey<NoteFormState>(),
+        formKey: GlobalKey<CreditCardFormState>(),
       );
 
   static String _getActionTitle(RecordAction action) {
     switch (action) {
       case RecordAction.add:
-        return 'Create Secure Note';
+        return 'Create Creadit Card';
       case RecordAction.update:
-        return 'Update Secure Note';
+        return 'Update Credit Card';
     }
   }
 
   @override
-  Widget buildBody(BuildContext context, RecordBase<SecureNoteRecord>? record) {
-    return NoteForm(key: formKey, record: record);
+  Widget buildBody(BuildContext context, RecordBase<CreditCardRecord>? record) {
+    return CreditCardForm(key: formKey, record: record);
   }
 
   @override
   void onAction(
     String? id,
     BuildContext context,
-    RecordBase<SecureNoteRecord> data,
+    RecordBase<CreditCardRecord> data,
   ) {
     switch (action) {
       case RecordAction.add:
-        VaultService.addSecureNote(data);
+        VaultService.addCreditCard(data);
       case RecordAction.update:
-        VaultService.updateSecureNote(id!, data);
+        VaultService.updateCreditCard(id!, data);
     }
 
     Navigator.pop(context);
@@ -53,9 +54,9 @@ class NoteAction
   }
 
   @override
-  RecordBase<SecureNoteRecord>? fetchData(VaultMetadataEntry? entry) {
+  RecordBase<CreditCardRecord>? fetchData(VaultMetadataEntry? entry) {
     if (action == RecordAction.update && entry != null) {
-      final record = VaultService.getSecureNote(entry.id);
+      final record = VaultService.getCreditCard(entry.id);
       return RecordBase(
         itemName: entry.name,
         folder: entry.folder,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/actions/credit_add_action.dart';
+import 'package:flutter_app/actions/credit_action.dart';
 import 'package:flutter_app/actions/folder_add_action.dart';
 import 'package:flutter_app/actions/login_add_action.dart';
 import 'package:flutter_app/actions/note_action.dart';
@@ -21,7 +21,7 @@ final List<ListItemModel> actions = [
     null,
     (ctx) {
       Navigator.of(ctx).pop();
-      final action = CreditAddAction();
+      final action = CreditAction(RecordAction.add);
       action.showCustomBottomSheet(ctx, null);
     },
     '_card',

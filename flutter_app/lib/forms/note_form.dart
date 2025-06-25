@@ -44,11 +44,10 @@ class NoteFormState
 
     final record = widget.record;
     if (record != null) {
-
       setState(() {
         _obscureNote = true;
       });
-      
+
       _itemNameCtrl.text = record.itemName;
       _noteCtrl.text = record.data.note;
 
@@ -115,7 +114,11 @@ class NoteFormState
             validator: (value) => null,
           ),
 
-          SizedBox(height: 16),
+          SizedBox(height: 24),
+
+          // Card details header
+          SectionHeader(title: 'NOTE DETAILS'),
+          SizedBox(height: 8),
 
           _obscureNote
               ? TextFormField(
@@ -154,7 +157,8 @@ class NoteFormState
                             PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
                           ),
                           tooltip: 'Show',
-                          onPressed: () => setState(() => _obscureNote = !_obscureNote),
+                          onPressed: () =>
+                              setState(() => _obscureNote = !_obscureNote),
                         ),
                       ],
                     ),
@@ -196,7 +200,8 @@ class NoteFormState
                             PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
                           ),
                           tooltip: 'Show',
-                          onPressed: () => setState(() => _obscureNote = !_obscureNote),
+                          onPressed: () =>
+                              setState(() => _obscureNote = !_obscureNote),
                         ),
                       ],
                     ),
@@ -213,13 +218,12 @@ class NoteFormState
 
   @override
   RecordBase<SecureNoteRecord> getFormData() {
-    // TODO: handle icons and trash
     return RecordBase<SecureNoteRecord>(
       data: SecureNoteRecord(note: _noteCtrl.text),
       itemName: _itemNameCtrl.text,
       folder: selectedFolder?.id,
       icon: null,
-      isTrashed: false,
+      isTrashed: widget.record?.isTrashed ?? false,
     );
   }
 

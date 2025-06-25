@@ -2026,17 +2026,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TOTPConfig dco_decode_box_autoadd_totp_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_totp_config(raw);
+  }
+
+  @protected
   CreditCardRecord dco_decode_credit_card_record(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return CreditCardRecord(
       number: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
-      expMonth: dco_decode_String(arr[2]),
-      expYear: dco_decode_String(arr[3]),
-      cvv: dco_decode_String(arr[4]),
+      brand: dco_decode_String(arr[2]),
+      expMonth: dco_decode_String(arr[3]),
+      expYear: dco_decode_String(arr[4]),
+      cvv: dco_decode_String(arr[5]),
     );
   }
 
@@ -2068,6 +2075,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64 dco_decode_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeI64(raw);
+  }
+
+  @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
   }
 
   @protected
@@ -2105,6 +2118,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SiteMapping> dco_decode_list_site_mapping(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_site_mapping).toList();
+  }
+
+  @protected
   List<VaultMetadataEntry> dco_decode_list_vault_metadata_entry(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_vault_metadata_entry).toList();
@@ -2119,14 +2138,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return LoginRecord(
       username: dco_decode_String(arr[0]),
       password: dco_decode_String(arr[1]),
-      website: dco_decode_opt_String(arr[2]),
+      totp: dco_decode_opt_box_autoadd_totp_config(arr[2]),
     );
+  }
+
+  @protected
+  MatchType dco_decode_match_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MatchType.values[raw as int];
   }
 
   @protected
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  TOTPConfig? dco_decode_opt_box_autoadd_totp_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_totp_config(raw);
   }
 
   @protected
@@ -2168,6 +2199,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.length != 1)
       throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
     return SecureNoteRecord(note: dco_decode_String(arr[0]));
+  }
+
+  @protected
+  SiteMapping dco_decode_site_mapping(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SiteMapping(
+      url: dco_decode_String(arr[0]),
+      matchType: dco_decode_match_type(arr[1]),
+    );
+  }
+
+  @protected
+  TOTPAlgorithm dco_decode_totp_algorithm(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return TOTPAlgorithm.values[raw as int];
+  }
+
+  @protected
+  TOTPConfig dco_decode_totp_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return TOTPConfig(
+      secret: dco_decode_String(arr[0]),
+      period: dco_decode_u_32(arr[1]),
+      digits: dco_decode_u_8(arr[2]),
+      algorithm: dco_decode_totp_algorithm(arr[3]),
+      issuer: dco_decode_opt_String(arr[4]),
+      accountName: dco_decode_opt_String(arr[5]),
+    );
   }
 
   @protected
@@ -2216,8 +2281,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   VaultMetadataEntry dco_decode_vault_metadata_entry(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8)
-      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    if (arr.length != 10)
+      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
     return VaultMetadataEntry(
       id: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2227,6 +2292,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       version: dco_decode_u_32(arr[5]),
       isTrashed: dco_decode_bool(arr[6]),
       icon: dco_decode_opt_String(arr[7]),
+      androidPackages: dco_decode_list_String(arr[8]),
+      websites: dco_decode_list_site_mapping(arr[9]),
     );
   }
 
@@ -2430,16 +2497,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TOTPConfig sse_decode_box_autoadd_totp_config(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_totp_config(deserializer));
+  }
+
+  @protected
   CreditCardRecord sse_decode_credit_card_record(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_number = sse_decode_String(deserializer);
     var var_name = sse_decode_String(deserializer);
+    var var_brand = sse_decode_String(deserializer);
     var var_expMonth = sse_decode_String(deserializer);
     var var_expYear = sse_decode_String(deserializer);
     var var_cvv = sse_decode_String(deserializer);
     return CreditCardRecord(
       number: var_number,
       name: var_name,
+      brand: var_brand,
       expMonth: var_expMonth,
       expYear: var_expYear,
       cvv: var_cvv,
@@ -2471,6 +2546,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -2528,6 +2615,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SiteMapping> sse_decode_list_site_mapping(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <SiteMapping>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_site_mapping(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<VaultMetadataEntry> sse_decode_list_vault_metadata_entry(
     SseDeserializer deserializer,
   ) {
@@ -2546,12 +2645,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_username = sse_decode_String(deserializer);
     var var_password = sse_decode_String(deserializer);
-    var var_website = sse_decode_opt_String(deserializer);
+    var var_totp = sse_decode_opt_box_autoadd_totp_config(deserializer);
     return LoginRecord(
       username: var_username,
       password: var_password,
-      website: var_website,
+      totp: var_totp,
     );
+  }
+
+  @protected
+  MatchType sse_decode_match_type(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return MatchType.values[inner];
   }
 
   @protected
@@ -2560,6 +2666,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  TOTPConfig? sse_decode_opt_box_autoadd_totp_config(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_totp_config(deserializer));
     } else {
       return null;
     }
@@ -2600,6 +2719,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_note = sse_decode_String(deserializer);
     return SecureNoteRecord(note: var_note);
+  }
+
+  @protected
+  SiteMapping sse_decode_site_mapping(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_url = sse_decode_String(deserializer);
+    var var_matchType = sse_decode_match_type(deserializer);
+    return SiteMapping(url: var_url, matchType: var_matchType);
+  }
+
+  @protected
+  TOTPAlgorithm sse_decode_totp_algorithm(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return TOTPAlgorithm.values[inner];
+  }
+
+  @protected
+  TOTPConfig sse_decode_totp_config(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_secret = sse_decode_String(deserializer);
+    var var_period = sse_decode_u_32(deserializer);
+    var var_digits = sse_decode_u_8(deserializer);
+    var var_algorithm = sse_decode_totp_algorithm(deserializer);
+    var var_issuer = sse_decode_opt_String(deserializer);
+    var var_accountName = sse_decode_opt_String(deserializer);
+    return TOTPConfig(
+      secret: var_secret,
+      period: var_period,
+      digits: var_digits,
+      algorithm: var_algorithm,
+      issuer: var_issuer,
+      accountName: var_accountName,
+    );
   }
 
   @protected
@@ -2659,6 +2812,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_version = sse_decode_u_32(deserializer);
     var var_isTrashed = sse_decode_bool(deserializer);
     var var_icon = sse_decode_opt_String(deserializer);
+    var var_androidPackages = sse_decode_list_String(deserializer);
+    var var_websites = sse_decode_list_site_mapping(deserializer);
     return VaultMetadataEntry(
       id: var_id,
       name: var_name,
@@ -2668,6 +2823,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       version: var_version,
       isTrashed: var_isTrashed,
       icon: var_icon,
+      androidPackages: var_androidPackages,
+      websites: var_websites,
     );
   }
 
@@ -2891,6 +3048,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_totp_config(
+    TOTPConfig self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_totp_config(self, serializer);
+  }
+
+  @protected
   void sse_encode_credit_card_record(
     CreditCardRecord self,
     SseSerializer serializer,
@@ -2898,6 +3064,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.number, serializer);
     sse_encode_String(self.name, serializer);
+    sse_encode_String(self.brand, serializer);
     sse_encode_String(self.expMonth, serializer);
     sse_encode_String(self.expYear, serializer);
     sse_encode_String(self.cvv, serializer);
@@ -2926,6 +3093,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
   }
 
   @protected
@@ -2984,6 +3160,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_site_mapping(
+    List<SiteMapping> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_site_mapping(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_vault_metadata_entry(
     List<VaultMetadataEntry> self,
     SseSerializer serializer,
@@ -3000,7 +3188,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.username, serializer);
     sse_encode_String(self.password, serializer);
-    sse_encode_opt_String(self.website, serializer);
+    sse_encode_opt_box_autoadd_totp_config(self.totp, serializer);
+  }
+
+  @protected
+  void sse_encode_match_type(MatchType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -3010,6 +3204,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_totp_config(
+    TOTPConfig? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_totp_config(self, serializer);
     }
   }
 
@@ -3050,6 +3257,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.note, serializer);
+  }
+
+  @protected
+  void sse_encode_site_mapping(SiteMapping self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.url, serializer);
+    sse_encode_match_type(self.matchType, serializer);
+  }
+
+  @protected
+  void sse_encode_totp_algorithm(TOTPAlgorithm self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_totp_config(TOTPConfig self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.secret, serializer);
+    sse_encode_u_32(self.period, serializer);
+    sse_encode_u_8(self.digits, serializer);
+    sse_encode_totp_algorithm(self.algorithm, serializer);
+    sse_encode_opt_String(self.issuer, serializer);
+    sse_encode_opt_String(self.accountName, serializer);
   }
 
   @protected
@@ -3107,6 +3338,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_32(self.version, serializer);
     sse_encode_bool(self.isTrashed, serializer);
     sse_encode_opt_String(self.icon, serializer);
+    sse_encode_list_String(self.androidPackages, serializer);
+    sse_encode_list_site_mapping(self.websites, serializer);
   }
 }
 

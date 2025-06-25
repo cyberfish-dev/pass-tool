@@ -4,17 +4,21 @@ import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/form_base_state.dart';
 import 'package:flutter_app/models/list_item_model.dart';
+import 'package:flutter_app/models/record_base.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class AddCreditCardForm extends StatefulWidget {
-  const AddCreditCardForm({super.key});
+class CreditCardForm extends StatefulWidget {
+  final RecordBase<CreditCardRecord>? record;
+
+  const CreditCardForm({super.key, this.record});
 
   @override
-  AddCreditCardFormState createState() => AddCreditCardFormState();
+  CreditCardFormState createState() => CreditCardFormState();
 }
 
-class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
+class CreditCardFormState
+    extends FormBaseState<CreditCardForm, RecordBase<CreditCardRecord>> {
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
 
@@ -91,6 +95,36 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
   void initState() {
     super.initState();
     initFolders();
+
+    final record = widget.record;
+    if (record != null) {
+      _itemNameController.text = record.itemName;
+      _cardholderController.text = record.data.name;
+      _codeController.text = record.data.cvv;
+      _numberController.text = record.data.number;
+      _yearController.text = record.data.expYear;
+
+      setState(() {
+        _brand = record.data.brand;
+        _expMonth = _months
+            .where((map) => map['value'] == record.data.expMonth)
+            .firstOrNull;
+      });
+
+      if (record.folder != null) {
+        final listFolderItem = folders
+            .where((f) => f.id == record.folder)
+            .firstOrNull;
+        if (listFolderItem != null) {
+          setState(() {
+            selectedFolder = Folder(
+              id: listFolderItem.id,
+              name: listFolderItem.title,
+            );
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -134,7 +168,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             },
           ),
 
-          SizedBox(height: 12),
+          SizedBox(height: 16),
 
           // Folder dropdown
           CustomDropdown<Folder>(
@@ -164,13 +198,30 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             decoration: InputDecoration(
               labelText: 'Cardholder Name',
               prefixIcon: Icon(PhosphorIcons.user(PhosphorIconsStyle.thin)),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(PhosphorIcons.copy(PhosphorIconsStyle.thin)),
+                    tooltip: 'Copy',
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: _cardholderController.text),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Note copied to clipboard')),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             validator: _requiredValidator,
             onChanged: (_) {
               if (_submitCalled) _formKey.currentState!.validate();
             },
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 16),
 
           // Number with eye
           TextFormField(
@@ -183,13 +234,30 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               prefixIcon: Icon(
                 PhosphorIcons.creditCard(PhosphorIconsStyle.thin),
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _showNumber
-                      ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
-                      : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
-                ),
-                onPressed: () => setState(() => _showNumber = !_showNumber),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(PhosphorIcons.copy(PhosphorIconsStyle.thin)),
+                    tooltip: 'Copy',
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: _numberController.text),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Note copied to clipboard')),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      _showNumber
+                          ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
+                          : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
+                    ),
+                    onPressed: () => setState(() => _showNumber = !_showNumber),
+                  ),
+                ],
               ),
             ),
             keyboardType: TextInputType.number,
@@ -201,7 +269,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             },
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           CustomDropdown<String>(
             value: _brand ?? '',
@@ -218,7 +286,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             validator: _requiredValidator,
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           CustomDropdown<Map<String, String>>(
             value: _expMonth?['title'] ?? '',
@@ -235,7 +303,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             validator: _requiredValidator,
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           TextFormField(
             autocorrect: false,
@@ -256,7 +324,7 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
             },
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           TextFormField(
             autocorrect: false,
@@ -268,13 +336,30 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
               prefixIcon: Icon(
                 PhosphorIcons.lockSimple(PhosphorIconsStyle.thin),
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _showCode
-                      ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
-                      : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
-                ),
-                onPressed: () => setState(() => _showCode = !_showCode),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(PhosphorIcons.copy(PhosphorIconsStyle.thin)),
+                    tooltip: 'Copy',
+                    onPressed: () {
+                      Clipboard.setData(
+                        ClipboardData(text: _codeController.text),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Note copied to clipboard')),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      _showCode
+                          ? PhosphorIcons.eye(PhosphorIconsStyle.thin)
+                          : PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
+                    ),
+                    onPressed: () => setState(() => _showCode = !_showCode),
+                  ),
+                ],
               ),
             ),
             keyboardType: TextInputType.number,
@@ -291,8 +376,21 @@ class AddCreditCardFormState extends FormBaseState<AddCreditCardForm, String> {
   }
 
   @override
-  String getFormData() {
-    return '';
+  RecordBase<CreditCardRecord> getFormData() {
+    return RecordBase<CreditCardRecord>(
+      data: CreditCardRecord(
+        name: _cardholderController.text,
+        number: _numberController.text,
+        brand: _brand!,
+        expMonth: _expMonth?['value'] ?? '',
+        expYear: _yearController.text,
+        cvv: _codeController.text,
+      ),
+      itemName: _itemNameController.text,
+      folder: selectedFolder?.id,
+      icon: null,
+      isTrashed: widget.record?.isTrashed ?? false,
+    );
   }
 
   @override

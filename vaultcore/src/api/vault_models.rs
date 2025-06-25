@@ -24,6 +24,8 @@ pub struct VaultMetadataEntry {
     pub version: u32,
     pub is_trashed: bool,
     pub icon: Option<String>,
+    pub android_packages: Vec<String>,
+    pub websites: Vec<SiteMapping>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
@@ -39,6 +41,23 @@ pub enum EntryCategory {
     CreditCard,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct SiteMapping {
+    pub url: String,
+    pub match_type: MatchType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum MatchType {
+    Default,
+    BaseDomain,
+    Host,
+    StartsWith,
+    Exact,
+    Regexp,
+    Never,
+}
+
 pub trait VaultPayload: Serialize {
     fn category() -> EntryCategory;
 }
@@ -47,7 +66,7 @@ pub trait VaultPayload: Serialize {
 pub struct LoginRecord {
     pub username: String,
     pub password: String,
-    pub website: Option<String>,
+    pub totp: Option<TOTPConfig>,
 }
 
 impl VaultPayload for LoginRecord {
@@ -71,13 +90,31 @@ impl VaultPayload for SecureNoteRecord {
 pub struct CreditCardRecord {
     pub number: String,
     pub name: String,
+    pub brand: String,
     pub exp_month: String,
     pub exp_year: String,
-    pub cvv: String
+    pub cvv: String,
 }
 
 impl VaultPayload for CreditCardRecord {
     fn category() -> EntryCategory {
         EntryCategory::CreditCard
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TOTPConfig {
+    pub secret: String, // Base32 encoded
+    pub period: u32,    // Default 30 seconds
+    pub digits: u8,     // Usually 6
+    pub algorithm: TOTPAlgorithm,
+    pub issuer: Option<String>,
+    pub account_name: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum TOTPAlgorithm {
+    SHA1,
+    SHA256,
+    SHA512,
 }
