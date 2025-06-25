@@ -46,6 +46,7 @@ class NoteAction
     ScreenUpdater.updateFolderList();
     ScreenUpdater.updateCategoryList();
     ScreenUpdater.updateNoFolderList();
+    ScreenUpdater.upateRecordsList();
   }
   
   @override

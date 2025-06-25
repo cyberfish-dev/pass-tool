@@ -27,4 +27,8 @@ class ScreenUpdater {
   static void updateNoFolderList() {
     noFolderListGlobalKey.currentState?.update();
   }
+
+  static void upateRecordsList() {
+    recordsGlobalKey.currentState?.update();
+  }
 }

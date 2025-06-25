@@ -78,27 +78,36 @@ class RecordsListState extends State<RecordsList> {
       }).toList();
 
       _items = items.map((item) {
-        return ListItemModel(
-          item.name,
-          PhosphorIcons.globe(PhosphorIconsStyle.thin),
-          null,
-          (ctx) {
-            switch (item.category) {
-              case EntryCategory.login:
-                throw UnimplementedError();
-              case EntryCategory.secureNote:
-                {
-                  final action = NoteAction(RecordAction.update);
-                  action.showCustomBottomSheet(ctx, item);
-                }
-              case EntryCategory.creditCard:
-                throw UnimplementedError();
-            }
-          },
-          item.id,
-        );
+        return ListItemModel(item.name, _getIcon(item), null, (ctx) {
+          switch (item.category) {
+            case EntryCategory.login:
+              throw UnimplementedError();
+            case EntryCategory.secureNote:
+              {
+                final action = NoteAction(RecordAction.update);
+                action.showCustomBottomSheet(ctx, item);
+              }
+            case EntryCategory.creditCard:
+              throw UnimplementedError();
+          }
+        }, item.id);
       }).toList();
     });
+  }
+
+  IconData _getIcon(VaultMetadataEntry entry) {
+    if (entry.icon == null) {
+      switch (entry.category) {
+        case EntryCategory.creditCard:
+          return PhosphorIcons.creditCard(PhosphorIconsStyle.thin);
+        case EntryCategory.login:
+          return PhosphorIcons.globe(PhosphorIconsStyle.thin);
+        case EntryCategory.secureNote:
+          return PhosphorIcons.note(PhosphorIconsStyle.thin);
+      }
+    }
+
+    return PhosphorIcons.record(PhosphorIconsStyle.thin);
   }
 
   @override

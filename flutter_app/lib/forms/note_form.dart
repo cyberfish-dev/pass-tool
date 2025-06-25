@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/form_base_state.dart';
@@ -18,6 +19,7 @@ class NoteFormState
     extends FormBaseState<NoteForm, RecordBase<SecureNoteRecord>> {
   final _formKey = GlobalKey<FormState>();
   bool _submitCalled = false;
+  bool _obscureNote = false;
 
   // Controllers
   final _itemNameCtrl = TextEditingController();
@@ -42,6 +44,11 @@ class NoteFormState
 
     final record = widget.record;
     if (record != null) {
+
+      setState(() {
+        _obscureNote = true;
+      });
+      
       _itemNameCtrl.text = record.itemName;
       _noteCtrl.text = record.data.note;
 
@@ -110,22 +117,95 @@ class NoteFormState
 
           SizedBox(height: 16),
 
-          TextFormField(
-            autocorrect: false,
-            enableSuggestions: false,
-            textCapitalization: TextCapitalization.none,
-            controller: _noteCtrl,
-            decoration: InputDecoration(
-              labelText: 'Secure Note',
-              prefixIcon: Icon(PhosphorIcons.note(PhosphorIconsStyle.thin)),
-            ),
-            validator: _requiredValidator,
-            maxLines: 10,
-            minLines: 3,
-            onChanged: (_) {
-              if (_submitCalled) _formKey.currentState!.validate();
-            },
-          ),
+          _obscureNote
+              ? TextFormField(
+                  controller: TextEditingController(
+                    text: '•' * _noteCtrl.text.length,
+                  ),
+                  readOnly: true,
+                  maxLines: 10,
+                  minLines: 3,
+                  decoration: InputDecoration(
+                    labelText: 'Secure Note',
+                    prefixIcon: Icon(
+                      PhosphorIcons.note(PhosphorIconsStyle.thin),
+                    ),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            PhosphorIcons.copy(PhosphorIconsStyle.thin),
+                          ),
+                          tooltip: 'Copy',
+                          onPressed: () {
+                            Clipboard.setData(
+                              ClipboardData(text: _noteCtrl.text),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Note copied to clipboard'),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
+                          ),
+                          tooltip: 'Show',
+                          onPressed: () => setState(() => _obscureNote = !_obscureNote),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : TextFormField(
+                  controller: _noteCtrl,
+                  maxLines: 10,
+                  minLines: 3,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  textCapitalization: TextCapitalization.none,
+                  decoration: InputDecoration(
+                    labelText: 'Secure Note',
+                    prefixIcon: Icon(
+                      PhosphorIcons.note(PhosphorIconsStyle.thin),
+                    ),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            PhosphorIcons.copy(PhosphorIconsStyle.thin),
+                          ),
+                          tooltip: 'Copy',
+                          onPressed: () {
+                            Clipboard.setData(
+                              ClipboardData(text: _noteCtrl.text),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Note copied to clipboard'),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            PhosphorIcons.eyeSlash(PhosphorIconsStyle.thin),
+                          ),
+                          tooltip: 'Show',
+                          onPressed: () => setState(() => _obscureNote = !_obscureNote),
+                        ),
+                      ],
+                    ),
+                  ),
+                  validator: _requiredValidator,
+                  onChanged: (_) {
+                    if (_submitCalled) _formKey.currentState!.validate();
+                  },
+                ),
         ],
       ),
     );
