@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/credit_action.dart';
 import 'package:flutter_app/actions/folder_add_action.dart';
-import 'package:flutter_app/actions/login_add_action.dart';
+import 'package:flutter_app/actions/login_action.dart';
 import 'package:flutter_app/actions/note_action.dart';
 import 'package:flutter_app/enums/action.dart';
 import 'package:flutter_app/models/list_item_model.dart';
@@ -12,7 +12,7 @@ final List<ListItemModel> actions = [
     ctx,
   ) {
     Navigator.of(ctx).pop();
-    final action = LoginAddAction();
+    final action = LoginAction(RecordAction.add);
     action.showCustomBottomSheet(ctx, null);
   }, '_login'),
   ListItemModel(

@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/components/custom_dropdown.dart';
 import 'package:flutter_app/components/section_header.dart';
 import 'package:flutter_app/models/form_base_state.dart';
+import 'package:flutter_app/models/record_base.dart';
 import 'package:flutter_app/preferences/password_prefs.dart';
 import 'package:pass_tool_core/pass_tool_core.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class AddLoginForm extends StatefulWidget {
-  const AddLoginForm({super.key});
+class LoginForm extends StatefulWidget {
+  final RecordBase<LoginRecord>? record;
+
+  const LoginForm({super.key, this.record});
 
   @override
-  AddLoginFormState createState() => AddLoginFormState();
+  LoginFormState createState() => LoginFormState();
 }
 
-class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
+class LoginFormState extends FormBaseState<LoginForm, RecordBase<LoginRecord>> {
   late PasswordPrefs _prefs;
 
   final _formKey = GlobalKey<FormState>();
@@ -59,12 +62,33 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
     super.initState();
     initFolders();
 
-    PasswordPrefs.loadPrefs().then((p) {
-      setState(() {
-        _prefs = p;
+    final record = widget.record;
+    if (record != null) {
+      _itemNameCtrl.text = record.itemName;
+      _usernameCtrl.text = record.data.username;
+      _passwordCtrl.text = record.data.password;
+
+      if (record.folder != null) {
+        final listFolderItem = folders
+            .where((f) => f.id == record.folder)
+            .firstOrNull;
+        if (listFolderItem != null) {
+          setState(() {
+            selectedFolder = Folder(
+              id: listFolderItem.id,
+              name: listFolderItem.title,
+            );
+          });
+        }
+      }
+    } else {
+      PasswordPrefs.loadPrefs().then((p) {
+        setState(() {
+          _prefs = p;
+        });
+        _generatePassword();
       });
-      _generatePassword();
-    });
+    }
   }
 
   void _generatePassword() {
@@ -273,8 +297,18 @@ class AddLoginFormState extends FormBaseState<AddLoginForm, String> {
   }
 
   @override
-  String getFormData() {
-    return '';
+  RecordBase<LoginRecord> getFormData() {
+    // TODO: figure out icons and totp
+    return RecordBase<LoginRecord>(
+      data: LoginRecord(
+        username: _usernameCtrl.text,
+        password: _passwordCtrl.text,
+      ),
+      itemName: _itemNameCtrl.text,
+      folder: selectedFolder?.id,
+      icon: null,
+      isTrashed: widget.record?.isTrashed ?? false,
+    );
   }
 
   @override

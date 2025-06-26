@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/actions/credit_action.dart';
+import 'package:flutter_app/actions/login_action.dart';
 import 'package:flutter_app/actions/note_action.dart';
 import 'package:flutter_app/components/list_items.dart';
 import 'package:flutter_app/components/section_header.dart';
@@ -82,7 +83,10 @@ class RecordsListState extends State<RecordsList> {
         return ListItemModel(item.name, _getIcon(item), null, (ctx) {
           switch (item.category) {
             case EntryCategory.login:
-              throw UnimplementedError();
+              {
+                final action = LoginAction(RecordAction.update);
+                action.showCustomBottomSheet(ctx, item);
+              }
             case EntryCategory.secureNote:
               {
                 final action = NoteAction(RecordAction.update);
