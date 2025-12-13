@@ -1,3 +1,6 @@
+import { webcrypto } from "node:crypto";
+const crypto = webcrypto;
+
 export async function encryptData(
   data: string,
   password: string,
